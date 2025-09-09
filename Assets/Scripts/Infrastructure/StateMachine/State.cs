@@ -10,6 +10,10 @@ public abstract class State: IState
 
     }
 
+    public virtual void LateTick() {
+
+    }
+
     public virtual void FixedTick() {
 
     }

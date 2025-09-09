@@ -39,6 +39,12 @@ public class StateMachine
         Current?.Tick();
     }
 
+    public void LateTick()
+    {
+        // do whatever the state does on fixed tick
+        Current?.LateTick();
+    }
+
     public void FixedTick()
     {
         // do whatever the state does on fixed tick
