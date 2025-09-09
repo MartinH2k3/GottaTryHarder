@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Infrastructure.StateMachine;
 using Physics;
 using UnityEngine;
@@ -29,6 +30,19 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
 
     [Header("Movement")]
     [SerializeField] private float walkSpeed = 3f;
+    [SerializeField] private float sprintMultiplier = 1.3f; // holding sprint button
+    public float WalkSpeedMultiplier { get; set; } // outside factors && effects
+
+    [Header("Jump")]
+    [SerializeField] private float jumpStrength = 5f;
+    [SerializeField] private float jumpTimeout = 0.3f;
+    [Tooltip("Time AFTER leaving ground where jump is still allowed.")]
+    [SerializeField] private float coyoteTimeWindow = 0.1f;
+    private float _coyoteTimer;
+    [Tooltip("Time BEFORE getting on ground where jump is still allowed.")]
+    [SerializeField] private float jumpBufferWindow = 0.1f;
+    private float _jumpBufferTimer;
+    public float DoubleJumpsAllowed { get; set; }  = 0; // Double/Triple/... jump can be unlocked later
 
     private void Awake() {
         _inputActions = new InputSystemActions();
