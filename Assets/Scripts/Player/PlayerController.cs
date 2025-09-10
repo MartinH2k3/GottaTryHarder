@@ -32,6 +32,8 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     [SerializeField] private float walkSpeed = 3f;
     [SerializeField] private float sprintMultiplier = 1.3f; // holding sprint button
     public float WalkSpeedMultiplier { get; set; } // outside factors && effects
+    [SerializeField] private float walkAccel = 50f; // rates at which you reach walkSpeed
+    [SerializeField] private float walkDecel = 70f;
 
     [Header("Jump")]
     [SerializeField] private float jumpStrength = 5f;
@@ -43,6 +45,11 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     [SerializeField] private float jumpBufferWindow = 0.1f;
     private float _jumpBufferTimer;
     public float DoubleJumpsAllowed { get; set; }  = 0; // Double/Triple/... jump can be unlocked later
+
+    [Header("Ground contact")]
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private float groundCheckRadius = 0.1f;
 
     private void Awake() {
         _inputActions = new InputSystemActions();
