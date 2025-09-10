@@ -1,16 +1,14 @@
-using Infrastructure.StateMachine;
+﻿using Infrastructure.StateMachine;
 
 namespace Player.States
 {
-
-public class Climbing: State
+public class Airborne: State
 {
     private readonly PlayerController _player;
 
-    public Climbing(PlayerController player)
+    public Airborne(PlayerController player)
     {
         _player = player;
     }
 }
-
 }
