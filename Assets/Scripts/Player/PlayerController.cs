@@ -29,11 +29,11 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     protected int HealthPoints;
 
     [Header("Movement")]
-    [SerializeField] private float walkSpeed = 3f;
-    [SerializeField] private float sprintMultiplier = 1.3f; // holding sprint button
+    [SerializeField] public float walkSpeed = 3f;
+    [SerializeField] public float sprintMultiplier = 1.3f; // holding sprint button
     public float WalkSpeedMultiplier { get; set; } // outside factors && effects
-    [SerializeField] private float walkAccel = 50f; // rates at which you reach walkSpeed
-    [SerializeField] private float walkDecel = 70f;
+    [SerializeField] public float walkAccel = 50f; // rates at which you reach walkSpeed
+    [SerializeField] public float walkDecel = 70f;
 
     [Header("Jump")]
     [SerializeField] private float jumpStrength = 5f;
