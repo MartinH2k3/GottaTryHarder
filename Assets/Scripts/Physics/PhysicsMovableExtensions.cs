@@ -63,7 +63,7 @@ public static class PhysicsMovableExtensions {
 
         var v = movable.GetVelocity();
         float diff = targetSpeed - v.x;
-        float force = diff * acceleration * Time.fixedDeltaTime;
+        float force = diff * acceleration;
 
         movable.AddForce(force);
 
@@ -75,7 +75,7 @@ public static class PhysicsMovableExtensions {
         // Flip facing direction if player initiated
         if (voluntaryMovement && Mathf.Abs(targetSpeed) > 0.01f) {
             var t = movable.Rigidbody.transform;
-            t.localScale = new Vector3(Mathf.Sign(direction), 1f, 1f);
+            t.localScale = new Vector3(Mathf.Sign(direction), t.localScale.y, t.localScale.z);
         }
     }
 

@@ -1,9 +1,9 @@
-using System.Collections.Generic;
-using Infrastructure.StateMachine;
 using Physics;
+using Player.States;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine;
+using StateMachine = Infrastructure.StateMachine.StateMachine;
 
 namespace Player
 {
@@ -19,50 +19,151 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     private StateMachine _stateMachine;
     private ControlState _controlState = ControlState.Normal;
     private VulnerabilityState _vulnerabilityState = VulnerabilityState.Vulnerable;
+    private Idle _idle; private Walking _walking; private Airborne _airborne;
 
     [Header("References")]
     [SerializeField] protected Rigidbody2D rb;
     public Rigidbody2D Rigidbody => rb;
 
     [Header("Health")]
-    [SerializeField] protected int maxHealthPoints = 100;
-    protected int HealthPoints;
+    [SerializeField] private int maxHealthPoints = 100;
+    private int _healthPoints;
 
     [Header("Movement")]
-    [SerializeField] public float walkSpeed = 3f;
-    [SerializeField] public float sprintMultiplier = 1.3f; // holding sprint button
-    public float WalkSpeedMultiplier { get; set; } // outside factors && effects
-    [SerializeField] public float walkAccel = 50f; // rates at which you reach walkSpeed
-    [SerializeField] public float walkDecel = 70f;
+    [SerializeField] private float moveEps = 0.1f; // deadzone for movement input
+    public float walkSpeed = 3f;
+    public float sprintMultiplier = 1.3f; // holding sprint button
+    public float WalkSpeedMultiplier { get; set; } = 1f; // outside factors && effects
+    public float walkAccel = 50f; // rates at which you reach walkSpeed
+    public float walkDecel = 70f;
 
     [Header("Jump")]
-    [SerializeField] private float jumpStrength = 5f;
+    public float jumpStrength = 5f;
     [SerializeField] private float jumpTimeout = 0.3f;
+    private float _nextJumpTime;
+
     [Tooltip("Time AFTER leaving ground where jump is still allowed.")]
     [SerializeField] private float coyoteTimeWindow = 0.1f;
     private float _coyoteTimer;
+
     [Tooltip("Time BEFORE getting on ground where jump is still allowed.")]
     [SerializeField] private float jumpBufferWindow = 0.1f;
     private float _jumpBufferTimer;
-    public float DoubleJumpsAllowed { get; set; }  = 0; // Double/Triple/... jump can be unlocked later
+
+    [Tooltip("Double/Triple jumps etc. Gets higher with upgrades, but serialized for testing.")]
+    [SerializeField] private int extraAirJumps = 0; // 0 = no double jump
+    private int _airJumpsLeft;
 
     [Header("Ground contact")]
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckRadius = 0.1f;
 
+    // Helpers for states
+    public bool HasBufferedJump => _jumpBufferTimer > 0f;
+    public bool HasCoyote => _coyoteTimer > 0f;
+    public bool IsGrounded =>Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+    public bool JumpOffCooldown => Time.time >= _nextJumpTime;
+    public bool CanJump => HasBufferedJump &&
+                           JumpOffCooldown &&
+                           (IsGrounded || HasCoyote || _airJumpsLeft > 0);
+    public void ConsumeBufferedJump() => _jumpBufferTimer = 0f;
+    public void ResetCoyote() => _coyoteTimer = coyoteTimeWindow;
+
+
+
     private void Awake() {
         _inputActions = new InputSystemActions();
         this.NeverSleep();
-        HealthPoints = maxHealthPoints;
+        _healthPoints = maxHealthPoints;
+    }
+
+    private void OnEnable() {
+        var p = _inputActions.Player;
+        _move = p.Move; _move.Enable();
+        _sprint = p.Sprint; _sprint.Enable();
+        _jump = p.Jump; _jump.Enable();
+        _dash = p.Dash; _dash.Enable();
+        _interact = p.Interact; _interact.Enable();
+
+        _jump.performed += OnJumpPerformed;
+        _dash.performed += OnDashPerformed;
+        _interact.performed += context => Intent.InteractPressed = true;
+    }
+
+    private void OnDisable() {
+        var p = _inputActions.Player;
+        _move.Disable();
+        _sprint.Disable();
+        _jump.Disable();
+        _dash.Disable();
+        _interact.Disable();
+
+        _jump.performed -= OnJumpPerformed;
+        _dash.performed -= OnDashPerformed;
+    }
+
+    private void Start() {
+        _stateMachine = new StateMachine();
+        _idle     = new Idle(this);
+        _walking  = new Walking(this);
+        _airborne = new Airborne(this);
+
+        _stateMachine.Initialize(_idle);
+
+        _stateMachine.AddTransition(_idle, _walking,
+            () => Intent.Move.sqrMagnitude > moveEps * moveEps, priority: 10);
+
+        _stateMachine.AddTransition(_walking, _idle,
+            () => Intent.Move.sqrMagnitude <= moveEps * moveEps, priority: 10);
+    }
+
+    private void Update() {
+        Intent.Move = _move.ReadValue<Vector2>();
+        Intent.SprintHeld = _sprint.IsPressed();
+
+        _stateMachine.Tick();
+    }
+
+    private void FixedUpdate() {
+        _stateMachine.FixedTick();
+
+        // Ground check
+        if (IsGrounded) {
+            _coyoteTimer = coyoteTimeWindow;
+        } else {
+            _coyoteTimer -= Time.fixedDeltaTime;
+        }
+
+        // Jump buffer timer
+        if (_jumpBufferTimer > 0) {
+            _jumpBufferTimer -= Time.fixedDeltaTime;
+        }
+
+        Intent.ClearFrameFlags();
+    }
+
+    private void LateUpdate() {
+        _stateMachine.LateTick();
+    }
+
+    private void OnJumpPerformed(InputAction.CallbackContext context) {
+        Intent.JumpPressed = true;
+        Intent.LastJumpPressedTime = Time.time;
+        _jumpBufferTimer = jumpBufferWindow;
+    }
+
+    private void OnDashPerformed(InputAction.CallbackContext context) {
+        Intent.DashPressed = true;
+        Intent.LastDashPressedTime = Time.time;
     }
 
     public void TakeDamage(int damage) {
-        HealthPoints -= damage;
+        _healthPoints -= damage;
     }
 
     public void Heal(int health) {
-        HealthPoints += health;
+        _healthPoints += health;
     }
 }
 
