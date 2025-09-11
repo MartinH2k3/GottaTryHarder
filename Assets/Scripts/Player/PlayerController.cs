@@ -54,6 +54,12 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     [SerializeField] private int extraAirJumps = 0; // 0 = no double jump
     private int _airJumpsLeft;
 
+    [Header("Wall jump")]
+    [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private Transform leftWallCheck;
+    [SerializeField] private Transform rightWallCheck;
+    [SerializeField] private float wallCheckRadius = 0.1f;
+
     [Header("Ground contact")]
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform groundCheck;
@@ -64,11 +70,18 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     public bool HasCoyote => _coyoteTimer > 0f;
     public bool IsGrounded =>Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
     public bool JumpOffCooldown => Time.time >= _nextJumpTime;
-    public bool CanJump => HasBufferedJump &&
-                           JumpOffCooldown &&
-                           (IsGrounded || HasCoyote || _airJumpsLeft > 0);
+    public void ResetJumpCooldown() => _nextJumpTime = Time.time + jumpTimeout;
+    public bool TouchingWall => Physics2D.OverlapCircle(leftWallCheck.position, wallCheckRadius, wallLayer) ||
+                                Physics2D.OverlapCircle(rightWallCheck.position, wallCheckRadius, wallLayer);
+    public bool CanSingleJump => IsGrounded || HasCoyote || TouchingWall; // As in no need to spend double/triple/... jump
+    public bool CanAirJump => _airJumpsLeft > 0;
+    public void ConsumeAirJump() => _airJumpsLeft--;
+    public void ResetAirJumps() => _airJumpsLeft = extraAirJumps;
+    public bool CanJump => JumpOffCooldown && (CanSingleJump || CanAirJump);
+    public bool ShouldStartJump => HasBufferedJump && CanJump;
     public void ConsumeBufferedJump() => _jumpBufferTimer = 0f;
     public void ResetCoyote() => _coyoteTimer = coyoteTimeWindow;
+
 
 
 
@@ -111,11 +124,22 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
 
         _stateMachine.Initialize(_idle);
 
+        // Walking <-> Idle
         _stateMachine.AddTransition(_idle, _walking,
-            () => Intent.Move.sqrMagnitude > moveEps * moveEps, priority: 10);
-
+            () => Intent.Move.sqrMagnitude > moveEps * moveEps);
         _stateMachine.AddTransition(_walking, _idle,
-            () => Intent.Move.sqrMagnitude <= moveEps * moveEps, priority: 10);
+            () => Intent.Move.sqrMagnitude <= moveEps * moveEps);
+
+        // -> Airborne: Jumping
+        _stateMachine.AddTransition(_idle, _airborne, () => ShouldStartJump, priority: 100);
+        _stateMachine.AddTransition(_walking, _airborne, () => ShouldStartJump, priority: 100);
+
+        // -> Airborne: Falling
+        _stateMachine.AddTransition(_idle, _airborne, () => !IsGrounded, priority: 100);
+        _stateMachine.AddTransition(_walking, _airborne, () => !IsGrounded, priority: 100);
+
+        // Airborne -> Grounded: Landing
+        _stateMachine.AddTransition(_airborne, _idle, () => IsGrounded);
     }
 
     private void Update() {
