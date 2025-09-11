@@ -1,14 +1,37 @@
-﻿using Infrastructure.StateMachine;
+﻿using Physics;
+using UnityEngine;
 
 namespace Player.States
 {
-public class Airborne: State
+public class Airborne: PlayerState
 {
-    private readonly PlayerController _player;
+    public Airborne(PlayerController p) : base(p) { }
 
-    public Airborne(PlayerController player)
-    {
-        _player = player;
+    public override void Enter() {
+        Debug.Log("Entered Airborne State");
+    }
+
+    public override void FixedTick() {
+        if (P.ShouldStartJump) Jump();
+
+    }
+
+    private void Jump() {
+        P.ConsumeBufferedJump();
+
+        if (!P.CanSingleJump && !P.CanAirJump)
+            return;
+
+        if (!P.CanSingleJump && P.CanAirJump)
+            P.ConsumeAirJump();
+
+        if (P.GetVelocity().y < 0f)
+            P.SetVelocityY(0f); // Jumping stops falling
+
+        P.AddForce(Vector2.up * P.jumpStrength, ForceMode2D.Impulse);
+        P.ConsumeBufferedJump();
+        P.ResetJumpCooldown();
+        P.ResetCoyote();
     }
 }
 }
