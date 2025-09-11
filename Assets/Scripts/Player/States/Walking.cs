@@ -10,6 +10,8 @@ public class Walking: GroundedBase
 
     public override void FixedTick() {
         var intent = P.Intent;
+        if (Mathf.Approximately(intent.Move.x, 0)) return;
+
         var horizontalInput = Mathf.Sign(intent.Move.x) * intent.Move.magnitude;
 
         var targetSpeed = horizontalInput *

@@ -7,13 +7,20 @@ public class Airborne: PlayerState
 {
     public Airborne(PlayerController p) : base(p) { }
 
-    public override void Enter() {
-        Debug.Log("Entered Airborne State");
-    }
-
     public override void FixedTick() {
         if (P.ShouldStartJump) Jump();
 
+        var intent = P.Intent;
+        if (Mathf.Approximately(intent.Move.x, 0)) return;
+
+        var horizontalInput = Mathf.Sign(intent.Move.x) * intent.Move.magnitude;
+
+        var targetSpeed = horizontalInput *
+                          P.walkSpeed *
+                          (intent.SprintHeld && P.allowSprintInAir ? P.sprintMultiplier : 1f);
+        var acceleration = Mathf.Abs(targetSpeed) > 0.01f ? P.airAccel : P.airDecel;
+
+        P.AccelerateHorizontally(targetSpeed, acceleration, horizontalInput);
     }
 
     private void Jump() {

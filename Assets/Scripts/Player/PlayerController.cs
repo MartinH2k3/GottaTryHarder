@@ -65,6 +65,12 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckRadius = 0.1f;
 
+    [Header("Air Control")]
+    public float airSpeed = 3.0f; // horizontal
+    public float airAccel = 35f;
+    public float airDecel = 25f;
+    public bool  allowSprintInAir = false;
+
     // Helpers for states
     public bool HasBufferedJump => _jumpBufferTimer > 0f;
     public bool HasCoyote => _coyoteTimer > 0f;
