@@ -31,6 +31,20 @@ public static class PhysicsMovableExtensions {
         }
     }
 
+    public static void SetVelocityX(this IPhysicsMovable movable, float x) {
+        if (movable.Rigidbody is not null) {
+            var v = movable.Rigidbody.linearVelocity;
+            movable.Rigidbody.linearVelocity = new Vector2(x, v.y);
+        }
+    }
+
+    public static void SetVelocityY(this IPhysicsMovable movable, float y) {
+        if (movable.Rigidbody is not null) {
+            var v = movable.Rigidbody.linearVelocity;
+            movable.Rigidbody.linearVelocity = new Vector2(v.x, y);
+        }
+    }
+
     /// <summary>Adds a physics force to the Rigidbody2D (default ForceMode2D.Force).</summary>
     public static void AddForce(this IPhysicsMovable movable, Vector2 force, ForceMode2D mode = ForceMode2D.Force) {
         if (movable.Rigidbody is not null) {
@@ -59,7 +73,7 @@ public static class PhysicsMovableExtensions {
         float acceleration,
         float direction = 0f,
         bool voluntaryMovement = true) {
-        if (movable.Rigidbody == null) return;
+        if (movable.Rigidbody is null) return;
 
         var v = movable.GetVelocity();
         float diff = targetSpeed - v.x;

@@ -4,20 +4,17 @@ using UnityEngine;
 
 namespace Player.States
 {
-public class Idle: State
+public class Idle: GroundedBase
 {
-    private readonly PlayerController _player;
-
-    public Idle(PlayerController player) => _player = player;
+    public Idle(PlayerController p) : base(p) { }
 
     public override void FixedTick() {
-        base.FixedTick();
-        var v = _player.GetVelocity();
+        var v = P.GetVelocity();
         if (Mathf.Approximately(v.x, 0f)) {
             return;
         }
-        float newX = Mathf.MoveTowards(v.x, 0f, _player.walkDecel * Time.fixedDeltaTime);
-        _player.SetVelocity(newX, v.y);
+        var newX = Mathf.MoveTowards(v.x, 0f, P.walkDecel * Time.fixedDeltaTime);
+        P.SetVelocity(newX, v.y);
     }
 }
 }
