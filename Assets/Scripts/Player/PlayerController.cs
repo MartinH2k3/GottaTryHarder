@@ -83,24 +83,29 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     public bool  allowSprintInAir = false;
 
     // Helpers for states
-    public bool HasBufferedJump => _jumpBufferTimer > 0f;
-    public bool HasCoyote => _coyoteTimer > 0f;
+    // Ground check
     public bool IsGrounded =>Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-    public bool JumpOffCooldown => Time.time >= _nextJumpTime;
-    public void ResetJumpCooldown() => _nextJumpTime = Time.time + jumpTimeout;
-    public bool CanSingleJump => IsGrounded || HasCoyote; // As in no need to spend double/triple/... jump
-    public bool CanAirJump => _airJumpsLeft > 0;
-    public void ConsumeAirJump() => _airJumpsLeft--;
-    public void ResetAirJumps() => _airJumpsLeft = extraAirJumps;
-    public bool CanJump => JumpOffCooldown && (CanSingleJump || CanAirJump);
-    public bool ShouldStartJump => HasBufferedJump && CanJump;
-    public void ConsumeBufferedJump() => _jumpBufferTimer = 0f;
-    public void ResetCoyote() => _coyoteTimer = coyoteTimeWindow;
-    public void ConsumeCoyote() => _coyoteTimer = 0f;
+    // Wall check
     public bool TouchingWallLeft => Physics2D.OverlapCircle(leftWallCheck.position, wallCheckRadius, wallLayer);
     public bool TouchingWallRight => Physics2D.OverlapCircle(rightWallCheck.position, wallCheckRadius, wallLayer);
     public bool TouchingWall => TouchingWallLeft || TouchingWallRight;
     public int WallDir => TouchingWallLeft ? -1 : (TouchingWallRight ? 1 : 0);
+    // Multi jump
+    public bool CanAirJump => _airJumpsLeft > 0;
+    public void ConsumeAirJump() => _airJumpsLeft--;
+    public void ResetAirJumps() => _airJumpsLeft = extraAirJumps;
+    // Jump
+    public bool HasBufferedJump => _jumpBufferTimer > 0f;
+    public bool HasCoyote => _coyoteTimer > 0f;
+    public bool JumpOffCooldown => Time.time >= _nextJumpTime;
+    public bool CanSingleJump => IsGrounded || HasCoyote; // As in no need to spend double/triple/... jump
+    public bool CanJump => JumpOffCooldown && (CanSingleJump || CanAirJump);
+    public bool ShouldStartJump => HasBufferedJump && CanJump;
+    public void ResetJumpCooldown() => _nextJumpTime = Time.time + jumpTimeout;
+    public void ConsumeBufferedJump() => _jumpBufferTimer = 0f;
+    public void ResetCoyote() => _coyoteTimer = coyoteTimeWindow;
+    public void ConsumeCoyote() => _coyoteTimer = 0f;
+    // Wall Jump
     public void StartWallRegrabLock() => _wallRegrabUnlockTime = Time.time + wallRegrabLock;
     public bool WallRegrabLocked => Time.time < _wallRegrabUnlockTime;
 
