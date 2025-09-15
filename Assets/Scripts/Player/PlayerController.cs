@@ -87,7 +87,7 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     public bool ShouldStartJump => HasBufferedJump && CanJump;
     public void ConsumeBufferedJump() => _jumpBufferTimer = 0f;
     public void ResetCoyote() => _coyoteTimer = coyoteTimeWindow;
-
+    public void ConsumeCoyote() => _coyoteTimer = 0f;
 
 
 

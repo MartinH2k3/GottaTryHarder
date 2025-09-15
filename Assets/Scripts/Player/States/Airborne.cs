@@ -38,7 +38,7 @@ public class Airborne: PlayerState
         P.AddForce(Vector2.up * P.jumpStrength, ForceMode2D.Impulse);
         P.ConsumeBufferedJump();
         P.ResetJumpCooldown();
-        P.ResetCoyote();
+        P.ConsumeCoyote();
     }
 }
 }
