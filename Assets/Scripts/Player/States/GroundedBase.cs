@@ -2,6 +2,6 @@
 {
 public abstract class GroundedBase: PlayerState
 {
-    public GroundedBase(PlayerController p): base(p) { }
+    protected GroundedBase(PlayerController p): base(p) { }
 }
 }

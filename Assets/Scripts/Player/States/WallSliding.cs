@@ -2,13 +2,8 @@
 
 namespace Player.States
 {
-public class WallSliding: State
+public class WallSliding: PlayerState
 {
-    private readonly PlayerController _player;
-
-    public WallSliding(PlayerController player)
-    {
-        _player = player;
-    }
+    public WallSliding(PlayerController p): base(p) { }
 }
 }

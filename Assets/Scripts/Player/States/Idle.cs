@@ -1,5 +1,4 @@
-﻿using Infrastructure.StateMachine;
-using Physics;
+﻿using Physics;
 using UnityEngine;
 
 namespace Player.States
