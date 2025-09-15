@@ -54,16 +54,26 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     [SerializeField] private int extraAirJumps = 0; // 0 = no double jump
     private int _airJumpsLeft;
 
-    [Header("Wall jump")]
-    [SerializeField] private LayerMask wallLayer;
-    [SerializeField] private Transform leftWallCheck;
-    [SerializeField] private Transform rightWallCheck;
-    [SerializeField] private float wallCheckRadius = 0.1f;
+    [Header("Wall Slide")]
+    public float wallSlideSpeed = 1.5f; // max sliding speed
+    public float wallSlideAccelX = 20f; // horizontal acceleration toward 0 while sliding
+    public float wallStickTime = 0.25f; // time to stick to wall after stopping pushing into it before going airborne
+
+    [Header("Wall Jump")]
+    public float wallJumpXStrength = 5f;
+    public float wallJumpYStrength = 5f;
+    public float wallRegrabLockout = 0.2f; // time after jumping off wall before being able to regrab
 
     [Header("Ground contact")]
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckRadius = 0.1f;
+
+    [Header("Wall contact")]
+    [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private Transform leftWallCheck;
+    [SerializeField] private Transform rightWallCheck;
+    [SerializeField] private float wallCheckRadius = 0.1f;
 
     [Header("Air Control")]
     public float airSpeed = 3.0f; // horizontal
@@ -77,9 +87,7 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     public bool IsGrounded =>Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
     public bool JumpOffCooldown => Time.time >= _nextJumpTime;
     public void ResetJumpCooldown() => _nextJumpTime = Time.time + jumpTimeout;
-    public bool TouchingWall => Physics2D.OverlapCircle(leftWallCheck.position, wallCheckRadius, wallLayer) ||
-                                Physics2D.OverlapCircle(rightWallCheck.position, wallCheckRadius, wallLayer);
-    public bool CanSingleJump => IsGrounded || HasCoyote || TouchingWall; // As in no need to spend double/triple/... jump
+    public bool CanSingleJump => IsGrounded || HasCoyote; // As in no need to spend double/triple/... jump
     public bool CanAirJump => _airJumpsLeft > 0;
     public void ConsumeAirJump() => _airJumpsLeft--;
     public void ResetAirJumps() => _airJumpsLeft = extraAirJumps;
@@ -88,7 +96,10 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     public void ConsumeBufferedJump() => _jumpBufferTimer = 0f;
     public void ResetCoyote() => _coyoteTimer = coyoteTimeWindow;
     public void ConsumeCoyote() => _coyoteTimer = 0f;
-
+    public bool TouchingWallLeft => Physics2D.OverlapCircle(leftWallCheck.position, wallCheckRadius, wallLayer);
+    public bool TouchingWallRight => Physics2D.OverlapCircle(rightWallCheck.position, wallCheckRadius, wallLayer);
+    public bool TouchingWall => TouchingWallLeft || TouchingWallRight;
+    public int WallDir => TouchingWallLeft ? -1 : (TouchingWallRight ? 1 : 0);
 
 
     private void Awake() {
