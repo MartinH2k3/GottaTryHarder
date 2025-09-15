@@ -62,7 +62,8 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     [Header("Wall Jump")]
     public float wallJumpXStrength = 5f;
     public float wallJumpYStrength = 5f;
-    public float wallRegrabLockout = 0.2f; // time after jumping off wall before being able to regrab
+    public float wallRegrabLock = 0.2f; // time after jumping off wall before being able to regrab
+    private float _wallRegrabUnlockTime = 0f;
 
     [Header("Ground contact")]
     [SerializeField] private LayerMask groundLayer;
@@ -100,6 +101,8 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     public bool TouchingWallRight => Physics2D.OverlapCircle(rightWallCheck.position, wallCheckRadius, wallLayer);
     public bool TouchingWall => TouchingWallLeft || TouchingWallRight;
     public int WallDir => TouchingWallLeft ? -1 : (TouchingWallRight ? 1 : 0);
+    public void StartWallRegrabLock() => _wallRegrabUnlockTime = Time.time + wallRegrabLock;
+    public bool WallRegrabLocked => Time.time < _wallRegrabUnlockTime;
 
 
     private void Awake() {
