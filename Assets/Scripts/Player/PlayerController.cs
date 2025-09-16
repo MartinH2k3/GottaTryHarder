@@ -1,4 +1,4 @@
-using Physics;
+using MyPhysics;
 using Player.States;
 using Unity.VisualScripting;
 using UnityEngine;

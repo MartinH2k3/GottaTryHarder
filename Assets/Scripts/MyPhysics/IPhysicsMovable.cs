@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Physics
+namespace MyPhysics
 {
 
 public interface IPhysicsMovable

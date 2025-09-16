@@ -1,4 +1,4 @@
-﻿using Physics;
+﻿using MyPhysics;
 using UnityEngine;
 
 namespace Player.States

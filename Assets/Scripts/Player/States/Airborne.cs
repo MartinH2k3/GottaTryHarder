@@ -1,4 +1,4 @@
-﻿using Physics;
+﻿using MyPhysics;
 using UnityEngine;
 
 namespace Player.States
@@ -24,8 +24,6 @@ public class Airborne: PlayerState
     }
 
     private void Jump() {
-        P.ConsumeBufferedJump();
-
         if (!P.CanSingleJump && !P.CanAirJump)
             return;
 
