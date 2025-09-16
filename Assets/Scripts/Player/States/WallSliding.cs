@@ -26,8 +26,9 @@ public class WallSliding: PlayerState
         var v = P.GetVelocity();
 
         // Clamp sliding speed
-        if (v.y < P.wallSlideSpeed)
-            v.y = P.wallSlideSpeed;
+        var wallSlideSpeed = -Mathf.Abs(P.wallSlideSpeed); // Make sure it's always negative no matter the input in game editor
+        if (v.y < wallSlideSpeed)
+            v.y = wallSlideSpeed;
 
         // Slow down to don't continuously push into wall
         v.x = Mathf.MoveTowards(v.x, 0f, P.wallSlideAccelX * Time.fixedDeltaTime);
