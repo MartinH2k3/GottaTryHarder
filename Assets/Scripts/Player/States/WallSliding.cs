@@ -52,6 +52,7 @@ public class WallSliding: PlayerState
         P.ResetJumpCooldown();
         P.ConsumeCoyote();
         P.StartWallRegrabLock();
+        P.StartWallJumpControlLock();
     }
 
     // Helper for transitions to check if still “sticky”

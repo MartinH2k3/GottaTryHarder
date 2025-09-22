@@ -24,6 +24,7 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     [Header("References")]
     [SerializeField] protected Rigidbody2D rb;
     public Rigidbody2D Rigidbody => rb;
+    private Collider2D _col;
 
     [Header("Health")]
     [SerializeField] private int maxHealthPoints = 100;
@@ -62,7 +63,7 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     [Header("Wall Jump")]
     public float wallJumpXStrength = 5f;
     public float wallJumpYStrength = 5f;
-    public float wallRegrabLock = 0.2f; // time after jumping off wall before being able to regrab
+    public float wallRegrabLock = 0.5f; // time after jumping off wall before being able to regrab
     private float _wallRegrabUnlockTime = 0f;
 
     [Header("Ground contact")]
@@ -72,8 +73,6 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
 
     [Header("Wall contact")]
     [SerializeField] private LayerMask wallLayer;
-    [SerializeField] private float wallCheckOffset = 0.5f;
-    [SerializeField] private float wallCheckRadius = 0.1f;
 
     [Header("Air Control")]
     public float airSpeed = 3.0f; // horizontal
@@ -81,19 +80,34 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     public float airDecel = 25f;
     public bool  allowSprintInAir = false;
 
+    [Header("Horizontal lock")]
+    [Tooltip("Time after wall jump before being able to control horizontal movement.")]
+    [SerializeField] private float wallJumpControlLockTime = 0.2f;
+    [Tooltip("Time after landing where horizontal movement is locked so it's easier to land on tight spaces.")]
+    [SerializeField] private float landingMovementLockTime = 0.1f;
+    private float _horizontalControlUnlockTime = 0f;
+
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI debugText;
 
     // Helpers for states
     // Transform
     public int FacingDirection => transform.localScale.x >= 0 ? 1 : -1;
+    public float PlayerHeight => _col.bounds.size.y;
+    public float PlayerWidth  => _col.bounds.size.x;
+    // Movement
+    public bool HorizontalControlLocked => Time.time <= _horizontalControlUnlockTime;
     // Ground check
     public bool IsGrounded =>Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
     // Wall check
-    public bool TouchingWallLeft =>Physics2D.OverlapCircle((Vector2)transform.position + Vector2.left * wallCheckOffset,
-        wallCheckRadius, wallLayer);
-    public bool TouchingWallRight => Physics2D.OverlapCircle((Vector2)transform.position + Vector2.right * wallCheckOffset,
-        wallCheckRadius, wallLayer);
+    public bool TouchingWallLeft => Physics2D.OverlapArea(
+        (Vector2)transform.position + new Vector2(-PlayerWidth/2, -PlayerHeight/2),
+        (Vector2)transform.position + new Vector2(-PlayerWidth/2-0.01f, PlayerHeight/2),
+        wallLayer);
+    public bool TouchingWallRight => Physics2D.OverlapArea(
+        (Vector2)transform.position + new Vector2(PlayerWidth/2, -PlayerHeight/2),
+        (Vector2)transform.position + new Vector2(PlayerWidth/2+0.01f, PlayerHeight/2),
+        wallLayer);
     public bool TouchingWall => TouchingWallLeft || TouchingWallRight;
     public int WallDir => TouchingWallLeft ? -1 : (TouchingWallRight ? 1 : 0);
     // Multi jump
@@ -111,9 +125,11 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     public void ConsumeBufferedJump() => _jumpBufferTimer = 0f;
     public void ResetCoyote() => _coyoteTimer = coyoteTimeWindow;
     public void ConsumeCoyote() => _coyoteTimer = 0f;
+    public void StartLandingMovementLock() => _horizontalControlUnlockTime = Time.time + landingMovementLockTime;
     // Wall Jump
     public void StartWallRegrabLock() => _wallRegrabUnlockTime = Time.time + wallRegrabLock;
     public bool WallRegrabLocked => Time.time < _wallRegrabUnlockTime;
+    public void StartWallJumpControlLock() => _horizontalControlUnlockTime = Time.time + wallJumpControlLockTime;
     // wall slide
     // Can't slide if grounded, wall regrab locked, not touching wall, not pushing into wall, or going up (as to not cancel jump)
     bool ShouldSlide => !IsGrounded && !WallRegrabLocked && TouchingWall && PressingIntoWall() && this.GetVelocity().y < 0.5f;
@@ -123,6 +139,7 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
         _inputActions = new InputSystemActions();
         this.NeverSleep();
         _healthPoints = maxHealthPoints;
+        _col = GetComponent<Collider2D>();
     }
 
     private void OnEnable() {
@@ -186,13 +203,20 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
 
         _stateMachine.StateChanged += (prev, curr) =>
         {
+            if (prev is Airborne && (curr == _idle || curr == _walking))
+                StartLandingMovementLock();
+
             if (debugText)
-                debugText.text = $"State: {_stateMachine.Current?.GetType().Name ?? "None"}";
+                debugText.text = $"State: {_stateMachine.Current?.GetType().Name ?? "None"}\n" +
+                                 $"Touching right wall: {TouchingWallRight}\n" +
+                                 $"Touching left wall: {TouchingWallLeft}\n";
         };
     }
 
     private void Update() {
         Intent.Move = _move.ReadValue<Vector2>();
+        if (HorizontalControlLocked)
+            Intent.Move = new Vector2(0f, Intent.Move.y);
         Intent.SprintHeld = _sprint.IsPressed();
         _stateMachine.Tick();
 
