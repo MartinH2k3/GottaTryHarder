@@ -1897,6 +1897,7 @@ MonoBehaviour:
   wallSlideSpeed: 1.5
   wallSlideAccelX: 20
   wallStickTime: 0.05
+  upwardSpeedThreshold: 0.1
   wallJumpXStrength: 5
   wallJumpYStrength: 5
   wallRegrabLock: 0.2
@@ -1912,7 +1913,7 @@ MonoBehaviour:
   airAccel: 35
   airDecel: 25
   allowSprintInAir: 0
-  wallJumpControlLockTime: 0.2
+  wallJumpControlLockTime: 0.05
   landingMovementLockTime: 0.05
   debugText: {fileID: 55258065}
 --- !u!50 &1857766297

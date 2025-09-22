@@ -1,6 +1,7 @@
 using MyPhysics;
 using Player.States;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using StateMachine = Infrastructure.StateMachine.StateMachine;
@@ -20,6 +21,9 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     private ControlState _controlState = ControlState.Normal;
     private VulnerabilityState _vulnerabilityState = VulnerabilityState.Vulnerable;
     private Idle _idle; private Walking _walking; private Airborne _airborne; private WallSliding _wallSliding;
+
+    // state helpers
+    public AirborneEntry LastAirborneEntry { get; private set; }
 
     [Header("References")]
     [SerializeField] protected Rigidbody2D rb;
@@ -59,6 +63,7 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     public float wallSlideSpeed = 1.5f; // max sliding speed
     public float wallSlideAccelX = 20f; // horizontal acceleration toward 0 while sliding
     public float wallStickTime = 0.25f; // time to stick to wall after stopping pushing into it before going airborne
+    [SerializeField] private float upwardSpeedThreshold = 0.1f; // if going up faster than this, player wants to jump, so don't start sliding
 
     [Header("Wall Jump")]
     public float wallJumpXStrength = 5f;
@@ -82,9 +87,9 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
 
     [Header("Horizontal lock")]
     [Tooltip("Time after wall jump before being able to control horizontal movement.")]
-    [SerializeField] private float wallJumpControlLockTime = 0.2f;
+    [SerializeField] private float wallJumpControlLockTime = 0.05f;
     [Tooltip("Time after landing where horizontal movement is locked so it's easier to land on tight spaces.")]
-    [SerializeField] private float landingMovementLockTime = 0.1f;
+    [SerializeField] private float landingMovementLockTime = 0.05f;
     private float _horizontalControlUnlockTime = 0f;
 
     [Header("Debug")]
@@ -132,7 +137,7 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     public void StartWallJumpControlLock() => _horizontalControlUnlockTime = Time.time + wallJumpControlLockTime;
     // wall slide
     // Can't slide if grounded, wall regrab locked, not touching wall, not pushing into wall, or going up (as to not cancel jump)
-    bool ShouldSlide => !IsGrounded && !WallRegrabLocked && TouchingWall && PressingIntoWall() && this.GetVelocity().y < 0.5f;
+    bool ShouldSlide => !IsGrounded && !WallRegrabLocked && TouchingWall && PressingIntoWall() && this.GetVelocity().y < upwardSpeedThreshold;
 
 
     private void Awake() {
@@ -201,10 +206,20 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
         // WallSliding -> Idle: Landing
         _stateMachine.AddTransition(_wallSliding, _idle, () => IsGrounded);
 
+        // Stuff to do on state changes
         _stateMachine.StateChanged += (prev, curr) =>
         {
             if (prev is Airborne && (curr == _idle || curr == _walking))
                 StartLandingMovementLock();
+
+            if (curr is Airborne) {
+                if (!ShouldStartJump)
+                    LastAirborneEntry = AirborneEntry.FromFall;
+                else if (prev is WallSliding)
+                    LastAirborneEntry = AirborneEntry.FromWallJump;
+                else
+                    LastAirborneEntry = AirborneEntry.FromJump;
+            }
 
             if (debugText)
                 debugText.text = $"State: {_stateMachine.Current?.GetType().Name ?? "None"}\n" +
@@ -273,6 +288,7 @@ public enum ControlState { Normal, Stunned, Rooted, Sturdy}
 
 public enum VulnerabilityState { Vulnerable, Invulnerable }
 
+public enum AirborneEntry { FromJump, FromFall, FromWallJump }
 
 /// <summary> Abstracts handling player input into the intent of the input to be used by different states. </summary>
 public sealed class PlayerIntent
