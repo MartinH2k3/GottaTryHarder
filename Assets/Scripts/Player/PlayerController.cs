@@ -20,7 +20,7 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     private StateMachine _stateMachine;
     private ControlState _controlState = ControlState.Normal;
     private VulnerabilityState _vulnerabilityState = VulnerabilityState.Vulnerable;
-    private Idle _idle; private Walking _walking; private Airborne _airborne; private WallSliding _wallSliding;
+    private Idle _idle; private Walking _walking; private Airborne _airborne; private WallSliding _wallSliding; private Dashing _dashing;
 
     // state helpers
     public AirborneEntry LastAirborneEntry { get; private set; }
@@ -92,6 +92,12 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     [SerializeField] private float landingMovementLockTime = 0.05f;
     private float _horizontalControlUnlockTime = 0f;
 
+    [Header("Dashing")]
+    public float dashSpeed = 10f;
+    public float dashDuration = 0.2f;
+    public float dashCooldown = 1f;
+    private float _lastDashEndTime = float.NegativeInfinity;
+
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI debugText;
 
@@ -136,6 +142,8 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     public bool WallRegrabLocked => Time.time < _wallRegrabUnlockTime;
     public void StartWallJumpControlLock() => _horizontalControlUnlockTime = Time.time + wallJumpControlLockTime;
     // wall slide
+    // Dash
+    public void StartDashCooldown() => _lastDashEndTime = Time.time;
     // Can't slide if grounded, wall regrab locked, not touching wall, not pushing into wall, or going up (as to not cancel jump)
     bool ShouldSlide => !IsGrounded && !WallRegrabLocked && TouchingWall && PressingIntoWall() && this.GetVelocity().y < upwardSpeedThreshold;
 
@@ -178,6 +186,7 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
         _walking  = new Walking(this);
         _airborne = new Airborne(this);
         _wallSliding = new WallSliding(this);
+        _dashing = new Dashing(this);
 
         _stateMachine.Initialize(_idle);
 
@@ -205,6 +214,10 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
         _stateMachine.AddTransition(_wallSliding, _airborne, () => !ShouldSlide && !_wallSliding.StickActive);
         // WallSliding -> Idle: Landing
         _stateMachine.AddTransition(_wallSliding, _idle, () => IsGrounded);
+
+        _stateMachine.AddAnyTransition(_dashing, () => ShouldStartDash);
+
+        _stateMachine.AddTransition(_dashing, _airborne, () => ShouldStopDash);
 
         // Stuff to do on state changes
         _stateMachine.StateChanged += (prev, curr) =>
@@ -235,6 +248,7 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
         Intent.SprintHeld = _sprint.IsPressed();
         _stateMachine.Tick();
 
+        Debug.Log($"Dash pobem: {Intent.LastDashPressedTime}, {Time.time}, {dashDuration}");
     }
 
     private void FixedUpdate() {
@@ -274,6 +288,11 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
         float x = Intent.Move.x;
         return !Mathf.Approximately(x, 0) && ((TouchingWallLeft && x < 0) || (TouchingWallRight && x > 0));
     }
+
+    private bool ShouldStartDash => Intent.DashPressed &&
+                                    Time.time >= _lastDashEndTime + dashCooldown;
+    private bool ShouldStopDash => Intent.LastDashPressedTime <= Time.time - dashDuration || // dash ran out;
+                                   (FacingDirection > 0 ? TouchingWallRight : TouchingWallLeft);
 
     public void TakeDamage(int damage) {
         _healthPoints -= damage;

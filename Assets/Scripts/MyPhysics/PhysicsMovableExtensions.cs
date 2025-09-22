@@ -136,6 +136,20 @@ public static class PhysicsMovableExtensions {
             movable.Rigidbody.sleepMode = RigidbodySleepMode2D.NeverSleep;
         }
     }
+
+    /// <summary> Sets the Rigidbody2D's gravity scale. </summary>
+    public static void SetGravityScale(this IPhysicsMovable movable, float scale) {
+        if (movable.Rigidbody is not null) {
+            movable.Rigidbody.gravityScale = scale;
+        }
+    }
+
+    public static float GetGravityScale(this IPhysicsMovable movable) {
+        if (movable.Rigidbody is not null) {
+            return movable.Rigidbody.gravityScale;
+        }
+        return 0f;
+    }
 }
 
 }

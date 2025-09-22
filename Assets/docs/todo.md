@@ -13,8 +13,9 @@
 - [ ] Store high scores
 
 # Game mechanics
-- [ ] Dash
+- [x] Dash
 - [ ] Dying
+- [ ] Health
 
 # Art
 ## Player

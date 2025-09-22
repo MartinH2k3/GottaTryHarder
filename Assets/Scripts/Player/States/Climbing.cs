@@ -3,14 +3,10 @@ using Infrastructure.StateMachine;
 namespace Player.States
 {
 
-public class Climbing: State
+public class Climbing: PlayerState
 {
-    private readonly PlayerController _player;
+    public Climbing(PlayerController p): base(p) { }
 
-    public Climbing(PlayerController player)
-    {
-        _player = player;
-    }
 }
 
 }
