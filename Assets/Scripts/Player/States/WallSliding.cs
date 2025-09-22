@@ -12,12 +12,7 @@ public class WallSliding: PlayerState
 
     public override void Enter()
     {
-        Debug.Log("Entering WallSliding");
         _stickTimer = P.wallStickTime;
-    }
-
-    public override void Exit() {
-        Debug.Log("Exiting WallSliding");
     }
 
     public override void FixedTick() {
