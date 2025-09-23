@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Physics
+namespace MyPhysics
 {
 
 public static class PhysicsMovableExtensions {
@@ -28,6 +28,20 @@ public static class PhysicsMovableExtensions {
     public static void SetVelocity(this IPhysicsMovable movable, float x, float y) {
         if (movable.Rigidbody is not null) {
             movable.Rigidbody.linearVelocity = new Vector2(x, y);
+        }
+    }
+
+    public static void SetVelocityX(this IPhysicsMovable movable, float x) {
+        if (movable.Rigidbody is not null) {
+            var v = movable.Rigidbody.linearVelocity;
+            movable.Rigidbody.linearVelocity = new Vector2(x, v.y);
+        }
+    }
+
+    public static void SetVelocityY(this IPhysicsMovable movable, float y) {
+        if (movable.Rigidbody is not null) {
+            var v = movable.Rigidbody.linearVelocity;
+            movable.Rigidbody.linearVelocity = new Vector2(v.x, y);
         }
     }
 
@@ -59,11 +73,11 @@ public static class PhysicsMovableExtensions {
         float acceleration,
         float direction = 0f,
         bool voluntaryMovement = true) {
-        if (movable.Rigidbody == null) return;
+        if (movable.Rigidbody is null) return;
 
         var v = movable.GetVelocity();
         float diff = targetSpeed - v.x;
-        float force = diff * acceleration * Time.fixedDeltaTime;
+        float force = diff * acceleration;
 
         movable.AddForce(force);
 
@@ -75,7 +89,7 @@ public static class PhysicsMovableExtensions {
         // Flip facing direction if player initiated
         if (voluntaryMovement && Mathf.Abs(targetSpeed) > 0.01f) {
             var t = movable.Rigidbody.transform;
-            t.localScale = new Vector3(Mathf.Sign(direction), 1f, 1f);
+            t.localScale = new Vector3(Mathf.Sign(direction), t.localScale.y, t.localScale.z);
         }
     }
 
@@ -121,6 +135,20 @@ public static class PhysicsMovableExtensions {
         if (movable.Rigidbody is not null) {
             movable.Rigidbody.sleepMode = RigidbodySleepMode2D.NeverSleep;
         }
+    }
+
+    /// <summary> Sets the Rigidbody2D's gravity scale. </summary>
+    public static void SetGravityScale(this IPhysicsMovable movable, float scale) {
+        if (movable.Rigidbody is not null) {
+            movable.Rigidbody.gravityScale = scale;
+        }
+    }
+
+    public static float GetGravityScale(this IPhysicsMovable movable) {
+        if (movable.Rigidbody is not null) {
+            return movable.Rigidbody.gravityScale;
+        }
+        return 0f;
     }
 }
 

@@ -1,25 +1,26 @@
-﻿using Infrastructure.StateMachine;
+﻿using MyPhysics;
+using UnityEngine;
 
 namespace Player.States
 {
-public class Walking: State
+public class Walking: GroundedBase
 {
-    private readonly PlayerController _player;
+    public Walking(PlayerController p): base(p) { }
 
-    public Walking(PlayerController player) {
-        _player = player;
-    }
+    public override void FixedTick() {
+        var intent = P.Intent;
+        if (Mathf.Approximately(intent.Move.x, 0)) return;
 
-    public override FixedTick() {
-        var intent = _player.Intent;
         var horizontalInput = Mathf.Sign(intent.Move.x) * intent.Move.magnitude;
 
         var targetSpeed = horizontalInput *
-                          _player.WalkSpeed *
-                          (intent.Sprint ? _player.SprintMultiplier : 1f) *
-                          _player.WalkSpeedMultiplier;
+                          P.walkSpeed *
+                          (intent.SprintHeld ? P.sprintMultiplier : 1f) *
+                          P.WalkSpeedMultiplier;
 
-        var acceleration = Mathf.Abs(targetSpeed) > 0.01f ? _player.walkAccel : _player.walkDecel;
+        var acceleration = Mathf.Abs(targetSpeed) > 0.01f ? P.walkAccel : P.walkDecel;
+
+        P.AccelerateHorizontally(targetSpeed, acceleration, horizontalInput);
     }
 
 }

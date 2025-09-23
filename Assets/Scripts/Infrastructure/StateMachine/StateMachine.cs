@@ -27,6 +27,17 @@ public class StateMachine
     // To avoid re-entrant transitions within the same Tick
     private bool _isTransitioning;
 
+    public void Initialize(IState initialState)
+    {
+        Current = null;
+        Previous = null;
+        TimeInState = 0f;
+        _isTransitioning = false;
+        _currentTransitions = s_Empty;
+
+        SetState(initialState);
+    }
+
     public void Tick(float deltaTime = 0f)
     {
         TimeInState += deltaTime;
