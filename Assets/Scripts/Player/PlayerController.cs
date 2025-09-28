@@ -1,7 +1,7 @@
 using MyPhysics;
+using Obstacles;
 using Player.States;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using StateMachine = Infrastructure.StateMachine.StateMachine;
@@ -9,7 +9,7 @@ using StateMachine = Infrastructure.StateMachine.StateMachine;
 namespace Player
 {
 
-public class PlayerController: MonoBehaviour, IPhysicsMovable
+public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
 {
     // controls
     public PlayerIntent Intent { get; } = new();
@@ -33,6 +33,7 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     [Header("Health")]
     [SerializeField] private int maxHealthPoints = 100;
     private int _healthPoints;
+    public bool IsDead { get; private set; }
 
     [Header("Movement")]
     [SerializeField] private float moveEps = 0.1f; // deadzone for movement input
@@ -106,7 +107,16 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     public int FacingDirection => transform.localScale.x >= 0 ? 1 : -1;
     public float PlayerHeight => _col.bounds.size.y;
     public float PlayerWidth  => _col.bounds.size.x;
+    //
+    // Health & Combat
+    //
+    public bool IsVulnerable => _vulnerabilityState == VulnerabilityState.Vulnerable;
+    public int HealthPoints { get; set; }
+    [Tooltip("Damage you deal when jumping on some obstacles like in the plumber platformer.")]
+    public int attackDamage = 1;
+    //
     // Movement
+    //
     public bool HorizontalControlLocked => Time.time <= _horizontalControlUnlockTime;
     // Ground check
     public bool IsGrounded =>Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
@@ -294,13 +304,10 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable
     private bool ShouldStopDash => Intent.LastDashPressedTime <= Time.time - dashDuration || // dash ran out;
                                    (FacingDirection > 0 ? TouchingWallRight : TouchingWallLeft);
 
-    public void TakeDamage(int damage) {
-        _healthPoints -= damage;
+    public void Die() {
+
     }
 
-    public void Heal(int health) {
-        _healthPoints += health;
-    }
 }
 
 public enum ControlState { Normal, Stunned, Rooted, Sturdy}
