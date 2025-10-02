@@ -235,15 +235,6 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
             if (prev is Airborne && (curr == _idle || curr == _walking))
                 StartLandingMovementLock();
 
-            if (curr is Airborne) {
-                if (!ShouldStartJump)
-                    LastAirborneEntry = AirborneEntry.FromFall;
-                else if (prev is WallSliding)
-                    LastAirborneEntry = AirborneEntry.FromWallJump;
-                else
-                    LastAirborneEntry = AirborneEntry.FromJump;
-            }
-
             if (debugText)
                 debugText.text = $"State: {_stateMachine.Current?.GetType().Name ?? "None"}\n" +
                                  $"Touching right wall: {TouchingWallRight}\n" +
@@ -257,8 +248,6 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
             Intent.Move = new Vector2(0f, Intent.Move.y);
         Intent.SprintHeld = _sprint.IsPressed();
         _stateMachine.Tick();
-
-        Debug.Log($"Dash pobem: {Intent.LastDashPressedTime}, {Time.time}, {dashDuration}");
     }
 
     private void FixedUpdate() {
@@ -314,6 +303,7 @@ public enum ControlState { Normal, Stunned, Rooted, Sturdy}
 
 public enum VulnerabilityState { Vulnerable, Invulnerable }
 
+// Maybe will be used, but need to figure out a way to detect properly
 public enum AirborneEntry { FromJump, FromFall, FromWallJump }
 
 /// <summary> Abstracts handling player input into the intent of the input to be used by different states. </summary>

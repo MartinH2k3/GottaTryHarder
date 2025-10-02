@@ -1843,7 +1843,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: aa81462483250f64ebc73850763df35c, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1915,7 +1915,11 @@ MonoBehaviour:
   allowSprintInAir: 0
   wallJumpControlLockTime: 0.05
   landingMovementLockTime: 0.05
+  dashSpeed: 10
+  dashDuration: 0.2
+  dashCooldown: 1
   debugText: {fileID: 55258065}
+  attackDamage: 1
 --- !u!50 &1857766297
 Rigidbody2D:
   serializedVersion: 5

@@ -7,10 +7,6 @@ public class Airborne: PlayerState
 {
     public Airborne(PlayerController p) : base(p) { }
 
-    public override void Enter() {
-        if (P.LastAirborneEntry == AirborneEntry.FromFall)
-            P.SetVelocityX(0);
-    }
 
     public override void FixedTick() {
         if (P.ShouldStartJump) Jump();
@@ -20,9 +16,6 @@ public class Airborne: PlayerState
 
         var horizontalInput = Mathf.Sign(intent.Move.x) * intent.Move.magnitude;
 
-        if (P.TouchingWallLeft && horizontalInput < 0 ||
-            P.TouchingWallRight && horizontalInput > 0)
-            horizontalInput = 0f; // No pushing into wall
         var targetSpeed = horizontalInput *
                           P.walkSpeed *
                           (intent.SprintHeld && P.allowSprintInAir ? P.sprintMultiplier : 1f);
