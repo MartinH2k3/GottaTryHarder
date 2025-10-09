@@ -22,6 +22,7 @@ public class SaveData
     public int version = 1;
 
     public List<LevelStats> levels = new List<LevelStats>();
+    private int _currentLevelIndex = 0;
 
     /// <summary>
     /// Get stats for a given level index. If it doesn’t exist yet, expand the list.
@@ -35,5 +36,20 @@ public class SaveData
         return levels[index];
     }
 
+    public int TotalDeaths() {
+        int total = 0;
+        foreach (var level in levels) {
+            total += level.lowestDeaths;
+        }
+        return total;
+    }
+
+    public float BestRunTime() {
+        float total = 0f;
+        foreach (var level in levels) {
+            total += level.bestTimeSeconds;
+        }
+        return total;
+    }
 }
 }
