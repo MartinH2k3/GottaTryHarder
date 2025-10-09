@@ -137,6 +137,7 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
     public void ConsumeAirJump() => _airJumpsLeft--;
     public void ResetAirJumps() => _airJumpsLeft = extraAirJumps;
     // Jump
+    public float LastJumpTime { get; set; } = float.NegativeInfinity;
     public bool HasBufferedJump => _jumpBufferTimer > 0f;
     public bool HasCoyote => _coyoteTimer > 0f;
     public bool JumpOffCooldown => Time.time >= _nextJumpTime;
@@ -159,7 +160,6 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
     public void StartDashCooldown() => _lastDashEndTime = Time.time;
     // Can't slide if grounded, wall regrab locked, not touching wall, not pushing into wall, or going up (as to not cancel jump)
     bool ShouldSlide => !IsGrounded && !WallRegrabLocked && TouchingWall && PressingIntoWall() && this.GetVelocity().y < upwardSpeedThreshold;
-
 
     private void Awake() {
         _inputActions = new InputSystemActions();

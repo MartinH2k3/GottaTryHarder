@@ -38,6 +38,7 @@ public class Airborne: PlayerState
         P.ConsumeBufferedJump();
         P.ResetJumpCooldown();
         P.ConsumeCoyote();
+        P.LastJumpTime = Time.time;
     }
 }
 }
