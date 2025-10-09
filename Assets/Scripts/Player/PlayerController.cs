@@ -1,3 +1,4 @@
+using System;
 using MyPhysics;
 using Obstacles;
 using Player.States;
@@ -150,7 +151,9 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
     // Wall Jump
     public void StartWallRegrabLock() => _wallRegrabUnlockTime = Time.time + wallRegrabLock;
     public bool WallRegrabLocked => Time.time < _wallRegrabUnlockTime;
-    public void StartWallJumpControlLock() => _horizontalControlUnlockTime = Time.time + wallJumpControlLockTime;
+    public void StartWallJumpControlLock(float duration = -1) => _horizontalControlUnlockTime = duration >= 0 ?
+                                                                Time.time + duration:
+                                                                Time.time + wallJumpControlLockTime;
     // wall slide
     // Dash
     public void StartDashCooldown() => _lastDashEndTime = Time.time;

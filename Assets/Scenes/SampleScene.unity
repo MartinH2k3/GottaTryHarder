@@ -1910,10 +1910,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   airSpeed: 3
-  airAccel: 35
-  airDecel: 25
+  airAccel: 10
+  airDecel: 15
   allowSprintInAir: 0
-  wallJumpControlLockTime: 0.05
+  wallJumpControlLockTime: 0.2
   landingMovementLockTime: 0.05
   dashSpeed: 10
   dashDuration: 0.2
