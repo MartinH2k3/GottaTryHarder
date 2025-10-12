@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d1514134bc4fbd41bb739b1b9a49231, type: 3}
   m_Name: PillarTile
   m_EditorClassIdentifier: 
-  m_DefaultSprite: {fileID: -266107684, guid: 22c7a7278919afe4f9dae2980148d74f, type: 3}
+  m_DefaultSprite: {fileID: -7706604882039270271, guid: 59457762dd9303c4b9167b6bf986c951, type: 3}
   m_DefaultGameObject: {fileID: 1392061393772906666, guid: f8da62d129e11334f93042cb9608bf17, type: 3}
   m_DefaultColliderType: 1
   m_TilingRules:
