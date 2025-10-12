@@ -103,6 +103,9 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI debugText;
 
+    [Header("Misc")]
+    public Animator animator;
+
     // Helpers for states
     // Transform
     public int FacingDirection => transform.localScale.x >= 0 ? 1 : -1;
@@ -120,15 +123,17 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
     //
     public bool HorizontalControlLocked => Time.time <= _horizontalControlUnlockTime;
     // Ground check
-    public bool IsGrounded =>Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+    public bool IsGrounded =>Physics2D.OverlapCircle(
+        new Vector2(transform.position.x, transform.position.y - PlayerHeight/2),
+        groundCheckRadius, groundLayer);
     // Wall check
     public bool TouchingWallLeft => Physics2D.OverlapArea(
-        (Vector2)transform.position + new Vector2(-PlayerWidth/2, -PlayerHeight/2),
-        (Vector2)transform.position + new Vector2(-PlayerWidth/2-0.01f, PlayerHeight/2),
+        (Vector2)transform.position + new Vector2(-PlayerWidth/2, -(PlayerHeight - 0.05f)/2),
+        (Vector2)transform.position + new Vector2(-PlayerWidth/2-0.01f, (PlayerHeight - 0.05f)/2),
         wallLayer);
     public bool TouchingWallRight => Physics2D.OverlapArea(
-        (Vector2)transform.position + new Vector2(PlayerWidth/2, -PlayerHeight/2),
-        (Vector2)transform.position + new Vector2(PlayerWidth/2+0.01f, PlayerHeight/2),
+        (Vector2)transform.position + new Vector2(PlayerWidth/2, -(PlayerHeight - 0.05f)/2),
+        (Vector2)transform.position + new Vector2(PlayerWidth/2+0.01f, (PlayerHeight - 0.05f)/2),
         wallLayer);
     public bool TouchingWall => TouchingWallLeft || TouchingWallRight;
     public int WallDir => TouchingWallLeft ? -1 : (TouchingWallRight ? 1 : 0);

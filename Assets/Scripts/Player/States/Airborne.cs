@@ -28,6 +28,8 @@ public class Airborne: PlayerState
         if (!P.CanSingleJump && !P.CanAirJump)
             return;
 
+        P.animator.SetTrigger("Jump");
+        Debug.Log("Jump");
         if (!P.CanSingleJump && P.CanAirJump)
             P.ConsumeAirJump();
 

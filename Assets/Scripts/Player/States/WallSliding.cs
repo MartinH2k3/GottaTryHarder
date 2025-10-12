@@ -13,6 +13,12 @@ public class WallSliding: PlayerState
     public override void Enter()
     {
         _stickTimer = P.wallStickTime;
+        P.animator.SetBool("WallSliding", true);
+    }
+
+    public override void Exit() {
+        base.Exit();
+        P.animator.SetBool("WallSliding", false);
     }
 
     public override void FixedTick() {
@@ -40,6 +46,7 @@ public class WallSliding: PlayerState
     }
 
     private void WallJump() {
+        P.animator.SetTrigger("Jump");
         P.SetVelocity(Vector2.zero);
         P.AddForce(-P.WallDir * P.wallJumpXStrength, P.wallJumpYStrength, ForceMode2D.Impulse);
 

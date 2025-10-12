@@ -7,6 +7,11 @@ public class Idle: GroundedBase
 {
     public Idle(PlayerController p) : base(p) { }
 
+    public override void Enter() {
+        base.Enter();
+        P.animator.SetTrigger("Idle");
+    }
+
     public override void FixedTick() {
         var v = P.GetVelocity();
         if (Mathf.Approximately(v.x, 0f)) {
