@@ -28,9 +28,6 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     private Dashing _dashing;
     private Attacking _attacking;
 
-    // state helpers
-    public AirborneEntry LastAirborneEntry { get; private set; }
-
     [Header("References")] [SerializeField]
     protected Rigidbody2D rb;
 
@@ -170,6 +167,7 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     public float jumpKickTime = 0.5f; // time window after jumping to do a jump kick
     public float jumpKickDamageMultiplier = 1.25f; // attack damage * this
     public float attackRange = 0.5f;
+    public float attackKnockback = 2f;
     public LayerMask attackableLayer;
     public float attackRate = 2f; // attacks per second
     private float _nextAttackTime = 0f;
