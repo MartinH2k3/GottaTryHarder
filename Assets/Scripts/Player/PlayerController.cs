@@ -10,60 +10,82 @@ using StateMachine = Infrastructure.StateMachine.StateMachine;
 namespace Player
 {
 
-public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
+public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 {
     // controls
     public PlayerIntent Intent { get; } = new();
     private InputSystemActions _inputActions;
-    private InputAction _move, _sprint, _jump, _dash, _interact;
+    private InputAction _move, _sprint, _jump, _dash, _interact, _attack;
 
     // states
     private StateMachine _stateMachine;
     private ControlState _controlState = ControlState.Normal;
     private VulnerabilityState _vulnerabilityState = VulnerabilityState.Vulnerable;
-    private Idle _idle; private Walking _walking; private Airborne _airborne; private WallSliding _wallSliding; private Dashing _dashing; private Attacking _attacking;
+    private Idle _idle;
+    private Walking _walking;
+    private Airborne _airborne;
+    private WallSliding _wallSliding;
+    private Dashing _dashing;
+    private Attacking _attacking;
 
     // state helpers
     public AirborneEntry LastAirborneEntry { get; private set; }
 
-    [Header("References")]
-    [SerializeField] protected Rigidbody2D rb;
+    [Header("References")] [SerializeField]
+    protected Rigidbody2D rb;
+
     public Rigidbody2D Rigidbody => rb;
     private Collider2D _col;
 
-    [Header("Health")]
-    [SerializeField] private int maxHealthPoints = 100;
+    [Header("Health")] [SerializeField] private int maxHealthPoints = 100;
     private int _healthPoints;
     public bool IsDead { get; private set; }
     public bool IsVulnerable => _vulnerabilityState == VulnerabilityState.Vulnerable;
     public int HealthPoints { get; set; }
 
-    [Header("Movement")]
-    [SerializeField] private float moveEps = 0.1f; // deadzone for movement input
+    [Header("Movement")] [SerializeField] private float moveEps = 0.1f; // deadzone for movement input
     public float walkSpeed = 3f;
     public float sprintMultiplier = 1.3f; // holding sprint button
     public float WalkSpeedMultiplier { get; set; } = 1f; // outside factors && effects
     public float walkAccel = 50f; // rates at which you reach walkSpeed
     public float walkDecel = 70f;
 
-    [Header("Ground contact")]
-    [SerializeField] private LayerMask groundLayer;
+    [Header("Ground contact")] [SerializeField]
+    private LayerMask groundLayer;
+
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundCheckRadius = 0.1f;
-    public bool IsGrounded =>Physics2D.OverlapCircle(
-        new Vector2(transform.position.x, transform.position.y - PlayerHeight/2),
+
+    public bool IsGrounded => Physics2D.OverlapCircle(
+        new Vector2(transform.position.x, transform.position.y - PlayerHeight / 2),
         groundCheckRadius, groundLayer);
 
-    [Header("Wall contact")]
-    [SerializeField] private LayerMask wallLayer;
-    public bool TouchingWallLeft => Physics2D.OverlapArea(
-        (Vector2)transform.position + new Vector2(-PlayerWidth/2, -(PlayerHeight - 0.05f)/2),
-        (Vector2)transform.position + new Vector2(-PlayerWidth/2-0.01f, (PlayerHeight - 0.05f)/2),
-        wallLayer);
-    public bool TouchingWallRight => Physics2D.OverlapArea(
-        (Vector2)transform.position + new Vector2(PlayerWidth/2, -(PlayerHeight - 0.05f)/2),
-        (Vector2)transform.position + new Vector2(PlayerWidth/2+0.01f, (PlayerHeight - 0.05f)/2),
-        wallLayer);
+    [Header("Wall contact")] [SerializeField]
+    private LayerMask wallLayer;
+
+    [Tooltip("Check if majority of player is touching the wall")]
+    [SerializeField] private int contactPoints = 5;
+    [SerializeField] private float contactRatio = 0.6f;
+    [SerializeField] private float wallCheckRadius = 0.02f;
+    private bool _touchingSide(int direction) {
+        int touchingCount = 0;
+
+        float x = direction * PlayerWidth / 2f;
+        for (int i = 0; i < contactPoints; i++) {
+            if (Physics2D.OverlapCircle(
+                    (Vector2)transform.position +
+                    new Vector2(x,
+                        -PlayerHeight / 2f + i / (Mathf.Max(contactPoints - 1f, 1f)) * PlayerHeight),
+                    wallCheckRadius,
+                    wallLayer
+                )
+               ) touchingCount++;
+        }
+        return touchingCount >= contactPoints * contactRatio;
+    }
+
+    public bool TouchingWallLeft => _touchingSide(-1);
+    public bool TouchingWallRight => _touchingSide(1);
     public bool TouchingWall => TouchingWallLeft || TouchingWallRight;
     public int WallDir => TouchingWallLeft ? -1 : (TouchingWallRight ? 1 : 0);
 
@@ -96,6 +118,7 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
     public bool CanSingleJump => IsGrounded || HasCoyote; // As in no need to spend double/triple/... jump
     public bool CanJump => JumpOffCooldown && (CanSingleJump || CanAirJump);
     public bool ShouldStartJump => HasBufferedJump && CanJump;
+    public bool ShouldStopJump => IsGrounded && Intent.LastJumpPressedTime < Time.time - 0.1f; // small delay to avoid cutting jump due to ground contact detection issues
     public void ResetJumpCooldown() => _nextJumpTime = Time.time + jumpTimeout;
     public void ConsumeBufferedJump() => _jumpBufferTimer = 0f;
     public void ResetCoyote() => _coyoteTimer = coyoteTimeWindow;
@@ -127,13 +150,6 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
     public float airDecel = 25f;
     public bool  allowSprintInAir = false;
 
-    [Header("Horizontal lock")]
-    [Tooltip("Time after wall jump before being able to control horizontal movement.")]
-    [SerializeField] private float wallJumpControlLockTime = 0.05f;
-    [Tooltip("Time after landing where horizontal movement is locked so it's easier to land on tight spaces.")]
-    [SerializeField] private float landingMovementLockTime = 0.05f;
-    private float _horizontalControlUnlockTime = 0f;
-    public bool HorizontalControlLocked => Time.time <= _horizontalControlUnlockTime;
 
     [Header("Dashing")]
     public float dashSpeed = 10f;
@@ -141,6 +157,12 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
     public float dashCooldown = 1f;
     private float _lastDashEndTime = float.NegativeInfinity;
     public void StartDashCooldown() => _lastDashEndTime = Time.time;
+
+    private bool ShouldStartDash => Intent.DashPressed &&
+                                    Time.time >= _lastDashEndTime + dashCooldown;
+    private bool ShouldStopDash => Intent.LastDashPressedTime <= Time.time - dashDuration || // dash ran out;
+                                   (FacingDirection > 0 ? TouchingWallRight : TouchingWallLeft);
+
 
     [Header("Attack")]
     public float attackComboTime = 1f; // time window after attack to do another one
@@ -153,17 +175,16 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
     private float _nextAttackTime = 0f;
 
     public int ComboStep { get; private set; } = 0;
-    public void RegisterAttack()
-    {
-        if (Time.time <= _lastAttackTime + attackComboTime)
-            ComboStep++;
-        else
-            ComboStep = 1;
+    public bool ShouldAttack => Intent.AttackPressed && Time.time >= _nextAttackTime;
 
-        _lastAttackTime = Time.time;
-        _nextAttackTime = Time.time + 1f / attackRate;
-    }
-    public bool CanAttack => Time.time >= _nextAttackTime;
+
+    [Header("Horizontal lock")]
+    [Tooltip("Time after wall jump before being able to control horizontal movement.")]
+    [SerializeField] private float wallJumpControlLockTime = 0.05f;
+    [Tooltip("Time after landing where horizontal movement is locked so it's easier to land on tight spaces.")]
+    [SerializeField] private float landingMovementLockTime = 0.05f;
+    private float _horizontalControlUnlockTime = 0f;
+    public bool HorizontalControlLocked => Time.time <= _horizontalControlUnlockTime;
 
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI debugText;
@@ -191,9 +212,11 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
         _jump = p.Jump; _jump.Enable();
         _dash = p.Dash; _dash.Enable();
         _interact = p.Interact; _interact.Enable();
+        _attack = p.Attack; _attack.Enable();
 
         _jump.performed += OnJumpPerformed;
         _dash.performed += OnDashPerformed;
+        _attack.performed += context => Intent.AttackPressed = true;
         _interact.performed += context => Intent.InteractPressed = true;
     }
 
@@ -204,6 +227,7 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
         _jump.Disable();
         _dash.Disable();
         _interact.Disable();
+        _attack.Disable();
 
         _jump.performed -= OnJumpPerformed;
         _dash.performed -= OnDashPerformed;
@@ -243,11 +267,16 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
         _stateMachine.AddTransition(_airborne, _wallSliding, () => ShouldSlide, 3);
 
         // Default Airborne exits
-        _stateMachine.AddExitTransition(_airborne, () => IsGrounded);
+        _stateMachine.AddExitTransition(_airborne, () => ShouldStopJump);
 
         // Exiting WallSliding
         _stateMachine.AddExitTransition(_wallSliding, () => !ShouldSlide);
 
+        // Attack
+        _stateMachine.AddAnyTransition(_attacking, () => ShouldAttack);
+        _stateMachine.AddExitTransition(_attacking, () => _attacking.IsAttackFinished);
+
+        // Dashing
         _stateMachine.AddAnyTransition(_dashing, () => ShouldStartDash);
         _stateMachine.AddExitTransition(_dashing, () => ShouldStopDash);
 
@@ -305,17 +334,6 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
         Intent.LastDashPressedTime = Time.time;
     }
 
-    public bool PressingIntoWall() {
-        // Either pressing into wall or being really close to it counts
-        float x = Intent.Move.x;
-        return (!Mathf.Approximately(x, 0) && ((TouchingWallLeft && x < 0) || (TouchingWallRight && x > 0)));
-    }
-
-    private bool ShouldStartDash => Intent.DashPressed &&
-                                    Time.time >= _lastDashEndTime + dashCooldown;
-    private bool ShouldStopDash => Intent.LastDashPressedTime <= Time.time - dashDuration || // dash ran out;
-                                   (FacingDirection > 0 ? TouchingWallRight : TouchingWallLeft);
-
     public void Die() {
 
     }
@@ -340,6 +358,7 @@ public sealed class PlayerIntent
     public bool JumpPressed;
     public bool DashPressed;
     public bool InteractPressed;
+    public bool AttackPressed;
 
     // Buffered press timestamps (for smoother experience)
     public float LastJumpPressedTime = float.NegativeInfinity;
@@ -347,7 +366,7 @@ public sealed class PlayerIntent
 
     public void ClearFrameFlags()
     {
-        JumpPressed = DashPressed = InteractPressed = false;
+        JumpPressed = DashPressed = InteractPressed = AttackPressed = false;
     }
 }
 }

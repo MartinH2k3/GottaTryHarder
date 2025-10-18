@@ -7,6 +7,11 @@ public class Airborne: PlayerState
 {
     public Airborne(PlayerController p) : base(p) { }
 
+    public override void Enter() {
+        base.Enter();
+        if (P.Intent.LastJumpPressedTime <= Time.time - 0.3f)
+            P.animator.SetTrigger("Fall");
+    }
 
     public override void FixedTick() {
         if (P.ShouldStartJump) Jump();
@@ -29,7 +34,6 @@ public class Airborne: PlayerState
             return;
 
         P.animator.SetTrigger("Jump");
-        Debug.Log("Jump");
         if (!P.CanSingleJump && P.CanAirJump)
             P.ConsumeAirJump();
 
