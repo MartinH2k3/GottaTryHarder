@@ -2,7 +2,7 @@
 
 namespace Player.States
 {
-public abstract class PlayerState: State
+public abstract class PlayerState: EmptyState
 {
     protected readonly PlayerController P;
 

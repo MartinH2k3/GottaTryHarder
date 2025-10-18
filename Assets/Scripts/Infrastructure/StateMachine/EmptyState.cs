@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.StateMachine
 {
-public abstract class State: IState
+public abstract class EmptyState: IState
 {
     public virtual void Enter() {
 
