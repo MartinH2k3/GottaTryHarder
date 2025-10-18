@@ -5,14 +5,12 @@ namespace Player.States
 {
 public class WallSliding: PlayerState
 {
-    private float _stickTimer;
 
     public WallSliding(PlayerController p): base(p) { }
 
 
     public override void Enter()
     {
-        _stickTimer = P.wallStickTime;
         P.animator.SetBool("WallSliding", true);
     }
 
@@ -41,8 +39,20 @@ public class WallSliding: PlayerState
             return;
         }
 
-        if (P.PressingIntoWall()) _stickTimer = P.wallStickTime;
-        else _stickTimer -= Time.fixedDeltaTime;
+        var intent = P.Intent;
+        // if moving towards the wall, do nothing
+        if (P.WallDir * intent.Move.x >= 0f)
+            return;
+
+        // Go away from the wall
+        var horizontalInput = Mathf.Sign(intent.Move.x) * intent.Move.magnitude;
+
+        var targetSpeed = horizontalInput *
+                          P.walkSpeed *
+                          (intent.SprintHeld && P.allowSprintInAir ? P.sprintMultiplier : 1f);
+        var acceleration = Mathf.Abs(targetSpeed) > 0.01f ? P.airAccel : P.airDecel;
+
+        P.AccelerateHorizontally(targetSpeed, acceleration, horizontalInput);
     }
 
     private void WallJump() {
@@ -57,7 +67,5 @@ public class WallSliding: PlayerState
         P.StartWallJumpControlLock();
     }
 
-    // Helper for transitions to check if still “sticky”
-    public bool StickActive => _stickTimer > 0f;
 }
 }

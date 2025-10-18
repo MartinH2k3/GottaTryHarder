@@ -21,7 +21,7 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
     private StateMachine _stateMachine;
     private ControlState _controlState = ControlState.Normal;
     private VulnerabilityState _vulnerabilityState = VulnerabilityState.Vulnerable;
-    private Idle _idle; private Walking _walking; private Airborne _airborne; private WallSliding _wallSliding; private Dashing _dashing;
+    private Idle _idle; private Walking _walking; private Airborne _airborne; private WallSliding _wallSliding; private Dashing _dashing; private Attacking _attacking;
 
     // state helpers
     public AirborneEntry LastAirborneEntry { get; private set; }
@@ -45,6 +45,27 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
     public float WalkSpeedMultiplier { get; set; } = 1f; // outside factors && effects
     public float walkAccel = 50f; // rates at which you reach walkSpeed
     public float walkDecel = 70f;
+
+    [Header("Ground contact")]
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private float groundCheckRadius = 0.1f;
+    public bool IsGrounded =>Physics2D.OverlapCircle(
+        new Vector2(transform.position.x, transform.position.y - PlayerHeight/2),
+        groundCheckRadius, groundLayer);
+
+    [Header("Wall contact")]
+    [SerializeField] private LayerMask wallLayer;
+    public bool TouchingWallLeft => Physics2D.OverlapArea(
+        (Vector2)transform.position + new Vector2(-PlayerWidth/2, -(PlayerHeight - 0.05f)/2),
+        (Vector2)transform.position + new Vector2(-PlayerWidth/2-0.01f, (PlayerHeight - 0.05f)/2),
+        wallLayer);
+    public bool TouchingWallRight => Physics2D.OverlapArea(
+        (Vector2)transform.position + new Vector2(PlayerWidth/2, -(PlayerHeight - 0.05f)/2),
+        (Vector2)transform.position + new Vector2(PlayerWidth/2+0.01f, (PlayerHeight - 0.05f)/2),
+        wallLayer);
+    public bool TouchingWall => TouchingWallLeft || TouchingWallRight;
+    public int WallDir => TouchingWallLeft ? -1 : (TouchingWallRight ? 1 : 0);
 
     [Header("Jump")]
     public float jumpStrength = 5f;
@@ -86,7 +107,7 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
     public float wallSlideAccelX = 20f; // horizontal acceleration toward 0 while sliding
     public float wallStickTime = 0.25f; // time to stick to wall after stopping pushing into it before going airborne
     [SerializeField] private float upwardSpeedThreshold = 0.1f; // if going up faster than this, player wants to jump, so don't start sliding
-    bool ShouldSlide => !IsGrounded && !WallRegrabLocked && TouchingWall && PressingIntoWall() && this.GetVelocity().y < upwardSpeedThreshold;
+    bool ShouldSlide => !IsGrounded && !WallRegrabLocked && TouchingWall && this.GetVelocity().y < upwardSpeedThreshold;
 
 
     [Header("Wall Jump")]
@@ -99,27 +120,6 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
     public bool WallRegrabLocked => Time.time < _wallRegrabUnlockTime;
     public void StartWallJumpControlLock(float duration = -1) => _horizontalControlUnlockTime = duration >= 0 ?
         Time.time + duration: Time.time + wallJumpControlLockTime;
-
-    [Header("Ground contact")]
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private float groundCheckRadius = 0.1f;
-    public bool IsGrounded =>Physics2D.OverlapCircle(
-        new Vector2(transform.position.x, transform.position.y - PlayerHeight/2),
-        groundCheckRadius, groundLayer);
-
-    [Header("Wall contact")]
-    [SerializeField] private LayerMask wallLayer;
-    public bool TouchingWallLeft => Physics2D.OverlapArea(
-        (Vector2)transform.position + new Vector2(-PlayerWidth/2, -(PlayerHeight - 0.05f)/2),
-        (Vector2)transform.position + new Vector2(-PlayerWidth/2-0.01f, (PlayerHeight - 0.05f)/2),
-        wallLayer);
-    public bool TouchingWallRight => Physics2D.OverlapArea(
-        (Vector2)transform.position + new Vector2(PlayerWidth/2, -(PlayerHeight - 0.05f)/2),
-        (Vector2)transform.position + new Vector2(PlayerWidth/2+0.01f, (PlayerHeight - 0.05f)/2),
-        wallLayer);
-    public bool TouchingWall => TouchingWallLeft || TouchingWallRight;
-    public int WallDir => TouchingWallLeft ? -1 : (TouchingWallRight ? 1 : 0);
 
     [Header("Air Control")]
     public float airSpeed = 3.0f; // horizontal
@@ -151,6 +151,19 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
     public LayerMask attackableLayer;
     public float attackRate = 2f; // attacks per second
     private float _nextAttackTime = 0f;
+
+    public int ComboStep { get; private set; } = 0;
+    public void RegisterAttack()
+    {
+        if (Time.time <= _lastAttackTime + attackComboTime)
+            ComboStep++;
+        else
+            ComboStep = 1;
+
+        _lastAttackTime = Time.time;
+        _nextAttackTime = Time.time + 1f / attackRate;
+    }
+    public bool CanAttack => Time.time >= _nextAttackTime;
 
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI debugText;
@@ -203,6 +216,7 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
         _airborne = new Airborne(this);
         _wallSliding = new WallSliding(this);
         _dashing = new Dashing(this);
+        _attacking = new Attacking(this);
 
         _stateMachine.Initialize(_idle);
 
@@ -223,7 +237,7 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
 
         // -> Airborne: Falling
         _stateMachine.AddTransition(_idle, _airborne, () => !IsGrounded, priority: 1);
-        _stateMachine.AddTransition(_walking, _airborne, () => !IsGrounded, priority: 1);
+        _stateMachine.AddTransition(_walking, _airborne, () => !IsGrounded, priority: 10);
 
         // Airborne -> WallSliding: Touching wall and pushing into it
         _stateMachine.AddTransition(_airborne, _wallSliding, () => ShouldSlide, 3);
@@ -231,10 +245,8 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
         // Default Airborne exits
         _stateMachine.AddExitTransition(_airborne, () => IsGrounded);
 
-        // WallSliding -> Airborne: Unsticking from wall when: not touching wall | jumping (to not cancel jump) |
-        _stateMachine.AddTransition(_wallSliding, _airborne, () => !ShouldSlide && !_wallSliding.StickActive);
-        // WallSliding -> Idle: Landing
-        _stateMachine.AddExitTransition(_wallSliding, () => IsGrounded);
+        // Exiting WallSliding
+        _stateMachine.AddExitTransition(_wallSliding, () => !ShouldSlide);
 
         _stateMachine.AddAnyTransition(_dashing, () => ShouldStartDash);
         _stateMachine.AddExitTransition(_dashing, () => ShouldStopDash);
@@ -294,8 +306,9 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
     }
 
     public bool PressingIntoWall() {
+        // Either pressing into wall or being really close to it counts
         float x = Intent.Move.x;
-        return !Mathf.Approximately(x, 0) && ((TouchingWallLeft && x < 0) || (TouchingWallRight && x > 0));
+        return (!Mathf.Approximately(x, 0) && ((TouchingWallLeft && x < 0) || (TouchingWallRight && x > 0)));
     }
 
     private bool ShouldStartDash => Intent.DashPressed &&
