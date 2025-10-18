@@ -206,34 +206,38 @@ public class PlayerController: MonoBehaviour, IPhysicsMovable, IDamageable
 
         _stateMachine.Initialize(_idle);
 
+        // Starting transitions
+        _stateMachine.AddStartTransition(_idle, () => IsGrounded);
+        _stateMachine.AddStartTransition(_wallSliding, () => ShouldSlide, priority: 2);
+        _stateMachine.AddStartTransition(_airborne, () => !IsGrounded, priority: 1);
+
         // Walking <-> Idle
         _stateMachine.AddTransition(_idle, _walking,
             () => Intent.Move.sqrMagnitude > moveEps * moveEps);
         _stateMachine.AddTransition(_walking, _idle,
             () => Intent.Move.sqrMagnitude <= moveEps * moveEps);
 
-        // -> Airborne: Jumping
-        _stateMachine.AddTransition(_idle, _airborne, () => ShouldStartJump, priority: 100);
-        _stateMachine.AddTransition(_walking, _airborne, () => ShouldStartJump, priority: 100);
+        // -> Airborne: Jumping -- Higher priority than falling in case it happens on same frame
+        _stateMachine.AddTransition(_idle, _airborne, () => ShouldStartJump, priority: 2);
+        _stateMachine.AddTransition(_walking, _airborne, () => ShouldStartJump, priority: 2);
 
         // -> Airborne: Falling
-        _stateMachine.AddTransition(_idle, _airborne, () => !IsGrounded, priority: 100);
-        _stateMachine.AddTransition(_walking, _airborne, () => !IsGrounded, priority: 100);
+        _stateMachine.AddTransition(_idle, _airborne, () => !IsGrounded, priority: 1);
+        _stateMachine.AddTransition(_walking, _airborne, () => !IsGrounded, priority: 1);
 
         // Airborne -> WallSliding: Touching wall and pushing into it
-        _stateMachine.AddTransition(_airborne, _wallSliding, () => ShouldSlide, 500);
+        _stateMachine.AddTransition(_airborne, _wallSliding, () => ShouldSlide, 3);
 
-        // Airborne -> Grounded: Landing
-        _stateMachine.AddTransition(_airborne, _idle, () => IsGrounded);
+        // Default Airborne exits
+        _stateMachine.AddExitTransition(_airborne, () => IsGrounded);
 
         // WallSliding -> Airborne: Unsticking from wall when: not touching wall | jumping (to not cancel jump) |
         _stateMachine.AddTransition(_wallSliding, _airborne, () => !ShouldSlide && !_wallSliding.StickActive);
         // WallSliding -> Idle: Landing
-        _stateMachine.AddTransition(_wallSliding, _idle, () => IsGrounded);
+        _stateMachine.AddExitTransition(_wallSliding, () => IsGrounded);
 
         _stateMachine.AddAnyTransition(_dashing, () => ShouldStartDash);
-
-        _stateMachine.AddTransition(_dashing, _airborne, () => ShouldStopDash);
+        _stateMachine.AddExitTransition(_dashing, () => ShouldStopDash);
 
         // Stuff to do on state changes
         _stateMachine.StateChanged += (prev, curr) =>

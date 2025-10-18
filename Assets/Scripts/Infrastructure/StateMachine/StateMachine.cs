@@ -27,6 +27,9 @@ public class StateMachine
     // To avoid re-entrant transitions within the same Tick
     private bool _isTransitioning;
 
+    // Single shared instance for no active state
+    private readonly IState _voidState = new VoidState();
+
     public void Initialize(IState initialState)
     {
         Current = null;
@@ -45,6 +48,14 @@ public class StateMachine
         var transition = SelectTransition();
         if (transition != null)
             SetState(transition.To);
+
+        // if current state is VoidState, evaluate one more transition in this tick
+        if (Current is VoidState)
+        {
+            transition = SelectTransition();
+            if (transition != null)
+                SetState(transition.To);
+        }
 
         // do whatever the state does on tick
         Current?.Tick();
@@ -159,6 +170,16 @@ public class StateMachine
         _any.Sort(Transition.CompareByPriorityDesc);
     }
 
+    public void AddStartTransition(IState to, Func<bool> condition, int priority = 0)
+    {
+        AddTransition(_voidState, to, condition, priority);
+    }
+
+    public void AddExitTransition(IState from, Func<bool> condition, int priority = 0)
+    {
+        AddTransition(from, _voidState, condition, priority);
+    }
+
     private sealed class Transition
     {
         public readonly IState To;
@@ -175,5 +196,7 @@ public class StateMachine
         public static int CompareByPriorityDesc(Transition a, Transition b) =>
             b.Priority.CompareTo(a.Priority);
     }
+
+    private sealed class VoidState : EmptyState {}
 }
 }
