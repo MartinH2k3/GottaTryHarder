@@ -164,15 +164,21 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     [Header("Attack")]
     public float attackComboTime = 1f; // time window after attack to do another one
     private float _lastAttackTime = float.NegativeInfinity;
-    public float jumpKickTime = 0.5f; // time window after jumping to do a jump kick
+    public float jumpKickTime = 0.25f; // time window after jumping to do a jump kick
     public float jumpKickDamageMultiplier = 1.25f; // attack damage * this
+    public int attackDamage = 10;
     public float attackRange = 0.5f;
+    public float attackHeight = 0.2f;
     public float attackKnockback = 2f;
     public LayerMask attackableLayer;
     public float attackRate = 2f; // attacks per second
     private float _nextAttackTime = 0f;
 
+    public bool JumpKickUnlocked { get; private set; } = false;
+    public bool ComboUnlocked { get; private set; } = false;
     public int ComboStep { get; private set; } = 0;
+    public void ResetCombo() => ComboStep = 0;
+    public void AdvanceCombo() => ComboStep = (ComboStep + 1) % 4;
     public bool ShouldAttack => Intent.AttackPressed && Time.time >= _nextAttackTime;
 
 
@@ -334,6 +340,10 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 
     public void Die() {
 
+    }
+
+    public void UpdateStats(int deathCount) {
+        // TODO unlock combos, double jump, etc based on deathCount
     }
 
 }
