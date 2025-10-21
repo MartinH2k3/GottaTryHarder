@@ -1,8 +1,10 @@
 ﻿namespace Player.Stats
 {
 [System.Serializable]
-public class AttackStats
+public class CombatStats
 {
+    public int maxHealthPoints = 100;
+
     public float attackComboTime = 1f; // time window after attack to do another one
     public float jumpKickTime = 0.25f; // time window after jumping to do a jump kick
     public float jumpKickDamageMultiplier = 1.25f; // attack damage * this

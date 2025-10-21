@@ -1,11 +1,16 @@
 ﻿using MyPhysics;
+using Player.Stats;
 using UnityEngine;
 
 namespace Player.States
 {
 public class Airborne: PlayerState
 {
-    public Airborne(PlayerController p) : base(p) { }
+    private JumpStats _stats;
+
+    public Airborne(PlayerController p) : base(p) {
+        _stats = P.jumpStats;
+    }
 
     public override void Enter() {
         base.Enter();
@@ -23,8 +28,8 @@ public class Airborne: PlayerState
 
         var targetSpeed = horizontalInput *
                           P.walkSpeed *
-                          (intent.SprintHeld && P.allowSprintInAir ? P.sprintMultiplier : 1f);
-        var acceleration = Mathf.Abs(targetSpeed) > 0.01f ? P.airAccel : P.airDecel;
+                          (intent.SprintHeld && _stats.allowSprintInAir ? P.sprintMultiplier : 1f);
+        var acceleration = Mathf.Abs(targetSpeed) > 0.01f ? _stats.airAccel : _stats.airDecel;
 
         P.AccelerateHorizontally(targetSpeed, acceleration, horizontalInput);
     }
@@ -40,7 +45,7 @@ public class Airborne: PlayerState
         if (P.GetVelocity().y < 0f)
             P.SetVelocityY(0f); // Jumping stops falling
 
-        P.AddForce(Vector2.up * P.jumpStrength, ForceMode2D.Impulse);
+        P.AddForce(Vector2.up * _stats.jumpStrength, ForceMode2D.Impulse);
         P.ConsumeBufferedJump();
         P.ResetJumpCooldown();
         P.ConsumeCoyote();

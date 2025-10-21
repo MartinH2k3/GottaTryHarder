@@ -35,12 +35,6 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     public Rigidbody2D Rigidbody => rb;
     private Collider2D _col;
 
-    [Header("Health")] [SerializeField] private int maxHealthPoints = 100;
-    private int _healthPoints;
-    public bool IsDead { get; private set; }
-    public bool IsVulnerable => _vulnerabilityState == VulnerabilityState.Vulnerable;
-    public int HealthPoints { get; set; }
-
     [Header("Movement")] [SerializeField] private float moveEps = 0.1f; // deadzone for movement input
     public float walkSpeed = 3f;
     public float sprintMultiplier = 1.3f; // holding sprint button
@@ -48,38 +42,31 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     public float walkAccel = 50f; // rates at which you reach walkSpeed
     public float walkDecel = 70f;
 
-    [Header("Ground contact")] [SerializeField]
-    private LayerMask groundLayer;
+    [Header("Contact/Collision")]
+    private ContactStats _contactStats;
 
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private float groundCheckRadius = 0.1f;
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private LayerMask wallLayer;
 
     public bool IsGrounded => Physics2D.OverlapCircle(
         new Vector2(transform.position.x, transform.position.y - PlayerHeight / 2),
-        groundCheckRadius, groundLayer);
+        _contactStats.groundCheckRadius, groundLayer);
 
-    [Header("Wall contact")] [SerializeField]
-    private LayerMask wallLayer;
-
-    [Tooltip("Check if majority of player is touching the wall")]
-    [SerializeField] private int contactPoints = 5;
-    [SerializeField] private float contactRatio = 0.6f;
-    [SerializeField] private float wallCheckRadius = 0.02f;
     private bool _touchingSide(int direction) {
         int touchingCount = 0;
 
         float x = direction * PlayerWidth / 2f;
-        for (int i = 0; i < contactPoints; i++) {
+        for (int i = 0; i < _contactStats.contactPoints; i++) {
             if (Physics2D.OverlapCircle(
                     (Vector2)transform.position +
                     new Vector2(x,
-                        -PlayerHeight / 2f + i / (Mathf.Max(contactPoints - 1f, 1f)) * PlayerHeight),
-                    wallCheckRadius,
+                        -PlayerHeight / 2f + i / (Mathf.Max(_contactStats.contactPoints - 1f, 1f)) * PlayerHeight),
+                    _contactStats.wallCheckRadius,
                     wallLayer
                 )
                ) touchingCount++;
         }
-        return touchingCount >= contactPoints * contactRatio;
+        return touchingCount >= _contactStats.contactPoints * _contactStats.contactRatio;
     }
 
     public bool TouchingWallLeft => _touchingSide(-1);
@@ -88,82 +75,62 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     public int WallDir => TouchingWallLeft ? -1 : (TouchingWallRight ? 1 : 0);
 
     [Header("Jump")]
-    public float jumpStrength = 5f;
-    [SerializeField] private float jumpTimeout = 0.3f;
+    public JumpStats jumpStats;
     private float _nextJumpTime;
-
     public bool JumpOffCooldown => Time.time >= _nextJumpTime;
     public float LastJumpTime { get; set; } = float.NegativeInfinity;
 
-
-    [Tooltip("Time AFTER leaving ground where jump is still allowed.")]
-    [SerializeField] private float coyoteTimeWindow = 0.1f;
     private float _coyoteTimer;
     public bool HasCoyote => _coyoteTimer > 0f;
 
-    [Tooltip("Time BEFORE getting on ground where jump is still allowed.")]
-    [SerializeField] private float jumpBufferWindow = 0.1f;
     private float _jumpBufferTimer;
     public bool HasBufferedJump => _jumpBufferTimer > 0f;
 
-    [Tooltip("Double/Triple jumps etc. Gets higher with upgrades, but serialized for testing.")]
-    [SerializeField] private int extraAirJumps = 0; // 0 = no double jump
     private int _airJumpsLeft;
     public bool CanAirJump => _airJumpsLeft > 0;
     public void ConsumeAirJump() => _airJumpsLeft--;
-    public void ResetAirJumps() => _airJumpsLeft = extraAirJumps;
+    public void ResetAirJumps() => _airJumpsLeft = jumpStats.extraAirJumps;
 
     public bool CanSingleJump => IsGrounded || HasCoyote; // As in no need to spend double/triple/... jump
     public bool CanJump => JumpOffCooldown && (CanSingleJump || CanAirJump);
     public bool ShouldStartJump => HasBufferedJump && CanJump;
     public bool ShouldStopJump => IsGrounded && Intent.LastJumpPressedTime < Time.time - 0.1f; // small delay to avoid cutting jump due to ground contact detection issues
-    public void ResetJumpCooldown() => _nextJumpTime = Time.time + jumpTimeout;
+    public void ResetJumpCooldown() => _nextJumpTime = Time.time + jumpStats.jumpTimeout;
     public void ConsumeBufferedJump() => _jumpBufferTimer = 0f;
-    public void ResetCoyote() => _coyoteTimer = coyoteTimeWindow;
+    public void ResetCoyote() => _coyoteTimer = jumpStats.coyoteTimeWindow;
     public void ConsumeCoyote() => _coyoteTimer = 0f;
     public void StartLandingMovementLock() => _horizontalControlUnlockTime = Time.time + landingMovementLockTime;
 
     [Header("Wall Slide")]
-    public float wallSlideSpeed = 1.5f; // max sliding speed
-    public float wallSlideAccelX = 20f; // horizontal acceleration toward 0 while sliding
-    public float wallStickTime = 0.25f; // time to stick to wall after stopping pushing into it before going airborne
-    [SerializeField] private float upwardSpeedThreshold = 0.1f; // if going up faster than this, player wants to jump, so don't start sliding
-    bool ShouldSlide => !IsGrounded && !WallRegrabLocked && TouchingWall && this.GetVelocity().y < upwardSpeedThreshold;
+    public WallSlideStats wallSlideStats;
+    bool ShouldSlide => !IsGrounded && !WallRegrabLocked && TouchingWall && this.GetVelocity().y < wallSlideStats.upwardSpeedThreshold;
 
-
-    [Header("Wall Jump")]
-    public float wallJumpXStrength = 5f;
-    public float wallJumpYStrength = 5f;
-    public float wallRegrabLock = 0.5f; // time after jumping off wall before being able to regrab
+    // Wall Jump
     private float _wallRegrabUnlockTime = 0f;
-
-    public void StartWallRegrabLock() => _wallRegrabUnlockTime = Time.time + wallRegrabLock;
+    public void StartWallRegrabLock() => _wallRegrabUnlockTime = Time.time + wallSlideStats.wallRegrabLock;
     public bool WallRegrabLocked => Time.time < _wallRegrabUnlockTime;
     public void StartWallJumpControlLock(float duration = -1) => _horizontalControlUnlockTime = duration >= 0 ?
         Time.time + duration: Time.time + wallJumpControlLockTime;
 
-    [Header("Air Control")]
-    public float airSpeed = 3.0f; // horizontal
-    public float airAccel = 35f;
-    public float airDecel = 25f;
-    public bool  allowSprintInAir = false;
-
-
     [Header("Dashing")]
-    public float dashSpeed = 10f;
-    public float dashDuration = 0.2f;
-    public float dashCooldown = 1f;
+    public DashStats dashStats;
     private float _lastDashEndTime = float.NegativeInfinity;
     public void StartDashCooldown() => _lastDashEndTime = Time.time;
 
     private bool ShouldStartDash => Intent.DashPressed &&
-                                    Time.time >= _lastDashEndTime + dashCooldown;
-    private bool ShouldStopDash => Intent.LastDashPressedTime <= Time.time - dashDuration || // dash ran out;
+                                    Time.time >= _lastDashEndTime + dashStats.dashCooldown;
+    private bool ShouldStopDash => Intent.LastDashPressedTime <= Time.time - dashStats.dashDuration || // dash ran out;
                                    (FacingDirection > 0 ? TouchingWallRight : TouchingWallLeft);
 
 
-    [Header("Attack")]
-    public AttackStats attackStats;
+
+
+    [Header("Combat")]
+    public CombatStats combatStats;
+    public bool IsDead { get; private set; }
+    public bool IsVulnerable => _vulnerabilityState == VulnerabilityState.Vulnerable;
+    public int HealthPoints { get; set; }
+
     private float _lastAttackTime = float.NegativeInfinity;
     public LayerMask attackableLayer;
     private float _nextAttackTime = 0f;
@@ -197,7 +164,7 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     private void Awake() {
         _inputActions = new InputSystemActions();
         this.NeverSleep();
-        _healthPoints = maxHealthPoints;
+        HealthPoints = combatStats.maxHealthPoints;
         _col = GetComponent<Collider2D>();
     }
 
@@ -305,7 +272,7 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 
         // Ground check
         if (IsGrounded) {
-            _coyoteTimer = coyoteTimeWindow;
+            _coyoteTimer = jumpStats.coyoteTimeWindow;
         } else {
             _coyoteTimer -= Time.fixedDeltaTime;
         }
@@ -325,7 +292,7 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     private void OnJumpPerformed(InputAction.CallbackContext context) {
         Intent.JumpPressed = true;
         Intent.LastJumpPressedTime = Time.time;
-        _jumpBufferTimer = jumpBufferWindow;
+        _jumpBufferTimer = jumpStats.jumpBufferWindow;
     }
 
     private void OnDashPerformed(InputAction.CallbackContext context) {

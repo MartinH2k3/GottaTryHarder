@@ -8,10 +8,10 @@ namespace Player.States
 public class Attacking: PlayerState
 {
     public bool IsAttackFinished => P.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f;
-    private AttackStats _stats;
+    private CombatStats _stats;
 
     public Attacking(PlayerController p) : base(p) {
-        _stats = P.attackStats;
+        _stats = P.combatStats;
     }
 
     public override void Enter() {
