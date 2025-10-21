@@ -1,5 +1,6 @@
 using Enemies;
 using MyPhysics;
+using Player.Stats;
 using UnityEngine;
 
 namespace Player.States
@@ -7,14 +8,18 @@ namespace Player.States
 public class Attacking: PlayerState
 {
     public bool IsAttackFinished => P.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f;
-    public Attacking(PlayerController p): base(p) { }
+    private AttackStats _stats;
+
+    public Attacking(PlayerController p) : base(p) {
+        _stats = P.attackStats;
+    }
 
     public override void Enter() {
         P.animator.SetTrigger("Attack");
-        if (!P.ComboUnlocked) {
+        if (!_stats.comboUnlocked) {
             Attack(AttackType.LeftJab);
         }
-        else if (P.LastJumpTime + P.jumpKickTime > Time.time && !P.IsGrounded && P.JumpKickUnlocked) {
+        else if (P.LastJumpTime + _stats.jumpKickTime > Time.time && !P.IsGrounded && _stats.jumpKickUnlocked) {
             Attack(AttackType.JumpKick);
             P.ResetCombo();
         }
@@ -37,20 +42,20 @@ public class Attacking: PlayerState
     }
 
     private void Attack(AttackType attackType) {
-        var bottomLeft = (Vector2)P.transform.position + new Vector2(0, -P.attackHeight);
-        var topRight = (Vector2)P.transform.position + new Vector2(P.attackRange * P.FacingDirection, P.attackHeight);
+        var bottomLeft = (Vector2)P.transform.position + new Vector2(0, -_stats.attackHeight);
+        var topRight = (Vector2)P.transform.position + new Vector2(_stats.attackRange * P.FacingDirection, _stats.attackHeight);
 
         Collider2D[] hits = Physics2D.OverlapAreaAll(bottomLeft, topRight, P.attackableLayer);
 
         foreach (var collider in hits) {
             var attackable = collider.GetComponent<IAttackable>();
             if (attackable is not null) {
-                attackable.TakeDamage(P.attackDamage);
+                attackable.TakeDamage(_stats.attackDamage);
             }
             // if physics object, apply force
             var physicsBody = collider.GetComponent<IPhysicsMovable>();
             if (physicsBody is not null) {
-                physicsBody.AddForce(new Vector2(P.attackKnockback * P.FacingDirection, 2f), ForceMode2D.Impulse);
+                physicsBody.AddForce(new Vector2(_stats.attackKnockback * P.FacingDirection, 2f), ForceMode2D.Impulse);
             }
         }
     }

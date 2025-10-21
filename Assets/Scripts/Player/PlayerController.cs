@@ -2,6 +2,7 @@ using System;
 using MyPhysics;
 using Obstacles;
 using Player.States;
+using Player.Stats;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -162,20 +163,11 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 
 
     [Header("Attack")]
-    public float attackComboTime = 1f; // time window after attack to do another one
+    public AttackStats attackStats;
     private float _lastAttackTime = float.NegativeInfinity;
-    public float jumpKickTime = 0.25f; // time window after jumping to do a jump kick
-    public float jumpKickDamageMultiplier = 1.25f; // attack damage * this
-    public int attackDamage = 10;
-    public float attackRange = 0.5f;
-    public float attackHeight = 0.2f;
-    public float attackKnockback = 2f;
     public LayerMask attackableLayer;
-    public float attackRate = 2f; // attacks per second
     private float _nextAttackTime = 0f;
 
-    public bool JumpKickUnlocked { get; private set; } = false;
-    public bool ComboUnlocked { get; private set; } = false;
     public int ComboStep { get; private set; } = 0;
     public void ResetCombo() => ComboStep = 0;
     public void AdvanceCombo() => ComboStep = (ComboStep + 1) % 4;
@@ -289,6 +281,9 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
         {
             if (prev is Airborne && (curr == _idle || curr == _walking))
                 StartLandingMovementLock();
+
+            if (prev is Walking && curr is Attacking)
+                this.SetVelocityX(0);
 
             if (debugText)
                 debugText.text = $"State: {_stateMachine.Current?.GetType().Name ?? "None"}\n" +
