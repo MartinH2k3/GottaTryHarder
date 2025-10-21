@@ -43,30 +43,29 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     public float walkDecel = 70f;
 
     [Header("Contact/Collision")]
-    private ContactStats _contactStats;
-
+    [SerializeField] private ContactStats contactStats;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask wallLayer;
 
     public bool IsGrounded => Physics2D.OverlapCircle(
         new Vector2(transform.position.x, transform.position.y - PlayerHeight / 2),
-        _contactStats.groundCheckRadius, groundLayer);
+        contactStats.groundCheckRadius, groundLayer);
 
     private bool _touchingSide(int direction) {
         int touchingCount = 0;
 
         float x = direction * PlayerWidth / 2f;
-        for (int i = 0; i < _contactStats.contactPoints; i++) {
+        for (int i = 0; i < contactStats.contactPoints; i++) {
             if (Physics2D.OverlapCircle(
                     (Vector2)transform.position +
                     new Vector2(x,
-                        -PlayerHeight / 2f + i / (Mathf.Max(_contactStats.contactPoints - 1f, 1f)) * PlayerHeight),
-                    _contactStats.wallCheckRadius,
+                        -PlayerHeight / 2f + i / (Mathf.Max(contactStats.contactPoints - 1f, 1f)) * PlayerHeight),
+                    contactStats.wallCheckRadius,
                     wallLayer
                 )
                ) touchingCount++;
         }
-        return touchingCount >= _contactStats.contactPoints * _contactStats.contactRatio;
+        return touchingCount >= contactStats.contactPoints * contactStats.contactRatio;
     }
 
     public bool TouchingWallLeft => _touchingSide(-1);

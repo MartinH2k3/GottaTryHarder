@@ -1,5 +1,6 @@
 ﻿namespace Player.Stats
 {
+[System.Serializable]
 public class ContactStats
 {
     public int contactPoints = 5;
