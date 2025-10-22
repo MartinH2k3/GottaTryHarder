@@ -4,6 +4,39 @@ namespace MyPhysics
 {
 
 public static class PhysicsMovableExtensions {
+    /// <summary> Flips the localScale.x of the Rigidbody2D's transform to turn the object around. </summary>
+    public static void TurnAround(this IPhysicsMovable movable) {
+        var t = movable.Rigidbody.transform;
+        t.localScale = new Vector3(-t.localScale.x, t.localScale.y, t.localScale.z);
+    }
+
+    /// <summary> Returns the size of the Rigidbody2D's collider bounds. </summary>
+    public static Vector2 GetSize(this IPhysicsMovable movable) {
+        var col = movable.Rigidbody.GetComponent<Collider2D>();
+        if (col is not null) {
+            return col.bounds.size;
+        }
+        return Vector2.zero;
+    }
+
+    /// <summary> Returns the width of the Rigidbody2D's collider bounds. </summary>
+    public static float GetSizeX(this IPhysicsMovable movable) {
+        var col = movable.Rigidbody.GetComponent<Collider2D>();
+        if (col is not null) {
+            return col.bounds.size.x;
+        }
+        return 0f;
+    }
+
+    /// <summary> Returns the height of the Rigidbody2D's collider bounds. </summary>
+    public static float GetSizeY(this IPhysicsMovable movable) {
+        var col = movable.Rigidbody.GetComponent<Collider2D>();
+        if (col is not null) {
+            return col.bounds.size.y;
+        }
+        return 0f;
+    }
+
     /// <summary> Adds 2d vector to the Rigidbody2D's velocity. </summary>
     public static void AddVelocity(this IPhysicsMovable movable, Vector2 velocity) {
         if (movable.Rigidbody is not null) {
