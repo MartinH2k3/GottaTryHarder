@@ -8,6 +8,7 @@ public class Patrolling: EnemyState
     public Patrolling(BaseEnemy enemy) : base(enemy) { }
 
     public override void FixedTick() {
+        Debug.Log("Ticking Patrolling State");
         base.FixedTick();
         if (CanWalkForward())
             E.SetVelocityX(E.FacingDirection * E.movementStats.movementSpeed);

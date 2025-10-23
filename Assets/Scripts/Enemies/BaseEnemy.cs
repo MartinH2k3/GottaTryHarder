@@ -8,22 +8,22 @@ namespace Enemies
 public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
 {
     // Stats
+    [Tooltip("Not all enemies will use all of the stats here.")]
     [SerializeField] public MovementStats movementStats;
+    [Tooltip("Not all enemies will use all of the stats here.")]
     [SerializeField] public CombatStats combatStats;
+    private int _currentHealth;
 
     // States
     protected StateMachine StateMachine;
-
-    // Health
-    private int _currentHealth;
 
     // Physics
     [SerializeField] protected Rigidbody2D rb;
     public Rigidbody2D Rigidbody => rb;
 
     // Layers
-    [SerializeField] public LayerMask playerLayer = LayerMask.GetMask("Player");
-    [SerializeField] public LayerMask terrainLayer = LayerMask.GetMask("Terrain");
+    [SerializeField] public LayerMask playerLayer;
+    [SerializeField] public LayerMask terrainLayer;
 
     // Helpers
     public int FacingDirection => transform.localScale.x >= 0 ? 1 : -1;
@@ -31,6 +31,22 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
 
     protected virtual void Awake() {
         _currentHealth = combatStats.maxHealthPoints;
+    }
+
+    protected virtual void Start() {
+        StateMachine = new StateMachine();
+    }
+
+    protected virtual void Update() {
+        StateMachine.Tick();
+    }
+
+    protected virtual void FixedUpdate() {
+        StateMachine.FixedTick();
+    }
+
+    protected void LateUpdate() {
+        StateMachine.LateTick();
     }
 
     public virtual void TakeDamage(int damageAmount) {
