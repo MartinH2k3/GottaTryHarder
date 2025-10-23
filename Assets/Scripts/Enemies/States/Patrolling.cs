@@ -1,4 +1,5 @@
-﻿using MyPhysics;
+﻿using System;
+using MyPhysics;
 using UnityEngine;
 
 namespace Enemies.States
@@ -7,29 +8,25 @@ public class Patrolling: EnemyState
 {
     public Patrolling(BaseEnemy enemy) : base(enemy) { }
 
+    public event Action<Transform> PlayerDetected;
+
     public override void FixedTick() {
-        Debug.Log("Ticking Patrolling State");
         base.FixedTick();
-        if (CanWalkForward())
+        if (E.CanWalkForward())
             E.SetVelocityX(E.FacingDirection * E.movementStats.movementSpeed);
         else
             E.TurnAround();
+        SeekPlayer();
     }
 
-    private bool CanWalkForward() {
-        Vector2 positionAhead = E.Pos + E.FacingDirection * E.movementStats.lookaheadDistance * Vector2.right;
 
-        RaycastHit2D groundHit = Physics2D.Raycast(positionAhead,
-            Vector2.down,
-            E.GetSizeX() / 2 + E.movementStats.groundDetectionDistance,
-            E.terrainLayer);
 
-        RaycastHit2D wallhit = Physics2D.Raycast(E.Pos,
+    private void SeekPlayer() {
+        RaycastHit2D playerHit = Physics2D.Raycast(E.Pos,
             Vector2.right * E.FacingDirection,
-            E.movementStats.lookaheadDistance,
-            E.terrainLayer);
-
-        return groundHit.collider is not null && wallhit.collider is null;
+            E.movementStats.playerDetectionRange,
+            E.playerLayer);
+         PlayerDetected?.Invoke(playerHit.collider?.transform);
     }
 }
 }

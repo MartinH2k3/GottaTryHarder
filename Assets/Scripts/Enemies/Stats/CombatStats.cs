@@ -9,6 +9,7 @@ public class CombatStats
     public int attackDamage = 10;
     public float attackRate = 2f;
     public float attackKnockback = 2f;
+    [Header("Melee specific")]
     public float attackDelay = 0.1f; // Delay from animation trigger to actual attack
     public float attackRange = 1f;
     public float attackHeight = 0.2f;
