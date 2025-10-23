@@ -102,7 +102,7 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
             var mask = playerLayer | terrainLayer;
             var hit = Physics2D.Raycast(Pos,
                 (Target.position - transform.position).normalized,
-                movementStats.playerDetectionRange,
+                combatStats.detectionRange,
                 mask);
 
             _lastTargetCheckTime = Time.time;

@@ -24,7 +24,7 @@ public class Patrolling: EnemyState
     private void SeekPlayer() {
         RaycastHit2D playerHit = Physics2D.Raycast(E.Pos,
             Vector2.right * E.FacingDirection,
-            E.movementStats.playerDetectionRange,
+            E.combatStats.detectionRange,
             E.playerLayer);
          PlayerDetected?.Invoke(playerHit.collider?.transform);
     }
