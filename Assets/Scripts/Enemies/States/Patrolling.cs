@@ -13,7 +13,7 @@ public class Patrolling: EnemyState
     public override void FixedTick() {
         base.FixedTick();
         if (E.CanWalkForward())
-            E.SetVelocityX(E.FacingDirection * E.movementStats.movementSpeed);
+            E.SetVelocityX(E.FacingDirection * E.movementStats.walkSpeed);
         else
             E.TurnAround();
         SeekPlayer();

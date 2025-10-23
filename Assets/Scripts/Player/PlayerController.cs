@@ -1,4 +1,3 @@
-using System;
 using MyPhysics;
 using Obstacles;
 using Player.States;
