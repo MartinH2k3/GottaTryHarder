@@ -8,6 +8,7 @@ namespace Enemies
 public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
 {
     // Stats
+    [Header("Stats")]
     [Tooltip("Not all enemies will use all of the stats here.")]
     [SerializeField] public MovementStats movementStats;
     [Tooltip("Not all enemies will use all of the stats here.")]
@@ -28,17 +29,24 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
     // Physics
     [SerializeField] protected Rigidbody2D rb;
     public Rigidbody2D Rigidbody => rb;
+    protected Collider2D Col;
 
-    // Layers
+    [Header("Layers")]
     [SerializeField] public LayerMask playerLayer;
     [SerializeField] public LayerMask terrainLayer;
 
     // Helpers
     public int FacingDirection => transform.localScale.x >= 0 ? 1 : -1;
     public Vector2 Pos => transform.position;
+    public float EnemyHeight => Col.bounds.size.y;
+    public float EnemyWidth => Col.bounds.size.x;
+
+    [Header("Misc")]
+    public Animator animator;
 
     protected virtual void Awake() {
         _currentHealth = combatStats.maxHealthPoints;
+        Col = GetComponent<Collider2D>();
     }
 
     protected virtual void Start() {
@@ -107,8 +115,19 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
 
             _lastTargetCheckTime = Time.time;
             _lastTargetCheck = hit.collider is not null && hit.collider.transform == Target;
+            // TODO store the whole player object reference instead of just transform
             return _lastTargetCheck;
+    }
 
+    /// <summary>
+    ///
+    /// </summary>
+    protected virtual bool TargetInAttackRange() {
+        if (Target is null)
+            return false;
+
+        float distanceToTarget = Vector2.Distance(Pos, Target.position);
+        return distanceToTarget <= combatStats.attackRange;
     }
 }
 }
