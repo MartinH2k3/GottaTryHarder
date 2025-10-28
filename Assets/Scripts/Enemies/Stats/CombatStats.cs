@@ -7,9 +7,10 @@ public class CombatStats
 {
     public int maxHealthPoints = 30;
     public int attackDamage = 10;
-    public float attackRate = 2f;
+    public float attackRate = 1f;
     public float attackKnockback = 2f;
     [Header("Targeting")]
+    public float noticeTime = 0.5f;
     public float detectionRange = 2f;
     public float attackRange = 1f;
     [Header("Melee specific")]

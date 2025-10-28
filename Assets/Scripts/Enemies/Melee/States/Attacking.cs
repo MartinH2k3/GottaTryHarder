@@ -8,12 +8,13 @@ public class Attacking: EnemyState
 {
     public Attacking(BaseEnemy enemy) : base(enemy) { }
 
-    public bool IsAttackFinished => E.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f;
+    public bool IsAttackFinished => E.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f && _attackExecuted;
     private float _attackStartTime;
     private bool _attackExecuted;
 
     public override void Enter() {
         base.Enter();
+        Debug.Log("Entering Attacking");
         E.animator.SetTrigger("Attack");
         _attackStartTime = Time.time + E.combatStats.attackDelay;
         _attackExecuted = false;
@@ -59,6 +60,11 @@ public class Attacking: EnemyState
         }
 
         //DisplayAttackHitbox(min, max);
+    }
+
+    public override void Exit() {
+        base.Exit();
+        E.LastAttackTime = Time.time;
     }
 
     private void DisplayAttackHitbox(Vector2 min, Vector2 max) {

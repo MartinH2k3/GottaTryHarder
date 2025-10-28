@@ -28,6 +28,9 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
     private float _lastTargetCheckTime;
     private bool _lastTargetCheck;
 
+    // Combat
+    public float LastAttackTime { get; set; } = 0;
+
     // Physics
     [SerializeField] protected Rigidbody2D rb;
     public Rigidbody2D Rigidbody => rb;
