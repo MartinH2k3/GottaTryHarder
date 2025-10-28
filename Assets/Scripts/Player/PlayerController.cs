@@ -1,5 +1,4 @@
-using MyPhysics;
-using Obstacles;
+using Mechanics;
 using Player.States;
 using Player.Stats;
 using TMPro;
