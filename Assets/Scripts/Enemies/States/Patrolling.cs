@@ -1,5 +1,6 @@
 ﻿using System;
-using MyPhysics;
+using Player;
+using Mechanics;
 using UnityEngine;
 
 namespace Enemies.States

@@ -1,4 +1,4 @@
-﻿using MyPhysics;
+﻿using Mechanics;
 using Player.Stats;
 
 namespace Player.States

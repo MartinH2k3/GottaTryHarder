@@ -1,7 +1,12 @@
 ﻿using UnityEngine;
 
-namespace MyPhysics
+namespace Mechanics
 {
+
+public interface IPhysicsMovable
+{
+    Rigidbody2D Rigidbody { get;  }
+}
 
 public static class PhysicsMovableExtensions {
     /// <summary> Flips the localScale.x of the Rigidbody2D's transform to turn the object around. </summary>

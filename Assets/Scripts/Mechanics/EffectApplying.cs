@@ -1,7 +1,7 @@
 using Player;
 using UnityEngine;
 
-namespace Obstacles
+namespace Mechanics
 {
 public static class EffectApplying
 {

@@ -19,8 +19,8 @@ public class MeleeEnemyController: BaseEnemy
 
         StateMachine.Initialize(_patrolling);
 
-        _patrolling.PlayerDetected += (playerTransform) => {
-            Target = playerTransform;
+        _patrolling.PlayerDetected += (player) => {
+            Target = player;
         };
 
         StateMachine.AddStartTransition(_patrolling, () => !TargetInRange());
@@ -38,10 +38,7 @@ public class MeleeEnemyController: BaseEnemy
     /// </summary>
     /// <returns></returns>
     protected override bool TargetInAttackRange() {
-        if (Target is null)
-            return false;
-
-        return Mathf.Abs(Target.position.x - Pos.x) < combatStats.attackRange
+        return Mathf.Abs(TargetPos.x - Pos.x) < combatStats.attackRange
             ;//&& Mathf.Abs(Target.position.y - Pos.y) < EnemyHeight/2;
     }
 }

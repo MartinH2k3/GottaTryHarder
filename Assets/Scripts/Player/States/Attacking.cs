@@ -1,5 +1,5 @@
 using Enemies;
-using MyPhysics;
+using Mechanics;
 using Player.Stats;
 using UnityEngine;
 

@@ -1,4 +1,4 @@
-namespace Obstacles
+namespace Mechanics
 {
 public interface IEffectObstacle
 {

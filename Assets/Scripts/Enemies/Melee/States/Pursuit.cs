@@ -1,6 +1,5 @@
 ﻿using Enemies.States;
-using MyPhysics;
-using UnityEngine;
+using Mechanics;
 
 namespace Enemies.Melee.States
 {

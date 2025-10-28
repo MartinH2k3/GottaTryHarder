@@ -1,6 +1,7 @@
 ﻿using Enemies.Stats;
 using Infrastructure.StateMachine;
-using MyPhysics;
+using Mechanics;
+using Player;
 using UnityEngine;
 
 namespace Enemies

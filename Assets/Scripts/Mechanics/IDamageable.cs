@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Obstacles
+namespace Mechanics
 {
 public interface IDamageable
 {
