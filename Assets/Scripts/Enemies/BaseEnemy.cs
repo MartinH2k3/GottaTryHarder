@@ -23,7 +23,8 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
     protected StateMachine StateMachine;
 
     // Targeting
-    public Transform Target { get; set; }
+    public PlayerController Target { get; set; }
+    public Vector3 TargetPos => Target?.transform.position ?? Vector3.zero;
     private float _lastTargetCheckTime;
     private bool _lastTargetCheck;
 
@@ -101,33 +102,27 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
     /// Meant to be overriden by more complex enemies.
     /// </summary>
     protected virtual bool TargetInRange() {
-            if (Target is null)
-                return false;
-
             if (Time.time - _lastTargetCheckTime < detectionInterval)
                 return _lastTargetCheck;
 
             // include player and terrain so obstacles will be detected before the player
             var mask = playerLayer | terrainLayer;
             var hit = Physics2D.Raycast(Pos,
-                (Target.position - transform.position).normalized,
+                (TargetPos - transform.position).normalized,
                 combatStats.detectionRange,
                 mask);
 
             _lastTargetCheckTime = Time.time;
-            _lastTargetCheck = hit.collider is not null && hit.collider.transform == Target;
+            _lastTargetCheck = hit.collider is not null && hit.transform.position == TargetPos;
             // TODO store the whole player object reference instead of just transform
             return _lastTargetCheck;
     }
 
     /// <summary>
-    ///
+    /// Checks if the target is within attack range. Meant to be overriden by more complex enemies.
     /// </summary>
     protected virtual bool TargetInAttackRange() {
-        if (Target is null)
-            return false;
-
-        float distanceToTarget = Vector2.Distance(Pos, Target.position);
+        float distanceToTarget = Vector2.Distance(Pos, TargetPos);
         return distanceToTarget <= combatStats.attackRange;
     }
 }

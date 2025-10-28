@@ -9,7 +9,7 @@ public class Patrolling: EnemyState
 {
     public Patrolling(BaseEnemy enemy) : base(enemy) { }
 
-    public event Action<Transform> PlayerDetected;
+    public event Action<PlayerController> PlayerDetected;
 
     public override void FixedTick() {
         base.FixedTick();
@@ -27,7 +27,12 @@ public class Patrolling: EnemyState
             Vector2.right * E.FacingDirection,
             E.combatStats.detectionRange,
             E.playerLayer);
-         PlayerDetected?.Invoke(playerHit.collider?.transform);
+
+        PlayerController pc = null;
+        if (playerHit.collider != null)
+            playerHit.collider.TryGetComponent<PlayerController>(out pc);
+
+        PlayerDetected?.Invoke(pc);
     }
 }
 }

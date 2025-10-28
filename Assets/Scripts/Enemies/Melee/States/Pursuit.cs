@@ -8,7 +8,7 @@ public class Pursuit: EnemyState
     public Pursuit(BaseEnemy enemy) : base(enemy) { }
 
     public override void FixedTick() {
-        int direction = E.Target.position.x > E.Pos.x ? 1 : -1;
+        int direction = E.TargetPos.x > E.Pos.x ? 1 : -1;
 
         if (E.CanWalkForward()) E.TurnAround();
 
