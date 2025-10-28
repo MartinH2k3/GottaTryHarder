@@ -53,11 +53,12 @@ public class Attacking: EnemyState
                 E.combatStats.attackKnockback * E.FacingDirection,
                 E.combatStats.verticalKnockback),
                 ForceMode2D.Impulse);
-            player.LockMovement(E.combatStats.stunDuration);
+            // Need to stun for enough time so that he doesn't immediately cancel the stun with movement
+            float stunDuration = 0.1f * E.combatStats.attackKnockback;
+            player.LockMovement(stunDuration);
         }
 
-        Debug.Log("Attacked");
-        DisplayAttackHitbox(min, max);
+        //DisplayAttackHitbox(min, max);
     }
 
     private void DisplayAttackHitbox(Vector2 min, Vector2 max) {
