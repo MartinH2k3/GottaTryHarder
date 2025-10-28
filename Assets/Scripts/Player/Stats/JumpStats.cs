@@ -13,6 +13,8 @@ public class JumpStats
     public float jumpBufferWindow = 0.1f;
     [Tooltip("Double/Triple jumps etc. 0 = only single jump.")]
     public int extraAirJumps = 0; // 0 = no double jump
+    [Tooltip("So the player doesn't slip accidentally when landing on tight platforms.")]
+    public float landingMovementLockTime = 0.05f;
 
     [Header("Floating")]
     public float airSpeed = 3.0f; // horizontal

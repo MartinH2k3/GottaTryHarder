@@ -96,7 +96,6 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     public void ConsumeBufferedJump() => _jumpBufferTimer = 0f;
     public void ResetCoyote() => _coyoteTimer = jumpStats.coyoteTimeWindow;
     public void ConsumeCoyote() => _coyoteTimer = 0f;
-    public void StartLandingMovementLock() => _horizontalControlUnlockTime = Time.time + landingMovementLockTime;
 
     [Header("Wall Slide")]
     public WallSlideStats wallSlideStats;
@@ -142,7 +141,6 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     [Tooltip("Time after wall jump before being able to control horizontal movement.")]
     [SerializeField] private float wallJumpControlLockTime = 0.05f;
     [Tooltip("Time after landing where horizontal movement is locked so it's easier to land on tight spaces.")]
-    [SerializeField] private float landingMovementLockTime = 0.05f;
     private float _horizontalControlUnlockTime = 0f;
     public bool HorizontalControlLocked => Time.time <= _horizontalControlUnlockTime;
 
@@ -244,7 +242,7 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
         _stateMachine.StateChanged += (prev, curr) =>
         {
             if (prev is Airborne && (curr == _idle || curr == _walking))
-                StartLandingMovementLock();
+                LockMovement(jumpStats.landingMovementLockTime);
 
             if (prev is Walking && curr is Attacking)
                 this.SetVelocityX(0);
@@ -303,6 +301,10 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 
     public void UpdateStats(int deathCount) {
         // TODO unlock combos, double jump, etc based on deathCount
+    }
+
+    public void LockMovement(float duration) {
+        _horizontalControlUnlockTime = Time.time + duration;
     }
 
 }
