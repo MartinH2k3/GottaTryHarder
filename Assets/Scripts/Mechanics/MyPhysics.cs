@@ -112,6 +112,11 @@ public static class PhysicsMovableExtensions {
         if (movable.Rigidbody is null) return;
 
         var v = movable.GetVelocity();
+
+        // If already at or beyond target speed, do nothing
+        if ((targetSpeed > 0 && v.x > targetSpeed) ||
+            (targetSpeed < 0 && v.x < targetSpeed)) return;
+
         float diff = targetSpeed - v.x;
         float force = diff * acceleration;
 
