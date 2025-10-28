@@ -62,6 +62,8 @@ public class WallSliding: PlayerState
         P.SetVelocity(Vector2.zero);
         P.AddForce(-P.WallDir * _stats.wallJumpXStrength, _stats.wallJumpYStrength, ForceMode2D.Impulse);
 
+        if (P.FacingDirection == P.WallDir) P.TurnAround();
+
         P.ConsumeBufferedJump();
         P.ResetJumpCooldown();
         P.ConsumeCoyote();
