@@ -33,21 +33,16 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     public Rigidbody2D Rigidbody => rb;
     private Collider2D _col;
 
-    [Header("Movement")] [SerializeField] private float moveEps = 0.1f; // deadzone for movement input
-    public float walkSpeed = 3f;
-    public float sprintMultiplier = 1.3f; // holding sprint button
-    public float WalkSpeedMultiplier { get; set; } = 1f; // outside factors && effects
-    public float walkAccel = 50f; // rates at which you reach walkSpeed
-    public float walkDecel = 70f;
+    [Header("Movement")]
+    public MovementStats movementStats;
 
     [Header("Contact/Collision")]
     [SerializeField] private ContactStats contactStats;
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private LayerMask wallLayer;
+    public LayerMask terrainLayer;
 
     public bool IsGrounded => Physics2D.OverlapCircle(
         new Vector2(transform.position.x, transform.position.y - PlayerHeight / 2),
-        contactStats.groundCheckRadius, groundLayer);
+        contactStats.groundCheckRadius, terrainLayer);
 
     private bool _touchingSide(int direction) {
         int touchingCount = 0;
@@ -59,7 +54,7 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
                     new Vector2(x,
                         -PlayerHeight / 2f + i / (Mathf.Max(contactStats.contactPoints - 1f, 1f)) * PlayerHeight),
                     contactStats.wallCheckRadius,
-                    wallLayer
+                    terrainLayer
                 )
                ) touchingCount++;
         }
@@ -209,9 +204,9 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 
         // Walking <-> Idle
         _stateMachine.AddTransition(_idle, _walking,
-            () => Intent.Move.sqrMagnitude > moveEps * moveEps);
+            () => Intent.Move.sqrMagnitude > movementStats.moveEps * movementStats.moveEps);
         _stateMachine.AddTransition(_walking, _idle,
-            () => Intent.Move.sqrMagnitude <= moveEps * moveEps);
+            () => Intent.Move.sqrMagnitude <= movementStats.moveEps * movementStats.moveEps);
 
         // -> Airborne: Jumping -- Higher priority than falling in case it happens on same frame
         _stateMachine.AddTransition(_idle, _airborne, () => ShouldStartJump, priority: 2);
@@ -242,7 +237,7 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
         _stateMachine.StateChanged += (prev, curr) =>
         {
             if (prev is Airborne && (curr == _idle || curr == _walking))
-                LockMovement(jumpStats.landingMovementLockTime);
+                LockMovement(movementStats.onEdgeMovementLockTime);
 
             if (prev is Walking && curr is Attacking)
                 this.SetVelocityX(0);

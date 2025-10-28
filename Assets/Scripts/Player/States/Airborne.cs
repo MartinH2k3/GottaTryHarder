@@ -28,7 +28,7 @@ public class Airborne: PlayerState
 
         var targetSpeed = horizontalInput *
                           _stats.airSpeed *
-                          (intent.SprintHeld && _stats.allowSprintInAir ? P.sprintMultiplier : 1f);
+                          (intent.SprintHeld && _stats.allowSprintInAir ? P.movementStats.sprintMultiplier : 1f);
         var acceleration = Mathf.Abs(targetSpeed) > 0.01f ? _stats.airAccel : _stats.airDecel;
 
         P.AccelerateX(targetSpeed, acceleration);

@@ -12,12 +12,13 @@ public class Idle: GroundedBase
         P.animator.SetTrigger("Idle");
     }
 
+    // Slow down to a stop when idle
     public override void FixedTick() {
         var v = P.GetVelocity();
         if (Mathf.Approximately(v.x, 0f)) {
             return;
         }
-        var newX = Mathf.MoveTowards(v.x, 0f, P.walkDecel * Time.fixedDeltaTime);
+        var newX = Mathf.MoveTowards(v.x, 0f, P.movementStats.walkDecel * Time.fixedDeltaTime);
         P.SetVelocity(newX, v.y);
     }
 }
