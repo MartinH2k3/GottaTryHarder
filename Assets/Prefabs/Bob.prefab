@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6758544246298809498}
   - component: {fileID: 9098514814117833699}
   - component: {fileID: 4377438092467432707}
+  - component: {fileID: 8539087507716758710}
   m_Layer: 0
   m_Name: Bob
   m_TagString: Untagged
@@ -106,7 +107,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemies.Melee.MeleeEnemyController
   movementStats:
-    movementSpeed: 3
+    walkSpeed: 3
+    chaseSpeed: 7
+    acceleration: 30
     lookaheadDistance: 1
     groundDetectionDistance: 0.02
   combatStats:
@@ -119,6 +122,7 @@ MonoBehaviour:
     attackDelay: 0.1
     attackHeight: 0.2
     attackWidth: 0.5
+    verticalKnockback: 10
   detectionInterval: 0.2
   rb: {fileID: 9098514814117833699}
   playerLayer:
@@ -127,7 +131,7 @@ MonoBehaviour:
   terrainLayer:
     serializedVersion: 2
     m_Bits: 64
-  animator: {fileID: 0}
+  animator: {fileID: 8539087507716758710}
 --- !u!50 &9098514814117833699
 Rigidbody2D:
   serializedVersion: 5
@@ -201,3 +205,25 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!95 &8539087507716758710
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3372936625181413013}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 245ad7367e2ac7141bfb50e12516079e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
