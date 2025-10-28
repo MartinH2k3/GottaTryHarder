@@ -14,18 +14,27 @@ public class Attacking: EnemyState
 
     public override void Enter() {
         base.Enter();
+        E.animator.SetTrigger("Attack");
+        _attackStartTime = Time.time + E.combatStats.attackDelay;
+        _attackExecuted = false;
+    }
 
-
-
+    public override void Tick() {
+        base.Tick();
+        if (Time.time < _attackStartTime || _attackExecuted) {
+            return;
+        }
+        Attack();
+        _attackExecuted = true;
     }
 
     private void Attack() {
-        E.animator.SetTrigger("Attack");
+
         var cornerA = (Vector2)E.transform.position +
-                      new Vector2(0, -E.combatStats.attackHeight);
+                      new Vector2(0, -E.combatStats.attackWidth);
         var cornerB = (Vector2)E.transform.position +
                       new Vector2(E.combatStats.attackRange * E.FacingDirection,
-                          E.combatStats.attackHeight);
+                          E.combatStats.attackWidth);
         // Compute the axis-aligned rectangle from the two opposite corners and draw it for a short duration
         var min = new Vector2(Mathf.Min(cornerA.x, cornerB.x), Mathf.Min(cornerA.y, cornerB.y));
         var max = new Vector2(Mathf.Max(cornerA.x, cornerB.x), Mathf.Max(cornerA.y, cornerB.y));
@@ -39,8 +48,15 @@ public class Attacking: EnemyState
                               playerCol.bounds.max.y >= min.y;
         if (playerWithinHitbox) {
             player.TakeDamage(E.combatStats.attackDamage);
-
+            player.SetVelocityX(0); // So that player can't resist initial knockback by moving
+            player.AddForce(new Vector2(
+                E.combatStats.attackKnockback * E.FacingDirection,
+                E.combatStats.verticalKnockback),
+                ForceMode2D.Impulse);
+            player.LockMovement(E.combatStats.stunDuration);
         }
+
+        Debug.Log("Attacked");
         DisplayAttackHitbox(min, max);
     }
 

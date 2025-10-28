@@ -101,15 +101,13 @@ public static class PhysicsMovableExtensions {
     /// Gradually accelerate or decelerate the X velocity toward a target speed.
     /// </summary>
     /// <param name="movable">Any object that exposes a Rigidbody2D via IPhysicsMovable.</param>
-    /// <param name="targetSpeed">Desired horizontal velocity (units/second).</param>
+    /// <param name="targetSpeed">Desired horizontal velocity (units/second). Positive numbers move the object to the right, negative move it to the left.</param>
     /// <param name="acceleration">Rate at which to approach target speed.</param>
-    /// <param name="direction">Signed input direction.</param>
     /// <param name="voluntaryMovement">When the movement is done by player/NPC, also flips which way the sprite is looking.</param>
     public static void AccelerateHorizontally(
         this IPhysicsMovable movable,
         float targetSpeed,
         float acceleration,
-        float direction = 0f,
         bool voluntaryMovement = true) {
         if (movable.Rigidbody is null) return;
 
@@ -121,13 +119,13 @@ public static class PhysicsMovableExtensions {
 
         // Snap to zero at very low speeds to avoid endless micro-drift
         v = movable.GetVelocity();
-        if (Mathf.Abs(direction) < 0.01f && Mathf.Abs(v.x) < 0.05f)
+        if (Mathf.Abs(v.x) < 0.05f)
             movable.SetVelocity(0f, v.y);
 
         // Flip facing direction if player initiated
         if (voluntaryMovement && Mathf.Abs(targetSpeed) > 0.01f) {
             var t = movable.Rigidbody.transform;
-            t.localScale = new Vector3(Mathf.Sign(direction), t.localScale.y, t.localScale.z);
+            t.localScale = new Vector3(Mathf.Sign(targetSpeed), t.localScale.y, t.localScale.z);
         }
     }
 
@@ -182,6 +180,7 @@ public static class PhysicsMovableExtensions {
         }
     }
 
+    /// <summary> Returns the Rigidbody2D's gravity scale. </summary>
     public static float GetGravityScale(this IPhysicsMovable movable) {
         if (movable.Rigidbody is not null) {
             return movable.Rigidbody.gravityScale;

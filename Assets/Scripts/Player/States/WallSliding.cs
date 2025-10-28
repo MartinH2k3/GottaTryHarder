@@ -51,10 +51,10 @@ public class WallSliding: PlayerState
         // Go away from the wall
         var horizontalInput = Mathf.Sign(intent.Move.x) * intent.Move.magnitude;
 
-        var targetSpeed = horizontalInput * P.walkSpeed;
+        var targetSpeed = horizontalInput * P.jumpStats.airSpeed;
         var acceleration = Mathf.Abs(targetSpeed) > 0.01f ? P.jumpStats.airAccel : P.jumpStats.airDecel;
 
-        P.AccelerateHorizontally(targetSpeed, acceleration, horizontalInput);
+        P.AccelerateHorizontally(targetSpeed, acceleration);
     }
 
     private void WallJump() {

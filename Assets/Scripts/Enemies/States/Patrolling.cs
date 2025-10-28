@@ -30,7 +30,7 @@ public class Patrolling: EnemyState
 
         PlayerController pc = null;
         if (playerHit.collider != null)
-            playerHit.collider.TryGetComponent<PlayerController>(out pc);
+            playerHit.collider.TryGetComponent(out pc);
 
         PlayerDetected?.Invoke(pc);
     }

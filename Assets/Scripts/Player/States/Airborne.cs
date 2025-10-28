@@ -27,11 +27,11 @@ public class Airborne: PlayerState
         var horizontalInput = Mathf.Sign(intent.Move.x) * intent.Move.magnitude;
 
         var targetSpeed = horizontalInput *
-                          P.walkSpeed *
+                          _stats.airSpeed *
                           (intent.SprintHeld && _stats.allowSprintInAir ? P.sprintMultiplier : 1f);
         var acceleration = Mathf.Abs(targetSpeed) > 0.01f ? _stats.airAccel : _stats.airDecel;
 
-        P.AccelerateHorizontally(targetSpeed, acceleration, horizontalInput);
+        P.AccelerateHorizontally(targetSpeed, acceleration);
     }
 
     private void Jump() {

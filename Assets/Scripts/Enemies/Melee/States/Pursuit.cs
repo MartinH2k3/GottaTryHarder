@@ -12,7 +12,7 @@ public class Pursuit: EnemyState
 
         if (E.CanWalkForward()) E.TurnAround();
 
-        E.AccelerateHorizontally(direction * E.movementStats.chaseSpeed, E.movementStats.acceleration, direction);
+        E.AccelerateHorizontally(direction * E.movementStats.chaseSpeed, E.movementStats.acceleration);
 
     }
 }
