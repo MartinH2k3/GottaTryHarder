@@ -30,7 +30,7 @@ public class Walking: GroundedBase
 
         var acceleration = Mathf.Abs(targetSpeed) > 0.01f ? P.walkAccel : P.walkDecel;
 
-        P.AccelerateHorizontally(targetSpeed, acceleration);
+        P.AccelerateX(targetSpeed, acceleration);
     }
 
 }

@@ -54,7 +54,7 @@ public class WallSliding: PlayerState
         var targetSpeed = horizontalInput * P.jumpStats.airSpeed;
         var acceleration = Mathf.Abs(targetSpeed) > 0.01f ? P.jumpStats.airAccel : P.jumpStats.airDecel;
 
-        P.AccelerateHorizontally(targetSpeed, acceleration);
+        P.AccelerateX(targetSpeed, acceleration);
     }
 
     private void WallJump() {

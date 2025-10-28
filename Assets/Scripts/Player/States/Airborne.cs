@@ -31,7 +31,7 @@ public class Airborne: PlayerState
                           (intent.SprintHeld && _stats.allowSprintInAir ? P.sprintMultiplier : 1f);
         var acceleration = Mathf.Abs(targetSpeed) > 0.01f ? _stats.airAccel : _stats.airDecel;
 
-        P.AccelerateHorizontally(targetSpeed, acceleration);
+        P.AccelerateX(targetSpeed, acceleration);
     }
 
     private void Jump() {

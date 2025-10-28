@@ -104,10 +104,10 @@ public static class PhysicsMovableExtensions {
     /// <param name="targetSpeed">Desired horizontal velocity (units/second). Positive numbers move the object to the right, negative move it to the left.</param>
     /// <param name="acceleration">Rate at which to approach target speed.</param>
     /// <param name="voluntaryMovement">When the movement is done by player/NPC, also flips which way the sprite is looking.</param>
-    public static void AccelerateHorizontally(
+    public static void AccelerateX(
         this IPhysicsMovable movable,
         float targetSpeed,
-        float acceleration,
+        float acceleration = 1,
         bool voluntaryMovement = true) {
         if (movable.Rigidbody is null) return;
 
@@ -132,6 +132,29 @@ public static class PhysicsMovableExtensions {
             var t = movable.Rigidbody.transform;
             t.localScale = new Vector3(Mathf.Sign(targetSpeed), t.localScale.y, t.localScale.z);
         }
+    }
+
+    public static void AccelerateY(
+        this IPhysicsMovable movable,
+        float targetSpeed,
+        float acceleration = 1) {
+        if (movable.Rigidbody is null) return;
+
+        var v = movable.GetVelocity();
+
+        // If already at or beyond target speed, do nothing
+        if ((targetSpeed > 0 && v.y > targetSpeed) ||
+            (targetSpeed < 0 && v.y < targetSpeed)) return;
+
+        float diff = targetSpeed - v.y;
+        float force = diff * acceleration;
+
+        movable.AddForce(0f, force);
+
+        // Snap to zero at very low speeds to avoid endless micro-drift
+        v = movable.GetVelocity();
+        if (Mathf.Abs(v.y) < 0.05f)
+            movable.SetVelocity(v.x, 0f);
     }
 
     /// <summary> Freezes all movement and rotation of the Rigidbody2D. </summary>

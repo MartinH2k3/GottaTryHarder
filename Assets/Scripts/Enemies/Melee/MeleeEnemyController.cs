@@ -13,7 +13,6 @@ public class MeleeEnemyController: BaseEnemy
 
     private bool CanAttack => LastAttackTime + (1f / combatStats.attackRate) < Time.time;
 
-    [SerializeField] private bool CanAttackAnyways = false;
     protected override void Start() {
         base.Start();
         _patrolling = new Patrolling(this);
@@ -32,7 +31,7 @@ public class MeleeEnemyController: BaseEnemy
         StateMachine.AddTransition(_patrolling, _pursuit, TargetInRange);
         StateMachine.AddTransition(_pursuit, _patrolling, () => !TargetInRange(), 1);
 
-        StateMachine.AddTransition(_pursuit, _attacking, () => TargetInAttackRange() && (CanAttack || CanAttackAnyways));
+        StateMachine.AddTransition(_pursuit, _attacking, () => TargetInAttackRange() && CanAttack);
         StateMachine.AddExitTransition(_attacking, () => _attacking.IsAttackFinished);
     }
 
@@ -45,7 +44,7 @@ public class MeleeEnemyController: BaseEnemy
             ;//&& Mathf.Abs(Target.position.y - Pos.y) < EnemyHeight/2;
     }
 
-    private readonly Vector3 _labelOffset = new Vector3(0, 1, 0);
+    private readonly Vector3 _labelOffset = new (0, 1, 0);
     private void OnDrawGizmos()
     {
         var stateName = StateMachine?.Current?.GetType().Name ?? "None";
