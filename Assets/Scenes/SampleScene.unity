@@ -435,7 +435,7 @@ Transform:
   m_GameObject: {fileID: 269279491}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.6966, y: -1.217776, z: -10}
+  m_LocalPosition: {x: 7.6829677, y: -1.217776, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -630,7 +630,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.6966, y: -1.217776, z: -10}
+  m_LocalPosition: {x: 7.6829677, y: -1.217776, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -749,6 +749,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!95 &815696434 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 8539087507716758710, guid: 9310da56db4b5624597c04f25d10e2ad, type: 3}
+  m_PrefabInstance: {fileID: 6305013028661944476}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1857766294
 GameObject:
   m_ObjectHideFlags: 0
@@ -805,6 +810,7 @@ MonoBehaviour:
     coyoteTimeWindow: 0.1
     jumpBufferWindow: 0.1
     extraAirJumps: 0
+    landingMovementLockTime: 0.05
     airSpeed: 3
     airAccel: 35
     airDecel: 25
@@ -839,7 +845,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   wallJumpControlLockTime: 0.2
-  landingMovementLockTime: 0.05
   debugText: {fileID: 55258065}
   animator: {fileID: 1857766300}
 --- !u!50 &1857766297
@@ -958,7 +963,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.40625, y: 1.0625}
+  m_Size: {x: 0.8125, y: 2.125}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1003,7 +1008,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 0.8125, y: 2.125}
-    newSize: {x: 0.40625, y: 1.0625}
+    newSize: {x: 0.8125, y: 2.125}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -2638,6 +2643,18 @@ PrefabInstance:
     - target: {fileID: 6467150584654035610, guid: 9310da56db4b5624597c04f25d10e2ad, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758544246298809498, guid: 9310da56db4b5624597c04f25d10e2ad, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 815696434}
+    - target: {fileID: 6758544246298809498, guid: 9310da56db4b5624597c04f25d10e2ad, type: 3}
+      propertyPath: combatStats.stunDuration
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758544246298809498, guid: 9310da56db4b5624597c04f25d10e2ad, type: 3}
+      propertyPath: combatStats.attackKnockback
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
