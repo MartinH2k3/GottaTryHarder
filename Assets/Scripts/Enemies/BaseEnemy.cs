@@ -24,7 +24,7 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
 
     // Targeting
     public PlayerController Target { get; set; }
-    public Vector3 TargetPos => Target?.transform.position ?? Vector3.zero;
+    public Vector2 TargetPos => Target?.transform.position ?? Vector2.zero;
     private float _lastTargetCheckTime;
     private bool _lastTargetCheck;
 
@@ -111,12 +111,12 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
             // include player and terrain so obstacles will be detected before the player
             var mask = playerLayer | terrainLayer;
             var hit = Physics2D.Raycast(Pos,
-                (TargetPos - transform.position).normalized,
+                (TargetPos - Pos).normalized,
                 combatStats.detectionRange,
                 mask);
 
             _lastTargetCheckTime = Time.time;
-            _lastTargetCheck = hit.collider is not null && hit.transform.position == TargetPos;
+            _lastTargetCheck = hit.collider is not null && (Vector2)hit.transform.position == TargetPos;
             // TODO store the whole player object reference instead of just transform
             return _lastTargetCheck;
     }

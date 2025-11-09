@@ -1,4 +1,5 @@
-﻿using Enemies.States;
+﻿using System;
+using Enemies.States;
 using Mechanics;
 using Player;
 using UnityEngine;
@@ -9,6 +10,9 @@ public class Patrolling: EnemyState
 {
     private float _oscillationStartTime;
     private PlayerController _player;
+    private Vector2 _moveTowards;
+    private float _lastSeekTime = 0f;
+    public event Action PlayerDetected;
 
     public Patrolling(BaseEnemy enemy) : base(enemy) {}
 
@@ -19,9 +23,11 @@ public class Patrolling: EnemyState
 
     public override void FixedTick() {
         base.FixedTick();
-        //Oscillate();
-
-        PlayerReachable();
+        Oscillate();
+        if (_moveTowards != Vector2.zero)
+            FollowTarget();
+        if (_lastSeekTime < Time.time - E.combatStats.detectionPeriod)
+            SeekPlayer();
     }
 
     private void Oscillate() {
@@ -32,41 +38,47 @@ public class Patrolling: EnemyState
         E.SetVelocityY(targetSpeed);
     }
 
-    private bool PlayerReachable() {
+    private void FollowTarget() {
+        var dir = (_moveTowards - E.Pos).normalized;
+        E.AddForce(dir*E.movementStats.walkSpeed);
+    }
+
+    private void SeekPlayer() {
         // If player within detection range circle, set player as target
-        if (_player == null) {
+        if (E.Target == null) {
             Collider2D playerCol = Physics2D.OverlapCircle(E.Pos, E.combatStats.detectionRange, E.playerLayer);
             if (playerCol != null)
-                playerCol.TryGetComponent(out _player);
+                E.Target = playerCol.GetComponent<PlayerController>();
         }
         // if player still not found, wait
-        if (_player == null) return false;
+        if (E.Target  == null) return;
 
         // If player found, check line if accessible
         var combinedLayer = E.terrainLayer | E.playerLayer;
 
-        Vector2 playerPos = _player.transform.position;
-        Vector2 directionToPlayer = (playerPos - E.Pos).normalized;
+        Vector2 directionToPlayer = (E.TargetPos - E.Pos).normalized;
         Vector2 perpendicular = Vector2.Perpendicular(directionToPlayer);
         Vector2 perpendicular2 = -perpendicular;
-        float distanceToPlayer = Vector2.Distance(E.Pos, playerPos);
+        float distanceToPlayer = Vector2.Distance(E.Pos, E.TargetPos);
 
         Debug.DrawRay(E.Pos, directionToPlayer * distanceToPlayer, Color.red, 0.1f);
         // 1. Direct line of sight - Send ray from enemy transform to player transform
         RaycastHit2D directHit = Physics2D.Raycast(E.Pos, directionToPlayer, distanceToPlayer,combinedLayer);
         if (directHit.collider != null &&
             ((1 << directHit.collider.gameObject.layer) & E.playerLayer) != 0) {
-            return true;
+            PlayerDetected?.Invoke();
+            return;
         }
 
         // 2. Around corner - Check if reachable around an obstacle in triangular path
         float maxTriangleHeight = Mathf.Sqrt(3)/2 * distanceToPlayer; // Don't go beyond equilateral triangle
         for (float height = maxTriangleHeight / 4; height <= maxTriangleHeight; height += maxTriangleHeight / 4) {
-            if (ReachablePolygonally(playerPos, distanceToPlayer, directionToPlayer, perpendicular, combinedLayer, height) ||
-                ReachablePolygonally(playerPos, distanceToPlayer, directionToPlayer, perpendicular2, combinedLayer, height))
-                return true;
+            if (ReachablePolygonally(E.TargetPos, distanceToPlayer, directionToPlayer, perpendicular, combinedLayer, height) ||
+                ReachablePolygonally(E.TargetPos, distanceToPlayer, directionToPlayer, perpendicular2, combinedLayer, height))
+                return;
         }
-        return false;
+
+        _moveTowards = Vector2.zero;
     }
 
     private bool ReachablePolygonally(Vector2 playerPos, float distanceToPlayer, Vector2 directionToPlayer,
@@ -96,8 +108,12 @@ public class Patrolling: EnemyState
         RaycastHit2D triangularHit = Physics2D.Raycast(otherTrianglePoint, (playerPos - otherTrianglePoint).normalized,
             sideLength, combinedLayer);
 
-        return triangularHit.collider != null &&
-               ((1 << triangularHit.collider.gameObject.layer) & E.playerLayer) != 0;
+        if (triangularHit.collider != null && ((1 << triangularHit.collider.gameObject.layer) & E.playerLayer) != 0) {
+            _moveTowards = otherTrianglePoint; // We know the player is reachable if bird goes via this point
+            return true;
+        }
+
+        return false;
     }
 
     private bool ReachableHexagonally(Vector2 playerPos, float distanceToPlayer, Vector2 directionToPlayer, Vector2 perpendicular,
@@ -123,8 +139,12 @@ public class Patrolling: EnemyState
         RaycastHit2D hexagonalHit = Physics2D.Raycast(point2, (playerPos - point2).normalized,
             shortSideLength, combinedLayer);
 
-        return hexagonalHit.collider != null &&
-            ((1 << hexagonalHit.collider.gameObject.layer) & E.playerLayer) != 0;
+        if (hexagonalHit.collider != null && ((1 << hexagonalHit.collider.gameObject.layer) & E.playerLayer) != 0) {
+            _moveTowards = point1;
+            return true;
+        }
+
+        return false;
 
     }
 }
