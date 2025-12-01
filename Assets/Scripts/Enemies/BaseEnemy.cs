@@ -89,7 +89,7 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
 
         RaycastHit2D groundHit = Physics2D.Raycast(positionAhead,
             Vector2.down,
-            this.GetSizeX() / 2 + movementStats.groundDetectionDistance,
+            this.GetSizeY() / 2 + movementStats.groundDetectionDistance,
             terrainLayer);
 
         RaycastHit2D wallhit = Physics2D.Raycast(Pos,
