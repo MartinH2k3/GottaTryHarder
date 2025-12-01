@@ -9,6 +9,7 @@ public class Attacking: EnemyState
     public Attacking(BaseEnemy enemy) : base(enemy) { }
 
     public bool IsAttackFinished;
+    private bool AttackAnimationPlaying => E.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack");
     private bool AttackAnimFinished => E.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f;
     private bool AttackApplyTime => E.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >=  E.animationStats.damageApplyNormalizedTime;
     private bool _attackExecuted;
@@ -16,7 +17,7 @@ public class Attacking: EnemyState
     public override void Enter() {
         base.Enter();
         // Stop movement from pursuit
-        E.SetVelocityY(0);
+        E.SetVelocityX(0);
 
         E.animator.SetBool("Attacking", true);
         IsAttackFinished = false;
@@ -25,11 +26,11 @@ public class Attacking: EnemyState
 
     public override void Tick() {
         base.Tick();
-        if (AttackApplyTime && !_attackExecuted) {
+        if (AttackAnimationPlaying && AttackApplyTime && !_attackExecuted) {
             Attack();
             _attackExecuted = true;
         }
-        if (AttackAnimFinished) {
+        if (AttackAnimFinished && _attackExecuted) {
             // Using this instead the controller using AttackAnimFinished directly, to avoid issues if AttackApplyTime is at the end of the animation
             IsAttackFinished = true;
         }
@@ -56,7 +57,6 @@ public class Attacking: EnemyState
         if (playerWithinHitbox) {
             player.TakeDamage(E.combatStats.attackDamage);
             player.SetVelocityX(0); // So that player can't resist initial knockback by moving
-            Debug.Log(player.GetVelocity());
             player.AddForce(new Vector2(
                 E.combatStats.attackKnockback * E.FacingDirection,
                 E.combatStats.verticalKnockback),
