@@ -8,25 +8,30 @@ public class Attacking: EnemyState
 {
     public Attacking(BaseEnemy enemy) : base(enemy) { }
 
-    public bool IsAttackFinished => E.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f && _attackExecuted;
-    private float _attackStartTime;
+    public bool IsAttackFinished;
+    private bool AttackAnimFinished => E.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f;
+    private bool AttackApplyTime => E.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >=  E.animationStats.damageApplyNormalizedTime;
     private bool _attackExecuted;
 
     public override void Enter() {
         base.Enter();
-        Debug.Log("Entering Attacking");
-        E.animator.SetTrigger("Attack");
-        _attackStartTime = Time.time + E.combatStats.attackDelay;
-        _attackExecuted = false;
+        // Stop movement from pursuit
+        E.SetVelocityY(0);
+
+        E.animator.SetBool("Attacking", true);
+        IsAttackFinished = false;
     }
 
     public override void Tick() {
         base.Tick();
-        if (Time.time < _attackStartTime || _attackExecuted) {
-            return;
+        if (AttackApplyTime && !_attackExecuted) {
+            Attack();
+            _attackExecuted = true;
         }
-        Attack();
-        _attackExecuted = true;
+        if (AttackAnimFinished) {
+            // Using this instead the controller using AttackAnimFinished directly, to avoid issues if AttackApplyTime is at the end of the animation
+            IsAttackFinished = true;
+        }
     }
 
     private void Attack() {
@@ -50,20 +55,23 @@ public class Attacking: EnemyState
         if (playerWithinHitbox) {
             player.TakeDamage(E.combatStats.attackDamage);
             player.SetVelocityX(0); // So that player can't resist initial knockback by moving
+            Debug.Log(player.GetVelocity());
             player.AddForce(new Vector2(
                 E.combatStats.attackKnockback * E.FacingDirection,
                 E.combatStats.verticalKnockback),
                 ForceMode2D.Impulse);
+            Debug.Log("Velocity after" + player.GetVelocity());
             // Need to stun for enough time so that he doesn't immediately cancel the stun with movement
             float stunDuration = 0.1f * E.combatStats.attackKnockback;
             player.LockMovement(stunDuration);
         }
 
-        //DisplayAttackHitbox(min, max);
+        DisplayAttackHitbox(min, max);
     }
 
     public override void Exit() {
         base.Exit();
+        E.animator.SetBool("Attacking", false);
         E.LastAttackTime = Time.time;
     }
 

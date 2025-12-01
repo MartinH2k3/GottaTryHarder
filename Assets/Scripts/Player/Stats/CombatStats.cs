@@ -17,6 +17,8 @@ public class CombatStats
 
     public float attackDelay = 0.1f; // Delay from animation trigger to actual attack
 
+    public int lifeSteal = 0; // Health regained for killing an enemy
+
     public bool jumpKickUnlocked = false;
     public bool comboUnlocked = false;
 }

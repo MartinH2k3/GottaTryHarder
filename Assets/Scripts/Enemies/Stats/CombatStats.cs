@@ -7,7 +7,8 @@ public class CombatStats
 {
     public int maxHealthPoints = 30;
     public int attackDamage = 10;
-    public float attackRate = 1f;
+    [Tooltip("Base attack speed is the length of the attack animation.")]
+    public float attackSpeedMult = 1f;
     public float attackKnockback = 2f;
     [Header("Targeting")]
     public float noticeTime = 0.5f; // Time for the enemy to process in their head "Oh wait, there is a guy, I'm going after him"

@@ -11,6 +11,11 @@ public class Patrolling: EnemyState
 
     public event Action<PlayerController> PlayerDetected;
 
+    public override void Enter() {
+        base.Enter();
+        E.animator.SetBool("Walking", true);
+    }
+
     public override void FixedTick() {
         base.FixedTick();
         if (E.CanWalkForward())

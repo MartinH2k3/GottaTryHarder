@@ -1,4 +1,5 @@
-﻿using Enemies.Stats;
+﻿using Enemies.Melee.Stats;
+using Enemies.Stats;
 using Infrastructure.StateMachine;
 using Mechanics;
 using Player;
@@ -11,9 +12,11 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
     // Stats
     [Header("Stats")]
     [Tooltip("Not all enemies will use all of the stats here.")]
-    [SerializeField] public MovementStats movementStats;
+    public MovementStats movementStats;
     [Tooltip("Not all enemies will use all of the stats here.")]
-    [SerializeField] public CombatStats combatStats;
+    public CombatStats combatStats;
+    [Tooltip("Not all enemies will use all of the stats here.")]
+    public AnimationStats animationStats;
     private int _currentHealth;
 
     /// <summary>To prevent lag, pathfinding happens in more scarce intervals, rather than every frame.</summary>
