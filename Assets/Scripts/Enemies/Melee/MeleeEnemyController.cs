@@ -11,7 +11,10 @@ public class MeleeEnemyController: BaseEnemy
     private Pursuit _pursuit;
     private Attacking _attacking;
 
-    private bool CanAttack => LastAttackTime + (1f / combatStats.attackRate) < Time.time;
+    protected override void Awake() {
+        base.Awake();
+        animator.SetFloat("Attack Speed Multiplier", combatStats.attackSpeedMult);
+    }
 
     protected override void Start() {
         base.Start();
@@ -27,11 +30,12 @@ public class MeleeEnemyController: BaseEnemy
 
         StateMachine.AddStartTransition(_patrolling, () => !TargetInRange());
         StateMachine.AddStartTransition(_pursuit, TargetInRange);
+        StateMachine.AddStartTransition(_attacking, TargetInAttackRange);
 
         StateMachine.AddTransition(_patrolling, _pursuit, TargetInRange);
         StateMachine.AddTransition(_pursuit, _patrolling, () => !TargetInRange(), 1);
 
-        StateMachine.AddTransition(_pursuit, _attacking, () => TargetInAttackRange() && CanAttack);
+        StateMachine.AddTransition(_pursuit, _attacking, TargetInAttackRange);
         StateMachine.AddExitTransition(_attacking, () => _attacking.IsAttackFinished);
     }
 

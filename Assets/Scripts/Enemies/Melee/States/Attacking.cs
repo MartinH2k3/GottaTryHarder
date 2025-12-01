@@ -20,6 +20,7 @@ public class Attacking: EnemyState
 
         E.animator.SetBool("Attacking", true);
         IsAttackFinished = false;
+        _attackExecuted = false;
     }
 
     public override void Tick() {
