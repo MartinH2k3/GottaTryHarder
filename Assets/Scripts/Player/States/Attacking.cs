@@ -7,7 +7,7 @@ namespace Player.States
 {
 public class Attacking: PlayerState
 {
-    public bool IsAttackFinished => P.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f;
+    public bool IsAttackFinished => P.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f && P.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack");
     private CombatStats _stats;
     private float _attackStartTime;
     private bool _attackExecuted;

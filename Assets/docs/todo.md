@@ -1,6 +1,6 @@
 ﻿# System
 ## Transition between scenes
-- [ ] Home scene
+- [x] Home scene
 - [ ] Home scene -> Game scene
 
 ## Pause menu
@@ -17,12 +17,16 @@
 - [ ] Dying
 - [ ] Health
 
+## Death-count related game mechanics
+- [ ] Take damage on jump
+- [ ] LifeSteal on enemy kill
+
 # Art
 ## Player
-- [ ] Idle animation
-- [ ] Running animation
-- [ ] Jumping animation
-- [ ] Falling animation
+- [x] Idle animation
+- [x] Running animation
+- [x] Jumping animation
+- [x] Falling animation
 - [ ] Dashing animation
 - [ ] Dying animation
 

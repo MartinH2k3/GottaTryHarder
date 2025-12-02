@@ -19,5 +19,9 @@ public class JumpStats
     public float airAccel = 35f;
     public float airDecel = 25f;
     public bool  allowSprintInAir = false;
+
+    [Header("Combat")]
+    [Tooltip("Damage dealt when jumping from knee pain")]
+    public int damageTakenOnJump = 0;
 }
 }

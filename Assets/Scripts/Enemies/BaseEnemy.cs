@@ -100,6 +100,17 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
             movementStats.lookaheadDistance,
             terrainLayer);
 
+        // Visualize ground check ray (yellow)
+        Debug.DrawRay(positionAhead,
+            Vector2.down * (this.GetSizeY() / 2 + movementStats.groundDetectionDistance),
+            Color.yellow);
+
+        // Visualize wall check ray (red)
+        Debug.DrawRay(Pos,
+            Vector2.right * FacingDirection * movementStats.lookaheadDistance,
+            Color.red);
+
+
         return groundHit.collider is not null && wallhit.collider is null;
     }
 
