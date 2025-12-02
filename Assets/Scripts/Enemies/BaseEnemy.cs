@@ -120,7 +120,7 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
 
             _lastTargetCheckTime = Time.time;
             _lastTargetCheck = hit.collider is not null && (Vector2)hit.transform.position == TargetPos;
-            // TODO store the whole player object reference instead of just transform
+
             return _lastTargetCheck;
     }
 
