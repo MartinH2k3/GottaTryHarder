@@ -26,6 +26,7 @@ public class Dashing: PlayerState
     public override void Exit() {
         P.SetGravityScale(_ogGravity);
         P.StartDashCooldown();
+        P.SetVelocityX(0);
     }
 
 

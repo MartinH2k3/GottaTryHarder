@@ -98,7 +98,7 @@ public static class PhysicsMovableExtensions {
     }
 
     /// <summary>
-    /// Gradually accelerate or decelerate the X velocity toward a target speed.
+    /// Gradually accelerate the X velocity toward a target speed.
     /// </summary>
     /// <param name="movable">Any object that exposes a Rigidbody2D via IPhysicsMovable.</param>
     /// <param name="targetSpeed">Desired horizontal velocity (units/second). Positive numbers move the object to the right, negative move it to the left.</param>
@@ -116,6 +116,39 @@ public static class PhysicsMovableExtensions {
         // If already at or beyond target speed, do nothing
         if ((targetSpeed > 0 && v.x > targetSpeed) ||
             (targetSpeed < 0 && v.x < targetSpeed)) return;
+
+        float diff = targetSpeed - v.x;
+        float force = diff * acceleration;
+
+        movable.AddForce(force);
+
+        // Snap to zero at very low speeds to avoid endless micro-drift
+        v = movable.GetVelocity();
+        if (Mathf.Abs(v.x) < 0.05f)
+            movable.SetVelocity(0f, v.y);
+
+        // Flip facing direction if player initiated
+        if (voluntaryMovement && Mathf.Abs(targetSpeed) > 0.01f) {
+            var t = movable.Rigidbody.transform;
+            t.localScale = new Vector3(Mathf.Sign(targetSpeed), t.localScale.y, t.localScale.z);
+        }
+    }
+
+    /// <summary>
+    /// Gradually accelerate or decelerate the X velocity toward a target speed (if only accelerating, use AccelerateX).
+    /// </summary>
+    /// <param name="movable">Any object that exposes a Rigidbody2D via IPhysicsMovable.</param>
+    /// <param name="targetSpeed">Desired horizontal velocity (units/second). Positive numbers move the object to the right, negative move it to the left.</param>
+    /// <param name="acceleration">Rate at which to approach target speed.</param>
+    /// <param name="voluntaryMovement">When the movement is done by player/NPC, also flips which way the sprite is looking.</param>
+    public static void CelerateX(
+        this IPhysicsMovable movable,
+        float targetSpeed,
+        float acceleration = 1,
+        bool voluntaryMovement = true) {
+        if (movable.Rigidbody is null) return;
+
+        var v = movable.GetVelocity();
 
         float diff = targetSpeed - v.x;
         float force = diff * acceleration;

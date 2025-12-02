@@ -39,7 +39,7 @@ public class Walking: GroundedBase
 
         var acceleration = Mathf.Abs(targetSpeed) > 0.01f ? _stats.walkAccel : _stats.walkDecel;
 
-        P.AccelerateX(targetSpeed, acceleration);
+        P.CelerateX(targetSpeed, acceleration);
     }
 
     // Make it harder to fall off edges
