@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 5478624417887091192}
   - component: {fileID: 7166676804170741278}
+  - component: {fileID: 2410203792715232149}
   - component: {fileID: 6884834606298613160}
   - component: {fileID: 2248721199180678650}
   - component: {fileID: 3873189119076095086}
-  - component: {fileID: 2410203792715232149}
   m_Layer: 0
   m_Name: Golubok
   m_TagString: Untagged
@@ -94,6 +94,50 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2410203792715232149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7980402137147334307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd3125085898453bb2b3282d3555026c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemies.Golubok.GolubokController
+  movementStats:
+    walkSpeed: 3
+    chaseSpeed: 7
+    acceleration: 30
+    lookaheadDistance: 1
+    groundDetectionDistance: 0.02
+    oscillationPeriod: 2
+    oscillationAmplitude: 1
+  combatStats:
+    maxHealthPoints: 30
+    attackDamage: 10
+    attackSpeedMult: 1
+    attackKnockback: 2
+    noticeTime: 0.5
+    detectionRange: 2
+    attackRange: 1
+    detectionPeriod: 0.2
+    attackWidth: 0.2
+    verticalKnockback: 1
+    chargeTime: 1
+    launchForce: -10
+  animationStats:
+    damageApplyNormalizedTime: 0.8
+  detectionInterval: 0.2
+  rb: {fileID: 2248721199180678650}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  terrainLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  animator: {fileID: 3873189119076095086}
 --- !u!58 &6884834606298613160
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -167,7 +211,7 @@ Animator:
   m_GameObject: {fileID: 7980402137147334307}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b768fdc6d9005f044ad4d4001f010647, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -179,46 +223,3 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &2410203792715232149
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7980402137147334307}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd3125085898453bb2b3282d3555026c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Enemies.Golubok.GolubokController
-  movementStats:
-    walkSpeed: 3
-    chaseSpeed: 7
-    acceleration: 30
-    lookaheadDistance: 1
-    groundDetectionDistance: 0.02
-    oscillationPeriod: 2
-    oscillationAmplitude: 1
-  combatStats:
-    maxHealthPoints: 30
-    attackDamage: 10
-    attackRate: 1
-    attackKnockback: 2
-    noticeTime: 0.5
-    detectionRange: 2
-    attackRange: 1
-    detectionPeriod: 0.2
-    attackDelay: 0.1
-    attackWidth: 0.2
-    verticalKnockback: 1
-    chargeTime: 1
-    launchForce: -10
-  detectionInterval: 0.2
-  rb: {fileID: 2248721199180678650}
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  terrainLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  animator: {fileID: 3873189119076095086}
