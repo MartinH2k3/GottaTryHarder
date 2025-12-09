@@ -1,16 +1,25 @@
 fileFormatVersion: 2
-guid: c70f0d7bd8bd57a45badcb988c2e08ec
+guid: 141c4ded214c43a49880141d04ee72b1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7644448033574741834
-    second: buff_idle_0
+      213: 7209782413400380619
+    second: skinny_dash_0
   - first:
-      213: 261793019819212224
-    second: buff_idle_1
+      213: -4530224040877766134
+    second: skinny_dash_1
   - first:
-      213: 8058670280906355167
-    second: buff_idle_2
+      213: 1859185553584029482
+    second: skinny_dash_2
+  - first:
+      213: -681925490632878346
+    second: skinny_dash_3
+  - first:
+      213: -1520652585857242676
+    second: skinny_dash_4
+  - first:
+      213: -2626122663929980467
+    second: skinny_dash_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -106,67 +115,133 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: buff_idle_0
+      name: skinny_dash_0
       rect:
         serializedVersion: 2
-        x: 5
+        x: 15
         y: 0
         width: 21
-        height: 45
+        height: 33
       alignment: 9
-      pivot: {x: 0.5714286, y: 0.4888889}
+      pivot: {x: 0.42857143, y: 0.45454547}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a47e7290cf8861a60800000000000000
-      internalID: 7644448033574741834
+      spriteID: bc4969ae7ea4e0460800000000000000
+      internalID: 7209782413400380619
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: buff_idle_1
+      name: skinny_dash_1
       rect:
         serializedVersion: 2
-        x: 37
+        x: 59
         y: 0
-        width: 21
-        height: 45
+        width: 25
+        height: 34
       alignment: 9
-      pivot: {x: 0.5714286, y: 0.4888889}
+      pivot: {x: 0.52, y: 0.44117647}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0cd300f4d5312a300800000000000000
-      internalID: 261793019819212224
+      spriteID: a0acb8aac396121c0800000000000000
+      internalID: -4530224040877766134
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: buff_idle_2
+      name: skinny_dash_2
       rect:
         serializedVersion: 2
-        x: 69
+        x: 103
         y: 0
-        width: 21
-        height: 45
+        width: 29
+        height: 33
       alignment: 9
-      pivot: {x: 0.5714286, y: 0.4888889}
+      pivot: {x: 0.5862069, y: 0.45454547}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: fd1bb6f7ce526df60800000000000000
-      internalID: 8058670280906355167
+      spriteID: a2ff9ec19672dc910800000000000000
+      internalID: 1859185553584029482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skinny_dash_3
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 0
+        width: 33
+        height: 33
+      alignment: 9
+      pivot: {x: 0.6363636, y: 0.45454547}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f61b8711605986f0800000000000000
+      internalID: -681925490632878346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skinny_dash_4
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 0
+        width: 28
+        height: 33
+      alignment: 9
+      pivot: {x: 0.5714286, y: 0.45454547}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc92339a78e85eae0800000000000000
+      internalID: -1520652585857242676
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skinny_dash_5
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 0
+        width: 33
+        height: 34
+      alignment: 9
+      pivot: {x: 0.6363636, y: 0.44117647}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc9d9d7d9532e8bd0800000000000000
+      internalID: -2626122663929980467
       vertices: []
       indices: 
       edges: []
@@ -175,7 +250,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 1bea0b4d8211b274294ee0383f41de42
+    spriteID: 46b10739cbabb9f498d1e4a1a147f622
     internalID: 0
     vertices: []
     indices: 
@@ -185,9 +260,12 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      buff_idle_0: 7644448033574741834
-      buff_idle_1: 261793019819212224
-      buff_idle_2: 8058670280906355167
+      skinny_dash_0: 7209782413400380619
+      skinny_dash_1: -4530224040877766134
+      skinny_dash_2: 1859185553584029482
+      skinny_dash_3: -681925490632878346
+      skinny_dash_4: -1520652585857242676
+      skinny_dash_5: -2626122663929980467
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

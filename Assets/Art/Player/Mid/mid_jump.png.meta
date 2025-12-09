@@ -112,12 +112,12 @@ TextureImporter:
       name: mid_jump_0
       rect:
         serializedVersion: 2
-        x: 7
+        x: 8
         y: 0
-        width: 17
+        width: 15
         height: 37
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.6, y: 0.4864865}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -134,12 +134,12 @@ TextureImporter:
       name: mid_jump_1
       rect:
         serializedVersion: 2
-        x: 38
-        y: 1
-        width: 19
-        height: 36
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 39
+        y: 0
+        width: 17
+        height: 37
+      alignment: 9
+      pivot: {x: 0.5882353, y: 0.4864865}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -157,11 +157,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 65
-        y: 4
+        y: 0
         width: 29
-        height: 33
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        height: 37
+      alignment: 9
+      pivot: {x: 0.55172414, y: 0.4864865}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -182,8 +182,8 @@ TextureImporter:
         y: 0
         width: 17
         height: 37
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5882353, y: 0.4864865}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -200,7 +200,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 8c0bcf5fade1a524ea7736092a6189cc
     internalID: 0
     vertices: []
     indices: 

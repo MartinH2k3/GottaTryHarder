@@ -5,6 +5,21 @@ TextureImporter:
   - first:
       213: 3938100287924991690
     second: mid_dash_0
+  - first:
+      213: -8686469893806239660
+    second: mid_dash_1
+  - first:
+      213: 6686805449444870893
+    second: mid_dash_2
+  - first:
+      213: -584087018801194915
+    second: mid_dash_3
+  - first:
+      213: 2579032572831831963
+    second: mid_dash_4
+  - first:
+      213: -7918671477241958265
+    second: mid_dash_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -103,12 +118,12 @@ TextureImporter:
       name: mid_dash_0
       rect:
         serializedVersion: 2
-        x: 7
+        x: 15
         y: 0
         width: 24
         height: 37
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.4864865}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -121,11 +136,121 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: mid_dash_1
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 0
+        width: 28
+        height: 37
+      alignment: 9
+      pivot: {x: 0.5714286, y: 0.4864865}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 450dd8b87a5737780800000000000000
+      internalID: -8686469893806239660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mid_dash_2
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 0
+        width: 32
+        height: 37
+      alignment: 9
+      pivot: {x: 0.625, y: 0.4864865}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: deace48c02e4ccc50800000000000000
+      internalID: 6686805449444870893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mid_dash_3
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 0
+        width: 36
+        height: 37
+      alignment: 9
+      pivot: {x: 0.6666667, y: 0.4864865}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d58107673f7e4e7f0800000000000000
+      internalID: -584087018801194915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mid_dash_4
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 39
+        height: 37
+      alignment: 9
+      pivot: {x: 0.6923077, y: 0.4864865}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b979dcfe5709ac320800000000000000
+      internalID: 2579032572831831963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mid_dash_5
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 0
+        width: 36
+        height: 37
+      alignment: 9
+      pivot: {x: 0.6666667, y: 0.4864865}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 780b9f11f3a3b1290800000000000000
+      internalID: -7918671477241958265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: ae27306c7f6531e4fa7e01d54903c3dc
     internalID: 0
     vertices: []
     indices: 
@@ -136,6 +261,11 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       mid_dash_0: 3938100287924991690
+      mid_dash_1: -8686469893806239660
+      mid_dash_2: 6686805449444870893
+      mid_dash_3: -584087018801194915
+      mid_dash_4: 2579032572831831963
+      mid_dash_5: -7918671477241958265
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

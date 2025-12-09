@@ -17,6 +17,7 @@ public class Dashing: PlayerState
         _ogGravity = P.GetGravityScale();
         P.SetGravityScale(0f);
         _dashDirection = P.FacingDirection;
+        P.animator.SetTrigger("Dash");
     }
 
     public override void FixedTick() {
