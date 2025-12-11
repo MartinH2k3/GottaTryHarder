@@ -120,7 +120,7 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     [Header("Combat")]
     public CombatStats combatStats;
     public bool IsDead { get; private set; }
-    public event Action onDeath;
+    public event Action OnDeath;
     public bool IsVulnerable => _vulnerabilityState == VulnerabilityState.Vulnerable;
     public int HealthPoints { get; set; }
 
@@ -295,7 +295,7 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     public void Die() {
         if (IsDead) return;
         IsDead = true;
-        onDeath?.Invoke();
+        OnDeath?.Invoke();
     }
 
     public void LockMovement(float duration) {
