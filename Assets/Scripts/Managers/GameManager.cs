@@ -68,7 +68,6 @@ public class GameManager: MonoBehaviour
         _prevLevelsTime = GetSpentTime(_currentLevelIndex);
 
         DeathCount = GetDeathCount(_currentLevelIndex);
-
         var playerPrefab = ChoosePlayerPrefab(DeathCount);
         _player = Instantiate(playerPrefab, PlayerSpawnPoint, Quaternion.identity);
         LevelUpPlayer(DeathCount);
@@ -120,7 +119,7 @@ public class GameManager: MonoBehaviour
         }
 
         int deaths = 0;
-        for (var i = 0; i < levelIndex; i++) {
+        for (var i = 0; i < levelIndex+1; i++) {
             var stats = statsArray[i];
             deaths += stats.deathCount;
         }
