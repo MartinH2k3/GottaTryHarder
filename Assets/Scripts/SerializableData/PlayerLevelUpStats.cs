@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ScriptableObjects
+namespace SerializableData
 {
 [CreateAssetMenu(fileName = "PlayerLevelUpStats", menuName = "ScriptableObjects/Player Level Up Stats")]
 public class PlayerLevelUpStats : ScriptableObject

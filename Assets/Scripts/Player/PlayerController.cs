@@ -1,3 +1,4 @@
+using System;
 using Mechanics;
 using Player.States;
 using Player.Stats;
@@ -119,6 +120,7 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     [Header("Combat")]
     public CombatStats combatStats;
     public bool IsDead { get; private set; }
+    public event Action onDeath;
     public bool IsVulnerable => _vulnerabilityState == VulnerabilityState.Vulnerable;
     public int HealthPoints { get; set; }
 
@@ -291,11 +293,9 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     }
 
     public void Die() {
-
-    }
-
-    public void UpdateStats(int deathCount) {
-        // TODO unlock combos, double jump, etc based on deathCount
+        if (IsDead) return;
+        IsDead = true;
+        onDeath?.Invoke();
     }
 
     public void LockMovement(float duration) {
