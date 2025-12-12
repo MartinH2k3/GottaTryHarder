@@ -162,7 +162,7 @@ Rigidbody2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
@@ -210,6 +210,11 @@ MonoBehaviour:
   terrainLayer:
     serializedVersion: 2
     m_Bits: 64
+  sounds:
+    noticePlayer: {fileID: 0}
+    attack: {fileID: 0}
+    hurt: {fileID: 0}
+    death: {fileID: 0}
   animator: {fileID: 1420626018966755554}
 --- !u!95 &1420626018966755554
 Animator:
