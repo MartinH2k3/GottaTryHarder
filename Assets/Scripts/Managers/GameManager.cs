@@ -58,9 +58,7 @@ public class GameManager: MonoBehaviour
         _currentLevelIndex = GetCurrentLevelIndex();
 
         // Skip Main Menu
-        if (_currentLevelIndex < 0) {
-            return;
-        }
+        if (_currentLevelIndex < 0) return;
 
         LoadLevelData();
 
@@ -106,6 +104,7 @@ public class GameManager: MonoBehaviour
         return _levelCompletionData.levelStats[level].deathCount;
     }
 
+    /// <summary> Calculates sum of times for all levels until current level + time spent in current level </summary>
     public float GetTimeSoFar() {
         return _prevLevelsTime + (Time.time - _spawnTimestamp);
     }
@@ -114,9 +113,7 @@ public class GameManager: MonoBehaviour
     private int GetDeathCount(int levelIndex = -1) {
         var statsArray = _levelCompletionData.levelStats;
 
-        if (levelIndex < 0) {
-            levelIndex = statsArray.Length;
-        }
+        if (levelIndex < 0) levelIndex = statsArray.Length;
 
         int deaths = 0;
         for (var i = 0; i < levelIndex+1; i++) {
@@ -126,12 +123,13 @@ public class GameManager: MonoBehaviour
         return deaths;
     }
 
+    /// <summary> Calculates sum of times for all levels until chosen level.
+    /// <param name="levelIndex">Index of final level counted. -1 means all levels</param>
+    /// </summary>
     public float GetSpentTime(int levelIndex = -1) {
         var statsArray = _levelCompletionData.levelStats;
 
-        if (levelIndex < 0) {
-            levelIndex = statsArray.Length;
-        }
+        if (levelIndex < 0)  levelIndex = statsArray.Length;
 
         float time = 0f;
         for (var i = 0; i < levelIndex; i++) {
@@ -199,10 +197,8 @@ public class GameManager: MonoBehaviour
     private void UpdateCameraTarget()
     {
         var followCamera = FindFirstObjectByType<CinemachineCamera>();
-        if (followCamera != null)
-        {
-            followCamera.Follow = _player.transform;
-        }
+
+        if (followCamera != null) followCamera.Follow = _player.transform;
     }
 }
 
