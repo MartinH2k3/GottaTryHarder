@@ -1,4 +1,5 @@
-﻿using Mechanics;
+﻿using Managers;
+using Mechanics;
 using Player.Stats;
 using UnityEngine;
 
@@ -18,6 +19,11 @@ public class Airborne: PlayerState
             P.animator.SetTrigger("Fall");
     }
 
+    public override void Exit() {
+        base.Exit();
+        AudioManager.Instance.PlaySFX(P.sounds.land);
+    }
+
     public override void FixedTick() {
         if (P.ShouldStartJump) Jump();
 
@@ -35,6 +41,7 @@ public class Airborne: PlayerState
     }
 
     private void Jump() {
+        AudioManager.Instance.PlaySFX(P.sounds.jump);
         if (!P.CanSingleJump && !P.CanAirJump)
             return;
 

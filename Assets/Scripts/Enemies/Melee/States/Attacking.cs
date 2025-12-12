@@ -1,4 +1,5 @@
 ﻿using Enemies.States;
+using Managers;
 using Mechanics;
 using UnityEngine;
 
@@ -19,6 +20,7 @@ public class Attacking: EnemyState
         // Stop movement from pursuit
         E.SetVelocityX(0);
 
+        AudioManager.Instance.PlaySFX(E.sounds.attack);
         E.animator.SetBool("Attacking", true);
         IsAttackFinished = false;
         _attackExecuted = false;

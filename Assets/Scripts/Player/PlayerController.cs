@@ -1,4 +1,5 @@
 using System;
+using Managers;
 using Mechanics;
 using Player.States;
 using Player.Stats;
@@ -140,6 +141,9 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     [Tooltip("Time after landing where horizontal movement is locked so it's easier to land on tight spaces.")]
     private float _horizontalControlUnlockTime = 0f;
     public bool HorizontalControlLocked => Time.time <= _horizontalControlUnlockTime;
+
+    [Header("Audio")]
+    [SerializeField] public PlayerSounds sounds;
 
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI debugText;
@@ -295,6 +299,7 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     public void Die() {
         if (IsDead) return;
         IsDead = true;
+        AudioManager.Instance.PlaySFX(sounds.death);
         OnDeath?.Invoke();
     }
 
@@ -332,5 +337,19 @@ public sealed class PlayerIntent
     {
         JumpPressed = DashPressed = InteractPressed = AttackPressed = false;
     }
+}
+
+[Serializable]
+public sealed class PlayerSounds
+{
+    public AudioClip jump;
+    public AudioClip land;
+    public AudioClip dash;
+    public AudioClip attack;
+    public AudioClip hurt;
+    public AudioClip death;
+
+    // Should disable constructor, as we never want to instantiate, but it gave me a warning and it annoyed me
+    // private PlayerSounds() { }
 }
 }

@@ -1,6 +1,8 @@
-﻿using Enemies.Melee.Stats;
+﻿using System;
+using Enemies.Melee.Stats;
 using Enemies.Stats;
 using Infrastructure.StateMachine;
+using Managers;
 using Mechanics;
 using Player;
 using UnityEngine;
@@ -49,6 +51,9 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
     public float EnemyHeight => Col.bounds.size.y;
     public float EnemyWidth => Col.bounds.size.x;
 
+    [Header("Audio")]
+    public EnemySounds sounds;
+
     [Header("Misc")]
     public Animator animator;
 
@@ -74,6 +79,7 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
     }
 
     public virtual void TakeDamage(int damageAmount) {
+        AudioManager.Instance.PlaySFX(sounds.hurt);
         _currentHealth -= damageAmount;
         if (_currentHealth <= 0) {
             Die();
@@ -81,6 +87,7 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
     }
 
     public virtual void Die() {
+        AudioManager.Instance.PlaySFX(sounds.death);
         Destroy(gameObject);
     }
 
@@ -142,5 +149,15 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
         float distanceToTarget = Vector2.Distance(Pos, TargetPos);
         return distanceToTarget <= combatStats.attackRange;
     }
+}
+
+
+[Serializable]
+public sealed class EnemySounds
+{
+    public AudioClip noticePlayer;
+    public AudioClip attack;
+    public AudioClip hurt;
+    public AudioClip death;
 }
 }

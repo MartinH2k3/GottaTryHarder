@@ -1,4 +1,5 @@
 using Enemies;
+using Managers;
 using Mechanics;
 using Player.Stats;
 using UnityEngine;
@@ -22,6 +23,7 @@ public class Attacking: PlayerState
 
     public override void Enter() {
         P.animator.SetTrigger("Attack");
+        AudioManager.Instance.PlaySFX(P.sounds.attack);
 
         _attackStartTime = Time.time + _stats.attackDelay;
         _attackExecuted = false;

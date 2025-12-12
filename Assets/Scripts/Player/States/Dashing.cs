@@ -1,4 +1,5 @@
-﻿using Mechanics;
+﻿using Managers;
+using Mechanics;
 using Player.Stats;
 
 namespace Player.States
@@ -18,6 +19,7 @@ public class Dashing: PlayerState
         P.SetGravityScale(0f);
         _dashDirection = P.FacingDirection;
         P.animator.SetTrigger("Dash");
+        AudioManager.Instance.PlaySFX(P.sounds.dash);
     }
 
     public override void FixedTick() {
