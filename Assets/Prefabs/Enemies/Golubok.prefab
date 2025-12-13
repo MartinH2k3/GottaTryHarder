@@ -126,7 +126,8 @@ MonoBehaviour:
     attackWidth: 0.2
     verticalKnockback: 1
     chargeTime: 1
-    launchForce: -10
+    launchForce: 10
+    bounceFactor: 0.8
   animationStats:
     damageApplyNormalizedTime: 0.8
   detectionInterval: 0.2
@@ -137,6 +138,11 @@ MonoBehaviour:
   terrainLayer:
     serializedVersion: 2
     m_Bits: 64
+  sounds:
+    noticePlayer: {fileID: 0}
+    attack: {fileID: 0}
+    hurt: {fileID: 0}
+    death: {fileID: 0}
   animator: {fileID: 3873189119076095086}
 --- !u!58 &6884834606298613160
 CircleCollider2D:

@@ -33,17 +33,8 @@ public class GolubokController: BaseEnemy
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (StateMachine.Current != _launching) return;
-
-        if (((1 << collision.gameObject.layer) & (terrainLayer | playerLayer)) != 0)
-        {
-            Debug.Log($"Collision: {collision.gameObject.name}, Layer: {collision.gameObject.layer}, TerrainMask: {terrainLayer.value}, PlayerMask: {playerLayer.value}, CurrentState: {StateMachine.Current?.GetType().Name}");
-            var contact = collision.GetContact(0);
-            var normal = contact.normal;
-            var impactSpeed = collision.relativeVelocity.magnitude;
-            Debug.Log($"Impact Speed: {impactSpeed}, Normal: {normal}");
-            _launching.Bounce(normal, impactSpeed, combatStats.bounceFactor);
-        }
+        if (StateMachine.Current == _launching)
+            _launching.HandleCollision(collision);
     }
 
     private readonly Vector3 _labelOffset = new (0, 1, 0);
