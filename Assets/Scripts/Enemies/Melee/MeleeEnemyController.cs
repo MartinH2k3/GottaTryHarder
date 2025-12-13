@@ -47,15 +47,5 @@ public class MeleeEnemyController: BaseEnemy
         return Mathf.Abs(TargetPos.x - Pos.x) < combatStats.attackRange
             ;//&& Mathf.Abs(Target.position.y - Pos.y) < EnemyHeight/2;
     }
-
-    private readonly Vector3 _labelOffset = new (0, 1, 0);
-    private void OnDrawGizmos()
-    {
-        var stateName = StateMachine?.Current?.GetType().Name ?? "None";
-        var pos = transform.position + _labelOffset;
-
-        UnityEditor.Handles.color = Color.black;
-        UnityEditor.Handles.Label(pos, stateName);
-    }
 }
 }

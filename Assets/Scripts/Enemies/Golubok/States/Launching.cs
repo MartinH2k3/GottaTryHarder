@@ -30,5 +30,13 @@ public class Launching: EnemyState
         var dir = E.Pos - E.TargetPos;
         E.AddForce(dir.normalized * E.combatStats.launchForce, ForceMode2D.Impulse);
     }
+
+
+    public void Bounce(Vector2 normal, float speed, float bounceFactor)
+    {
+        var reflected = Vector2.Reflect(E.GetVelocity().normalized, normal);
+        Debug.Log($"Bounced direction: {reflected}, Normal: {normal}");
+        E.SetVelocity(reflected * speed * bounceFactor);
+    }
 }
 }

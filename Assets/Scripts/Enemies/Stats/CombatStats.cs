@@ -22,5 +22,6 @@ public class CombatStats
     [Header("Golubok specific")]
     public float chargeTime = 1f;
     public float launchForce = 10f;
+    public float bounceFactor = 0.8f;
 }
 }
