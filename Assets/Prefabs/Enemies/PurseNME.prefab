@@ -69,6 +69,7 @@ MonoBehaviour:
     verticalKnockback: 4
     chargeTime: 1
     launchForce: 10
+    bounceFactor: 0.8
   animationStats:
     damageApplyNormalizedTime: 0.8
   detectionInterval: 0.2
@@ -107,7 +108,7 @@ Rigidbody2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0

@@ -17,6 +17,7 @@ public class Dashing: PlayerState
     public override void Enter() {
         _ogGravity = P.GetGravityScale();
         P.SetGravityScale(0f);
+        P.AddExcludedLayer(P.attackableLayer);
         _dashDirection = P.FacingDirection;
         P.animator.SetTrigger("Dash");
         AudioManager.Instance.PlaySFX(P.sounds.dash);
@@ -30,6 +31,7 @@ public class Dashing: PlayerState
         P.SetGravityScale(_ogGravity);
         P.StartDashCooldown();
         P.SetVelocityX(0);
+        P.RemoveExcludedLayer(P.attackableLayer);
     }
 
 

@@ -8,7 +8,8 @@ public interface IPhysicsMovable
     Rigidbody2D Rigidbody { get;  }
 }
 
-public static class PhysicsMovableExtensions {
+public static class PhysicsMovableExtensions
+{
     /// <summary> Flips the localScale.x of the Rigidbody2D's transform to turn the object around. </summary>
     public static void TurnAround(this IPhysicsMovable movable) {
         var t = movable.Rigidbody.transform;
@@ -21,6 +22,7 @@ public static class PhysicsMovableExtensions {
         if (col is not null) {
             return col.bounds.size;
         }
+
         return Vector2.zero;
     }
 
@@ -30,6 +32,7 @@ public static class PhysicsMovableExtensions {
         if (col is not null) {
             return col.bounds.size.x;
         }
+
         return 0f;
     }
 
@@ -39,6 +42,7 @@ public static class PhysicsMovableExtensions {
         if (col is not null) {
             return col.bounds.size.y;
         }
+
         return 0f;
     }
 
@@ -62,6 +66,7 @@ public static class PhysicsMovableExtensions {
             movable.Rigidbody.linearVelocity = velocity;
         }
     }
+
     /// <summary> Sets the Rigidbody2D's velocity with x and y axes as parameters. </summary>
     public static void SetVelocity(this IPhysicsMovable movable, float x, float y) {
         if (movable.Rigidbody is not null) {
@@ -91,7 +96,8 @@ public static class PhysicsMovableExtensions {
     }
 
     /// <summary>Adds a physics force to the Rigidbody2D (default ForceMode2D.Force).</summary>
-    public static void AddForce(this IPhysicsMovable movable, float x = 0f, float y = 0f, ForceMode2D mode = ForceMode2D.Force) {
+    public static void AddForce(this IPhysicsMovable movable, float x = 0f, float y = 0f,
+        ForceMode2D mode = ForceMode2D.Force) {
         if (movable.Rigidbody is not null) {
             movable.Rigidbody.AddForce(new Vector2(x, y), mode);
         }
@@ -214,7 +220,8 @@ public static class PhysicsMovableExtensions {
         if (movable.Rigidbody is null) return false;
 
         var velocity = movable.Rigidbody.linearVelocity;
-        return (includeX && Mathf.Abs(velocity.x) > Mathf.Epsilon) || (includeY && Mathf.Abs(velocity.y) > Mathf.Epsilon);
+        return (includeX && Mathf.Abs(velocity.x) > Mathf.Epsilon) ||
+               (includeY && Mathf.Abs(velocity.y) > Mathf.Epsilon);
     }
 
     /// <summary> Returns the normalized direction of the Rigidbody2D's velocity. </summary>
@@ -246,8 +253,22 @@ public static class PhysicsMovableExtensions {
         if (movable.Rigidbody is not null) {
             return movable.Rigidbody.gravityScale;
         }
+
         return 0f;
     }
-}
 
+    /// <summary> Adds a layer to the Rigidbody2D's excluded layers. </summary>
+    public static void AddExcludedLayer(this IPhysicsMovable movable, LayerMask layer) {
+        if (movable.Rigidbody is not null) {
+            movable.Rigidbody.excludeLayers |= layer;
+        }
+    }
+
+    /// <summary> Removes a layer from the Rigidbody2D's excluded layers. </summary>
+    public static void RemoveExcludedLayer(this IPhysicsMovable movable, LayerMask layer) {
+        if (movable.Rigidbody is not null) {
+            movable.Rigidbody.excludeLayers &= ~layer;
+        }
+    }
+}
 }
