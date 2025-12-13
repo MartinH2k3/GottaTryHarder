@@ -8,14 +8,19 @@ public class Launching: EnemyState
 {
     public Launching(BaseEnemy enemy) : base(enemy) {}
 
-    private float launchTime;
-    private bool launched;
+    private float _launchTime;
+    private bool _launched;
+    private float _launchEndTime;
+    public event System.Action LaunchFinished;
+    private bool _finishEventInvoked;
 
     public override void Enter() {
         base.Enter();
         E.SetVelocity(0,0);
-        launchTime = Time.time + E.combatStats.chargeTime;
-        launched = false;
+        _launchTime = Time.time + E.combatStats.chargeTime;
+        _launchEndTime = _launchTime + E.combatStats.launchDuration;
+        _launched = false;
+        _finishEventInvoked = false;
 
         bool playerOnLeft = E.TargetPos.x < E.Pos.x;
         bool facingLeft = E.FacingDirection > 0; // Default sprite orientation faces left for Golubok
@@ -32,14 +37,18 @@ public class Launching: EnemyState
 
     public override void FixedTick() {
         base.FixedTick();
-        if (Time.time > launchTime && !launched) {
+        if (Time.time > _launchTime && !_launched) {
             E.animator.SetTrigger("Dash");
             Launch();
+        }
+        if (Time.time > _launchEndTime && !_finishEventInvoked) {
+            LaunchFinished?.Invoke();
+            _finishEventInvoked = true;
         }
     }
 
     private void Launch() {
-        launched = true;
+        _launched = true;
         E.SetVelocity(0,0);
         var dir = E.TargetPos - E.Pos;
         Rotate(dir);
@@ -51,7 +60,7 @@ public class Launching: EnemyState
     {
         E.SetVelocity(0, 0);
 
-        if (!launched) // Ignore collisions before launch
+        if (!_launched) // Ignore collisions before launch
             return;
 
 

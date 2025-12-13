@@ -10,7 +10,7 @@ public class Patrolling: EnemyState
 {
     private float _oscillationStartTime;
     private PlayerController _player;
-    private Vector2 _moveTowards;
+    private Vector2? _moveTowards;
     private float _lastSeekTime = 0f;
     public event Action PlayerDetected;
 
@@ -18,13 +18,16 @@ public class Patrolling: EnemyState
 
     public override void Enter() {
         base.Enter();
+        E.SetVelocity(Vector2.zero);
+        _moveTowards = null;
+        E.animator.SetTrigger("Idle");
         _oscillationStartTime = Time.time - E.movementStats.oscillationPeriod/4; // Start in middle of half-oscillation
     }
 
     public override void FixedTick() {
         base.FixedTick();
         Oscillate();
-        if (_moveTowards != Vector2.zero)
+        if (_moveTowards.HasValue)
             FollowTarget();
         if (_lastSeekTime < Time.time - E.combatStats.detectionPeriod)
             SeekPlayer();
@@ -39,7 +42,7 @@ public class Patrolling: EnemyState
     }
 
     private void FollowTarget() {
-        var dir = (_moveTowards - E.Pos).normalized;
+        var dir = (_moveTowards!.Value - E.Pos).normalized;
         E.AddForce(dir*E.movementStats.walkSpeed);
     }
 
@@ -56,10 +59,17 @@ public class Patrolling: EnemyState
         // If player found, check line if accessible
         var combinedLayer = E.terrainLayer | E.playerLayer;
 
+        float distanceToPlayer = Vector2.Distance(E.Pos, E.TargetPos);
+
+        if (distanceToPlayer > E.combatStats.detectionRange) {
+            _moveTowards = null;
+            return;
+        }
+
         Vector2 directionToPlayer = (E.TargetPos - E.Pos).normalized;
         Vector2 perpendicular = Vector2.Perpendicular(directionToPlayer);
         Vector2 perpendicular2 = -perpendicular;
-        float distanceToPlayer = Vector2.Distance(E.Pos, E.TargetPos);
+
 
         Debug.DrawRay(E.Pos, directionToPlayer * distanceToPlayer, Color.red, 0.1f);
         // 1. Direct line of sight - Send ray from enemy transform to player transform
@@ -78,7 +88,7 @@ public class Patrolling: EnemyState
                 return;
         }
 
-        _moveTowards = Vector2.zero;
+        _moveTowards = null;
     }
 
     private bool ReachablePolygonally(Vector2 playerPos, float distanceToPlayer, Vector2 directionToPlayer,

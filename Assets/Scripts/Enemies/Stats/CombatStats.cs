@@ -23,5 +23,7 @@ public class CombatStats
     public float chargeTime = 1f;
     public float launchForce = 10f;
     public float bounceFactor = 0.8f;
+    [Tooltip("Duration of the launch state after launching.")]
+    public float launchDuration = 1.8f;
 }
 }
