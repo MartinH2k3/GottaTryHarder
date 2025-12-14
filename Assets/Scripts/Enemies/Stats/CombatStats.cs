@@ -7,23 +7,29 @@ public class CombatStats
 {
     public int maxHealthPoints = 30;
     public int attackDamage = 10;
-    [Tooltip("Base attack speed is the length of the attack animation.")]
-    public float attackSpeedMult = 1f;
     public float attackKnockback = 2f;
+    [Tooltip("Normalized time in the attack animation when the damage is applied.")]
+    public float damageApplyNormalizedTime = 0.8f;
+
     [Header("Targeting")]
     public float noticeTime = 0.5f; // Time for the enemy to process in their head "Oh wait, there is a guy, I'm going after him"
     public float detectionRange = 10f;
-    public float attackRange = 1f;
     [Tooltip("How often to run the algorithm.")]
     public float detectionPeriod = 0.2f;
+
     [Header("Melee specific")]
     public float attackWidth = 0.2f;
     public float verticalKnockback = 1f;
+    [Tooltip("Base attack speed is the length of the attack animation.")]
+    public float attackSpeedMult = 1f;
+    public float attackRange = 1f;
+
     [Header("Golubok specific")]
-    public float chargeTime = 1f;
+    public float launchChargeTime = 1f;
     public float launchForce = 10f;
     public float bounceFactor = 0.8f;
     [Tooltip("Duration of the launch state after launching.")]
     public float launchDuration = 1.8f;
+    public float shootChargeTime = 0.8f;
 }
 }

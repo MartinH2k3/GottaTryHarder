@@ -1,5 +1,4 @@
 ﻿using System;
-using Enemies.Melee.Stats;
 using Enemies.Stats;
 using Infrastructure.StateMachine;
 using Managers;
@@ -11,14 +10,12 @@ namespace Enemies
 {
 public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
 {
-    // Stats
+    // Stats. Would be too much effort with generic classes, so just put all stats here.
     [Header("Stats")]
     [Tooltip("Not all enemies will use all of the stats here.")]
     public MovementStats movementStats;
     [Tooltip("Not all enemies will use all of the stats here.")]
     public CombatStats combatStats;
-    [Tooltip("Not all enemies will use all of the stats here.")]
-    public AnimationStats animationStats;
     private int _currentHealth;
 
     /// <summary>To prevent lag, pathfinding happens in more scarce intervals, rather than every frame.</summary>

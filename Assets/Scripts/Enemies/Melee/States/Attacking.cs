@@ -12,7 +12,7 @@ public class Attacking: EnemyState<MeleeEnemy>
     public bool IsAttackFinished;
     private bool AttackAnimationPlaying => E.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack");
     private bool AttackAnimFinished => E.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f;
-    private bool AttackApplyTime => E.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >=  E.animationStats.damageApplyNormalizedTime;
+    private bool AttackApplyTime => E.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >=  E.combatStats.damageApplyNormalizedTime;
     private bool _attackExecuted;
 
     public override void Enter() {

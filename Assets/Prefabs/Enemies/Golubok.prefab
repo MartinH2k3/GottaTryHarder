@@ -117,20 +117,20 @@ MonoBehaviour:
   combatStats:
     maxHealthPoints: 30
     attackDamage: 10
-    attackSpeedMult: 1
     attackKnockback: 2
+    damageApplyNormalizedTime: 0.8
     noticeTime: 0.5
     detectionRange: 10
-    attackRange: 1
     detectionPeriod: 0.2
     attackWidth: 0.2
     verticalKnockback: 1
-    chargeTime: 1
+    attackSpeedMult: 1
+    attackRange: 1
+    launchChargeTime: 1
     launchForce: 10
     bounceFactor: 0.8
-    launchDuration: 3
-  animationStats:
-    damageApplyNormalizedTime: 0.8
+    launchDuration: 1.2
+    shootChargeTime: 0.8
   detectionInterval: 0.2
   rb: {fileID: 2248721199180678650}
   playerLayer:
@@ -145,6 +145,7 @@ MonoBehaviour:
     hurt: {fileID: 0}
     death: {fileID: 0}
   animator: {fileID: 3873189119076095086}
+  projectilePrefab: {fileID: 706963800531783190, guid: a90d01549332dbb4db643fb30fa27482, type: 3}
 --- !u!58 &6884834606298613160
 CircleCollider2D:
   m_ObjectHideFlags: 0

@@ -31,7 +31,7 @@ public class Golubok: BaseEnemy
 
         StateMachine.AddTransition(_patrolling, _launching, ShouldLaunch);
         StateMachine.AddTransition(_launching, _shooting, ShouldStopLaunch);
-
+        StateMachine.AddTransition(_shooting, _patrolling, () => _shooting.AttackAnimFinished);
         this.SetGravityScale(0); // The guy flies, so ye, kinda obvious
     }
 
@@ -51,6 +51,12 @@ public class Golubok: BaseEnemy
         }
 
         return false;
+    }
+
+    public void OnShootChargeComplete() {
+        if (StateMachine.Current == _shooting) {
+            _shooting.Shoot();
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
