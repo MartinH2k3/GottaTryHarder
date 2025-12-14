@@ -19,7 +19,7 @@ public class Patrolling: EnemyState<Golubok>
     public override void Enter() {
         base.Enter();
         _moveTowards = null;
-        E.animator.SetTrigger("Idle");
+        E.animator.Play("Idle");
         _oscillationStartTime = Time.time - E.movementStats.oscillationPeriod/4; // Start in middle of half-oscillation
     }
 
