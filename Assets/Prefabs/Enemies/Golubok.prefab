@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6884834606298613160}
   - component: {fileID: 2248721199180678650}
   - component: {fileID: 3873189119076095086}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Golubok
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,7 +120,7 @@ MonoBehaviour:
     attackSpeedMult: 1
     attackKnockback: 2
     noticeTime: 0.5
-    detectionRange: 2
+    detectionRange: 10
     attackRange: 1
     detectionPeriod: 0.2
     attackWidth: 0.2
@@ -128,6 +128,7 @@ MonoBehaviour:
     chargeTime: 1
     launchForce: 10
     bounceFactor: 0.8
+    launchDuration: 3
   animationStats:
     damageApplyNormalizedTime: 0.8
   detectionInterval: 0.2

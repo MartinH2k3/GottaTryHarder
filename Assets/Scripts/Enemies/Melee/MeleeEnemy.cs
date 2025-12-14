@@ -1,10 +1,10 @@
 ﻿using Enemies.Melee.States;
-using Enemies.States;
+using Mechanics;
 using UnityEngine;
 
 namespace Enemies.Melee
 {
-public class MeleeEnemyController: BaseEnemy
+public class MeleeEnemy: BaseEnemy
 {
     // states
     private Patrolling _patrolling;
@@ -46,6 +46,36 @@ public class MeleeEnemyController: BaseEnemy
     protected override bool TargetInAttackRange() {
         return Mathf.Abs(TargetPos.x - Pos.x) < combatStats.attackRange
             ;//&& Mathf.Abs(Target.position.y - Pos.y) < EnemyHeight/2;
+    }
+
+    /// <summary>
+    /// Checks if there is a ground to walk on ahead. Also checks for walls in the way.
+    /// </summary>
+    public bool CanWalkForward() {
+        Vector2 positionAhead = Pos + FacingDirection * movementStats.lookaheadDistance * Vector2.right;
+
+        RaycastHit2D groundHit = Physics2D.Raycast(positionAhead,
+            Vector2.down,
+            this.GetSizeY() / 2 + movementStats.groundDetectionDistance,
+            terrainLayer);
+
+        RaycastHit2D wallhit = Physics2D.Raycast(Pos,
+            Vector2.right * FacingDirection,
+            movementStats.lookaheadDistance,
+            terrainLayer);
+
+        // Visualize ground check ray (yellow)
+        Debug.DrawRay(positionAhead,
+            Vector2.down * (this.GetSizeY() / 2 + movementStats.groundDetectionDistance),
+            Color.yellow);
+
+        // Visualize wall check ray (red)
+        Debug.DrawRay(Pos,
+            FacingDirection * movementStats.lookaheadDistance * Vector2.right,
+            Color.red);
+
+
+        return groundHit.collider is not null && wallhit.collider is null;
     }
 }
 }

@@ -1,13 +1,15 @@
 ﻿using System;
+using Enemies.States;
 using Player;
 using Mechanics;
 using UnityEngine;
 
-namespace Enemies.States
+namespace Enemies.Melee.States
 {
-public class Patrolling: EnemyState
+public class Patrolling: EnemyState<MeleeEnemy>
 {
-    public Patrolling(BaseEnemy enemy) : base(enemy) { }
+
+    public Patrolling(MeleeEnemy enemy) : base(enemy) {}
 
     public event Action<PlayerController> PlayerDetected;
 

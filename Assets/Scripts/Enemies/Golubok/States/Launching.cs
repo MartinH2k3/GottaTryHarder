@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Enemies.Golubok.States
 {
-public class Launching: EnemyState
+public class Launching: EnemyState<Golubok>
 {
-    public Launching(BaseEnemy enemy) : base(enemy) {}
+    public Launching(Golubok enemy) : base(enemy) {}
 
     private float _launchTime;
     private bool _launched;

@@ -1,20 +1,28 @@
 ﻿using Enemies.Golubok.States;
 using Mechanics;
 using UnityEngine;
+using Utils;
 
 namespace Enemies.Golubok
 {
-public class GolubokController: BaseEnemy
+public class Golubok: BaseEnemy
 {
     private Patrolling _patrolling;
     private Launching _launching;
+    private Shooting _shooting;
     private bool _shouldLaunch = false;
     private bool _shouldStopLaunch = false;
+
+    [SerializeField] private GameObject projectilePrefab;
+    public GameObjectPool MissilePool { get; private set; }
 
     protected override void Start() {
         base.Start();
         _patrolling = new Patrolling(this);
         _launching = new Launching(this);
+        _shooting = new Shooting(this);
+
+        MissilePool = GameObjectPool.GetPool(projectilePrefab, transform, 2);
 
         _patrolling.PlayerDetected += () => { _shouldLaunch = true; };
         _launching.LaunchFinished += () => { _shouldStopLaunch = true; };
@@ -22,7 +30,7 @@ public class GolubokController: BaseEnemy
         StateMachine.Initialize(_patrolling);
 
         StateMachine.AddTransition(_patrolling, _launching, ShouldLaunch);
-        StateMachine.AddTransition(_launching, _patrolling, ShouldStopLaunch);
+        StateMachine.AddTransition(_launching, _shooting, ShouldStopLaunch);
 
         this.SetGravityScale(0); // The guy flies, so ye, kinda obvious
     }

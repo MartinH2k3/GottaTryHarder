@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace Enemies.Melee.States
 {
-public class Attacking: EnemyState
+public class Attacking: EnemyState<MeleeEnemy>
 {
-    public Attacking(BaseEnemy enemy) : base(enemy) { }
+    public Attacking(MeleeEnemy enemy) : base(enemy) { }
 
     public bool IsAttackFinished;
     private bool AttackAnimationPlaying => E.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack");

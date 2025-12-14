@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Enemies.Golubok.States
 {
-public class Patrolling: EnemyState
+public class Patrolling: EnemyState<Golubok>
 {
     private float _oscillationStartTime;
     private PlayerController _player;
@@ -14,7 +14,7 @@ public class Patrolling: EnemyState
     private float _lastSeekTime = 0f;
     public event Action PlayerDetected;
 
-    public Patrolling(BaseEnemy enemy) : base(enemy) {}
+    public Patrolling(Golubok enemy) : base(enemy) {}
 
     public override void Enter() {
         base.Enter();

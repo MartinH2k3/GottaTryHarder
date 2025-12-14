@@ -2,10 +2,16 @@
 
 namespace Enemies.States
 {
-public class EnemyState: EmptyState
+// Non-generic version for convenience
+public class EnemyState : EnemyState<BaseEnemy>
 {
-    protected readonly BaseEnemy E;
+    protected EnemyState(BaseEnemy enemy) : base(enemy) { }
+}
 
-    protected EnemyState(BaseEnemy enemy) => E = enemy;
+public class EnemyState<TEnemy> : EmptyState where TEnemy : BaseEnemy
+{
+    protected readonly TEnemy E;
+
+    protected EnemyState(TEnemy enemy) => E = enemy;
 }
 }

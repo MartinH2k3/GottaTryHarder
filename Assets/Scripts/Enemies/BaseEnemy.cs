@@ -91,35 +91,7 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
         Destroy(gameObject);
     }
 
-    /// <summary>
-    /// Checks if there is a ground to walk on ahead. Also checks for walls in the way.
-    /// </summary>
-    public bool CanWalkForward() {
-        Vector2 positionAhead = Pos + FacingDirection * movementStats.lookaheadDistance * Vector2.right;
 
-        RaycastHit2D groundHit = Physics2D.Raycast(positionAhead,
-            Vector2.down,
-            this.GetSizeY() / 2 + movementStats.groundDetectionDistance,
-            terrainLayer);
-
-        RaycastHit2D wallhit = Physics2D.Raycast(Pos,
-            Vector2.right * FacingDirection,
-            movementStats.lookaheadDistance,
-            terrainLayer);
-
-        // Visualize ground check ray (yellow)
-        Debug.DrawRay(positionAhead,
-            Vector2.down * (this.GetSizeY() / 2 + movementStats.groundDetectionDistance),
-            Color.yellow);
-
-        // Visualize wall check ray (red)
-        Debug.DrawRay(Pos,
-            Vector2.right * FacingDirection * movementStats.lookaheadDistance,
-            Color.red);
-
-
-        return groundHit.collider is not null && wallhit.collider is null;
-    }
 
     /// <summary>
     /// Default enemy behaviour is to check if the target is within range and within line of sight.

@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Enemies.Melee.States
 {
-public class Pursuit: EnemyState
+public class Pursuit: EnemyState<MeleeEnemy>
 {
-    public Pursuit(BaseEnemy enemy) : base(enemy) { }
+    public Pursuit(MeleeEnemy enemy) : base(enemy) { }
 
     private float _timeout;
     private bool _waiting;
