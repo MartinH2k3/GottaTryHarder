@@ -118,12 +118,12 @@ TextureImporter:
       name: fridge_leap_0
       rect:
         serializedVersion: 2
-        x: 15
+        x: 16
         y: 0
-        width: 59
+        width: 57
         height: 58
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.57894737, y: 0.20689654}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -140,12 +140,12 @@ TextureImporter:
       name: fridge_leap_1
       rect:
         serializedVersion: 2
-        x: 112
+        x: 113
         y: 0
-        width: 59
+        width: 57
         height: 57
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.57894737, y: 0.21052632}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -162,12 +162,12 @@ TextureImporter:
       name: fridge_leap_2
       rect:
         serializedVersion: 2
-        x: 208
+        x: 209
         y: 0
-        width: 59
+        width: 57
         height: 56
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.57894737, y: 0.21428573}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -184,12 +184,12 @@ TextureImporter:
       name: fridge_leap_3
       rect:
         serializedVersion: 2
-        x: 295
-        y: 1
-        width: 76
-        height: 61
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 296
+        y: 0
+        width: 74
+        height: 62
+      alignment: 9
+      pivot: {x: 0.5540541, y: 0.19354838}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -206,12 +206,12 @@ TextureImporter:
       name: fridge_leap_4
       rect:
         serializedVersion: 2
-        x: 391
+        x: 392
         y: 0
-        width: 76
+        width: 74
         height: 62
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5540541, y: 0.19354838}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -228,12 +228,12 @@ TextureImporter:
       name: fridge_leap_5
       rect:
         serializedVersion: 2
-        x: 495
+        x: 496
         y: 0
-        width: 59
+        width: 57
         height: 58
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.5964912, y: 0.20689654}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -250,7 +250,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: cf447c4a7a16861419f5cef8a5bf9619
     internalID: 0
     vertices: []
     indices: 

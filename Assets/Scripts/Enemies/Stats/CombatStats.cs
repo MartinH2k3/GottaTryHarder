@@ -28,8 +28,10 @@ public class CombatStats
     public float launchChargeTime = 1f;
     public float launchForce = 10f;
     public float bounceFactor = 0.8f;
+    [Tooltip("Angle which the Golubok will approach when bouncing off the player. Off surfaces, he bounces off normally.")]
+    public float bounceOffAngle = 70f;
     [Tooltip("Duration of the launch state after launching.")]
     public float launchDuration = 1.8f;
-    public float shootChargeTime = 0.8f;
+
 }
 }

@@ -79,7 +79,7 @@ public class Launching: EnemyState<Golubok>
             Vector2 bounceDirection = Vector2.Reflect(impactVelocity.normalized, normal);
 
             if (hitPlayer) // Always bounce upwards when hitting the player. Bouncing downwards makes poop attack useless
-                bounceDirection = ClampBounceAngle(bounceDirection, 20f);
+                bounceDirection = PullTowardAngleEased(bounceDirection, E.combatStats.bounceOffAngle);
 
 
             Vector2 bounceForce = bounceDirection * speed * E.combatStats.bounceFactor;
@@ -89,13 +89,33 @@ public class Launching: EnemyState<Golubok>
         }
     }
 
-    private Vector2 ClampBounceAngle(Vector2 direction, float minAngle, float maxAngle = 90f)
+    private Vector2 PullTowardAngleEased(Vector2 dir, float targetAngleDeg, float maxPull01 = 0.85f)
     {
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        float clampedAngle = Mathf.Clamp(angle, minAngle, maxAngle);
-        float rad = clampedAngle * Mathf.Deg2Rad;
-        return new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)).normalized;
+        dir.Normalize();
+
+        // Angle from the x-axis in both directions is good
+        float mirroredAngleDeg = 180f - targetAngleDeg;
+
+        float current = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+        float deltaRight = Mathf.DeltaAngle(current, targetAngleDeg);
+        float deltaLeft = Mathf.DeltaAngle(current, mirroredAngleDeg);
+
+        float chosenDelta = Mathf.Abs(deltaRight) <= Mathf.Abs(deltaLeft) ? deltaRight : deltaLeft;
+
+        float absDelta = Mathf.Abs(chosenDelta);
+
+        // Ease: weak pull when close, strong pull when far
+        float t = Mathf.InverseLerp(0f, 30f, absDelta);
+        t *= t; // quadratic ease
+
+        float newAngle = current + chosenDelta * (t * maxPull01);
+
+        float rad = newAngle * Mathf.Deg2Rad;
+        return new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
+
     }
+
 
     public void Rotate(Vector2 direction) {
         if (direction.sqrMagnitude < 0.01f) return;

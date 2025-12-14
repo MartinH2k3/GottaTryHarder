@@ -18,8 +18,8 @@ public class GolubokProjectile: Poolable
             Vector2 knockbackDir = (other.transform.position - transform.position).x > 0 ? Vector2.right : Vector2.left;
             player.AddForce(knockbackDir * knockback, ForceMode2D.Impulse);
             player.TakeDamage(damage);
-
         }
+
         Despawn();
     }
 }

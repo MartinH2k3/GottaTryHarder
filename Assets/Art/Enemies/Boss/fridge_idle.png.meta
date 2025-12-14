@@ -112,12 +112,12 @@ TextureImporter:
       name: fridge_idle_0
       rect:
         serializedVersion: 2
-        x: 3
+        x: 4
         y: 0
-        width: 59
+        width: 57
         height: 58
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.57894737, y: 0.20689654}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -134,12 +134,12 @@ TextureImporter:
       name: fridge_idle_1
       rect:
         serializedVersion: 2
-        x: 75
+        x: 76
         y: 0
-        width: 59
+        width: 57
         height: 57
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.57894737, y: 0.21052632}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -156,12 +156,12 @@ TextureImporter:
       name: fridge_idle_2
       rect:
         serializedVersion: 2
-        x: 147
+        x: 148
         y: 0
-        width: 59
+        width: 57
         height: 57
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.57894737, y: 0.21052632}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -178,12 +178,12 @@ TextureImporter:
       name: fridge_idle_3
       rect:
         serializedVersion: 2
-        x: 219
+        x: 220
         y: 0
-        width: 59
+        width: 57
         height: 58
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.57894737, y: 0.20689654}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -200,7 +200,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: e155e34803f5b34479bf90acd99f794f
     internalID: 0
     vertices: []
     indices: 
