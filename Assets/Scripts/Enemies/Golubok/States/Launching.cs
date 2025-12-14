@@ -17,7 +17,7 @@ public class Launching: EnemyState<Golubok>
     public override void Enter() {
         base.Enter();
         E.SetVelocity(0,0);
-        _launchTime = Time.time + E.combatStats.chargeTime;
+        _launchTime = Time.time + E.combatStats.launchChargeTime;
         _launchEndTime = _launchTime + E.combatStats.launchDuration;
         _launched = false;
         _finishEventInvoked = false;
@@ -27,19 +27,22 @@ public class Launching: EnemyState<Golubok>
         if (playerOnLeft != facingLeft)
             E.TurnAround();
 
-        E.animator.SetTrigger("Charge Dash");
+        E.animator.Play("Charge Dash");
+
     }
 
     public override void Exit() {
         base.Exit();
+        E.SetVelocity(Vector2.zero);
         E.transform.rotation = Quaternion.identity;
     }
 
     public override void FixedTick() {
         base.FixedTick();
         if (Time.time > _launchTime && !_launched) {
-            E.animator.SetTrigger("Dash");
+            E.animator.Play("Dash");
             Launch();
+            _launched = true;
         }
         if (Time.time > _launchEndTime && !_finishEventInvoked) {
             LaunchFinished?.Invoke();
@@ -52,7 +55,6 @@ public class Launching: EnemyState<Golubok>
         E.SetVelocity(0,0);
         var dir = E.TargetPos - E.Pos;
         Rotate(dir);
-        Debug.Log("Launching dir: " + dir);
         E.AddForce(dir.normalized * E.combatStats.launchForce, ForceMode2D.Impulse);
     }
 
