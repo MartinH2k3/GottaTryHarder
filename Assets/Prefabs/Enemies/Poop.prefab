@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5005496132550870655}
+  - component: {fileID: -4756510882286807657}
   - component: {fileID: 3273166405933221188}
   - component: {fileID: 7615403722868691106}
   - component: {fileID: 3719859958857573822}
-  - component: {fileID: -4756510882286807657}
   m_Layer: 0
   m_Name: Poop
   m_TagString: Untagged
@@ -35,6 +35,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-4756510882286807657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 706963800531783190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48850b7e8d2540359ad068c8d56ad69a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemies.Golubok.GolubokProjectile
+  damage: 5
+  knockback: 4
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!212 &3273166405933221188
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -166,19 +183,3 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &-4756510882286807657
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 706963800531783190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48850b7e8d2540359ad068c8d56ad69a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Enemies.Golubok.GolubokProjectile
-  damage: 5
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 0
