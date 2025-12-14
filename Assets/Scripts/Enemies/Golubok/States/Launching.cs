@@ -65,9 +65,10 @@ public class Launching: EnemyState<Golubok>
         if (!_launched) // Ignore collisions before launch
             return;
 
+        bool hitPlayer = ((1 << collision.gameObject.layer) & E.playerLayer) != 0;
+        bool hitTerrain = ((1 << collision.gameObject.layer) & E.terrainLayer) != 0;
 
-        if (((1 << collision.gameObject.layer) & (E.terrainLayer | E.playerLayer)) != 0)
-        {
+        if ( hitPlayer | hitTerrain ) {
             var contact = collision.GetContact(0);
             Vector2 normal = contact.normal;
 
@@ -77,11 +78,23 @@ public class Launching: EnemyState<Golubok>
 
             Vector2 bounceDirection = Vector2.Reflect(impactVelocity.normalized, normal);
 
+            if (hitPlayer) // Always bounce upwards when hitting the player. Bouncing downwards makes poop attack useless
+                bounceDirection = ClampBounceAngle(bounceDirection, 20f);
+
+
             Vector2 bounceForce = bounceDirection * speed * E.combatStats.bounceFactor;
 
             Rotate(bounceDirection);
             E.AddForce(bounceForce, ForceMode2D.Impulse);
         }
+    }
+
+    private Vector2 ClampBounceAngle(Vector2 direction, float minAngle, float maxAngle = 90f)
+    {
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        float clampedAngle = Mathf.Clamp(angle, minAngle, maxAngle);
+        float rad = clampedAngle * Mathf.Deg2Rad;
+        return new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)).normalized;
     }
 
     public void Rotate(Vector2 direction) {
