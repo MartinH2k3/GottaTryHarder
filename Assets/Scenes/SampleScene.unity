@@ -1057,7 +1057,7 @@ Transform:
   m_GameObject: {fileID: 908085638}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.19, y: -3.76, z: 0}
+  m_LocalPosition: {x: -14.71, y: -1.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1129,8 +1129,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1296574893
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 6940023722644540795, guid: 96bd3ce1d3f010d49b37ae866410a32e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1182,9 +1182,15 @@ MonoBehaviour:
     bounceOffAngle: 70
     launchDuration: 1.8
     maxBubbleSize: 1.5
-    idleKnockbackStrength: 1.5
-    bubbleKnockbackStrength: 2.6
-    dashKnockbackStrength: 5
+    idleKnockbackStrength: 1.3
+    bubbleKnockbackStrength: 1
+    dashKnockbackStrength: 3
+    actionCooldown: 5
+    actionCooldownRandomness: 2
+    dashProbability: 0.6
+    dashToBubbleProbability: 0.3
+    dashDuration: 1
+    dashSpeed: 8
   detectionInterval: 0.2
   rb: {fileID: 908085645}
   playerLayer:
@@ -1280,7 +1286,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.42, y: 3.14}
+  m_Size: {x: 2.96, y: 3.14}
   m_EdgeRadius: 0
 --- !u!50 &908085645
 Rigidbody2D:
@@ -1439,7 +1445,7 @@ Transform:
   m_GameObject: {fileID: 969703763}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -28.42, y: 2.59, z: 0}
+  m_LocalPosition: {x: -14.98, y: -0.93, z: 0}
   m_LocalScale: {x: 10, y: 10, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
