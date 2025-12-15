@@ -19,7 +19,7 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
     private int _currentHealth;
 
     /// <summary>To prevent lag, pathfinding happens in more scarce intervals, rather than every frame.</summary>
-    [SerializeField] private float detectionInterval = 0.2f;
+    [SerializeField] protected float detectionInterval = 0.2f;
 
     // States
     protected StateMachine StateMachine;
@@ -27,8 +27,8 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
     // Targeting
     public PlayerController Target { get; set; }
     public Vector2 TargetPos => Target?.transform.position ?? Vector2.zero;
-    private float _lastTargetCheckTime;
-    private bool _lastTargetCheck;
+    protected float LastTargetCheckTime;
+    protected bool LastTargetCheck;
 
     // Combat
     public float LastAttackTime { get; set; } = 0;
@@ -95,8 +95,8 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
     /// Meant to be overriden by more complex enemies.
     /// </summary>
     protected virtual bool TargetInRange() {
-            if (Time.time - _lastTargetCheckTime < detectionInterval)
-                return _lastTargetCheck;
+            if (Time.time - LastTargetCheckTime < detectionInterval)
+                return LastTargetCheck;
 
             // include player and terrain so obstacles will be detected before the player
             var mask = playerLayer | terrainLayer;
@@ -105,10 +105,10 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
                 combatStats.detectionRange,
                 mask);
 
-            _lastTargetCheckTime = Time.time;
-            _lastTargetCheck = hit.collider is not null && (Vector2)hit.transform.position == TargetPos;
+            LastTargetCheckTime = Time.time;
+            LastTargetCheck = hit.collider is not null && (Vector2)hit.transform.position == TargetPos;
 
-            return _lastTargetCheck;
+            return LastTargetCheck;
     }
 
     /// <summary>
