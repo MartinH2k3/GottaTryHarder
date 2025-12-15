@@ -8,6 +8,7 @@ public class CombatStats
     public int maxHealthPoints = 30;
     public int attackDamage = 10;
     public float attackKnockback = 2f;
+    public float knockbackStunDuration = 0.5f;
     [Tooltip("Normalized time in the attack animation when the damage is applied.")]
     public float damageApplyNormalizedTime = 0.8f;
 
@@ -32,6 +33,12 @@ public class CombatStats
     public float bounceOffAngle = 70f;
     [Tooltip("Duration of the launch state after launching.")]
     public float launchDuration = 1.8f;
+
+    [Header("Boss specific")]
+    public float maxBubbleSize = 1.5f;
+    public float idleKnockbackStrength = 1.5f;
+    public float bubbleKnockbackStrength = 2.6f;
+    public float dashKnockbackStrength = 4.5f;
 
 }
 }
