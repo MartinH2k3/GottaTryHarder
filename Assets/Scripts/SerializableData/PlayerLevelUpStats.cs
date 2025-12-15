@@ -16,8 +16,8 @@ public class LevelUpStats {
     public int damageAdded = 0;
     public bool attackComboUnlocked = false;
     public bool jumpKickUnlocked = false;
-    public float jumpStrengthRateChange = 1f;
-    public float movementSpeedRateChange = 1f;
-    public float dashSpeedRateChange = 1f;
+    public float jumpStrengthRateChange = 0f;
+    public float movementSpeedRateChange = 0f;
+    public float dashSpeedRateChange = 0f;
 }
 }

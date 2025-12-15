@@ -83,11 +83,11 @@ public class GameManager: MonoBehaviour
         var statsArray = levelUpStatsData.levelUpStats;
         for (var i = 0; i < Mathf.Min(level, statsArray.Length); i++) {
             var stats = statsArray[i];
-            _player.movementStats.walkSpeed *= stats.movementSpeedRateChange;
+            _player.movementStats.walkSpeed *= 1+stats.movementSpeedRateChange;
             _player.jumpStats.extraAirJumps += stats.addsMultiJump;
-            _player.jumpStats.jumpStrength *= stats.jumpStrengthRateChange;
+            _player.jumpStats.jumpStrength *= 1 + stats.jumpStrengthRateChange;
             _player.jumpStats.damageTakenOnJump += stats.addsDamageTakenOnJump;
-            _player.dashStats.dashSpeed *= stats.dashSpeedRateChange;
+            _player.dashStats.dashSpeed *= 1 + stats.dashSpeedRateChange;
             if (stats.attackComboUnlocked) {
                 _player.combatStats.comboUnlocked = true;
             }
