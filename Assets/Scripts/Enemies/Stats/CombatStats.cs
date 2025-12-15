@@ -39,6 +39,16 @@ public class CombatStats
     public float idleKnockbackStrength = 1.5f;
     public float bubbleKnockbackStrength = 2.6f;
     public float dashKnockbackStrength = 4.5f;
+    [Tooltip("How many seconds between boss actions (dashes, bubbles, etc.)")]
+    public float actionCooldown = 5f;
+    [Tooltip("Randomness to action cooldown to avoid predictability.")]
+    public float actionCooldownRandomness = 2f;
+    [Tooltip("Probability of dashing vs bubbling.")]
+    public float dashProbability = 0.6f;
+    [Tooltip("Probability of going immediately from dash to bubble without idle in between.")]
+    public float dashToBubbleProbability = 0.3f;
+    public float dashDuration = 1f;
+    public float dashSpeed = 8f;
 
 }
 }

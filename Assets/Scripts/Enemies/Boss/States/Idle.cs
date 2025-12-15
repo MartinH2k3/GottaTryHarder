@@ -5,15 +5,27 @@ using Utils;
 
 namespace Enemies.Boss.States
 {
-public class Idle: EnemyState<Boss>
+public class Idle: BossState
 {
     public Idle(Boss enemy) : base(enemy) {}
+
+    private float _endTime;
+    private bool _exitEventInvoked;
 
     public override void Enter() {
         base.Enter();
         E.animator.Play("Idle");
+        _endTime = Time.time + E.GetBreakDuration();
+        _exitEventInvoked = false;
     }
 
+    public override void FixedTick() {
+        base.FixedTick();
+        if (Time.time >= _endTime && !_exitEventInvoked) {
+            _exitEventInvoked = true;
+            ShouldExit?.Invoke();
+        }
+    }
     public void HandleCollisionEnter(Collision2D other) {
         bool hitPlayer = Helpers.LayerInLayerMask(other.gameObject.layer, E.playerLayer);
         if (!hitPlayer)

@@ -5,13 +5,39 @@ using Utils;
 
 namespace Enemies.Boss.States
 {
-public class Dashing: EnemyState<Boss>
+public class Dashing: BossState
 {
     public Dashing(Boss enemy) : base(enemy) {}
+
+    private bool _exitEventInvoked;
+    private float _ogGravity;
+    private float _dashEndTime;
 
     public override void Enter() {
         base.Enter();
         E.animator.Play("Leap");
+
+        _dashEndTime = Time.time + E.combatStats.dashDuration;
+        _exitEventInvoked = false;
+
+        _ogGravity = E.GetGravityScale();
+        E.SetGravityScale(0f);
+    }
+
+    public override void FixedTick() {
+        base.FixedTick();
+        E.SetVelocity(E.FacingDirection * E.combatStats.dashSpeed, 0);
+
+        if (Time.time >= _dashEndTime && !_exitEventInvoked) {
+            _exitEventInvoked = true;
+            ShouldExit?.Invoke();
+        }
+    }
+
+    public override void Exit() {
+        base.Exit();
+        E.SetGravityScale(_ogGravity);
+        E.SetVelocity(Vector2.zero);
     }
 
     public void HandleCollisionEnter(Collision2D other) {

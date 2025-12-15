@@ -6,36 +6,42 @@ using Utils;
 
 namespace Enemies.Boss.States
 {
-public class Bubbling: EnemyState<Boss>
+public class Bubbling: BossState
 {
     public Bubbling(Boss enemy) : base(enemy) {}
 
     private bool _stopGrowing;
+    private float AnimationDuration => E.animator.GetCurrentAnimatorStateInfo(0).length;
+    private bool AnimationCompleted => E.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f;
+    private bool _stopEventInvoked;
 
     public override void Enter() {
         base.Enter();
         E.animator.Play("RobbyBubble");
         E.EnableBubbleCollider();
         _stopGrowing = false;
+        _stopEventInvoked = false;
     }
 
     public override void FixedTick() {
         base.FixedTick();
-        // Grow E.Transform scale over time to a max size using lerp
         if (!_stopGrowing) {
-            float maxScale = 2.0f;
-            float growSpeed = 0.5f;
-            E.transform.localScale = Vector3.Lerp(E.transform.localScale, new Vector3(maxScale, maxScale, maxScale),
-                growSpeed * Time.fixedDeltaTime);
+            float maxScale = E.combatStats.maxBubbleSize;
+            E.transform.localScale = Vector3.Lerp(E.transform.localScale, new Vector3(maxScale, maxScale, 1), Time.fixedDeltaTime / AnimationDuration);
             if (E.transform.localScale.x >= maxScale * 0.95f) {
                 _stopGrowing = true;
             }
+        }
+        if (AnimationCompleted && !_stopEventInvoked) {
+            ShouldExit?.Invoke();
+            _stopEventInvoked = true;
         }
     }
 
     public override void Exit() {
         base.Exit();
         E.DisableBubbleCollider();
+        E.transform.localScale = Vector3.one;
     }
 
     public void HandleTriggerEnter(Collider2D other) {
