@@ -9,13 +9,19 @@ public class Dashing: BossState
 {
     public Dashing(Boss enemy) : base(enemy) {}
 
+    private int _dashDirection;
     private bool _exitEventInvoked;
     private float _ogGravity;
     private float _dashEndTime;
 
+
     public override void Enter() {
         base.Enter();
         E.animator.Play("Leap");
+
+        _dashDirection = E.Target.transform.position.x > E.Pos.x ? 1 : -1;
+        if (_dashDirection != E.FacingDirection)
+            E.TurnAround();
 
         _dashEndTime = Time.time + E.combatStats.dashDuration;
         _exitEventInvoked = false;
@@ -26,7 +32,7 @@ public class Dashing: BossState
 
     public override void FixedTick() {
         base.FixedTick();
-        E.SetVelocity(E.FacingDirection * E.combatStats.dashSpeed, 0);
+        E.SetVelocity(_dashDirection * E.combatStats.dashSpeed, 0);
 
         if (Time.time >= _dashEndTime && !_exitEventInvoked) {
             _exitEventInvoked = true;
