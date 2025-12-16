@@ -162,6 +162,11 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 
     [Header("Misc")]
     public Animator animator;
+    [SerializeField] private SpriteRenderer sprite;
+    [Tooltip("Flashing frequency when invulnerable.")]
+    [SerializeField] private float invulnFlashHz = 12f;
+    [Tooltip("Minimum opacity when invulnerable.")]
+    [SerializeField] private float invulnMinAlpha = 0.25f;
 
     // Transform
     public int FacingDirection => transform.localScale.x >= 0 ? 1 : -1;
@@ -273,8 +278,7 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
             Intent.Move = new Vector2(0f, Intent.Move.y);
 
         if (_vulnerabilityState == VulnerabilityState.Invulnerable && Time.time >= _invulnerabilityEndTime)
-            _vulnerabilityState = VulnerabilityState.Vulnerable;
-
+            SetVulnerable();
 
         Intent.SprintHeld = _sprint.IsPressed();
         _stateMachine.Tick();
@@ -300,6 +304,20 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 
     private void LateUpdate() {
         _stateMachine.LateTick();
+
+        if (!IsVulnerable)
+            UpdateInvulnerabilityVisuals();
+    }
+
+    private void UpdateInvulnerabilityVisuals() {
+        if (!sprite) return;
+
+        // Ping-pong alpha between 1 and invulnMinAlpha
+        float t = Mathf.PingPong(Time.time * invulnFlashHz, 1f);
+        float a = Mathf.Lerp(invulnMinAlpha, 1f, t);
+        var c = sprite.color;
+        c.a = a;
+        sprite.color = c;
     }
 
     private void OnJumpPerformed(InputAction.CallbackContext context) {
@@ -333,9 +351,16 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
         _horizontalControlUnlockTime = Time.time + duration;
     }
 
-    public void SetInvulnerable() {
+    private void SetInvulnerable() {
         _invulnerabilityEndTime = Time.time + combatStats.invulnerabilityDuration;
         _vulnerabilityState = VulnerabilityState.Invulnerable;
+    }
+
+    private void SetVulnerable() {
+        _vulnerabilityState = VulnerabilityState.Vulnerable;
+        var c = sprite.color;
+        c.a = 1f;
+        sprite.color = c;
     }
 
 }

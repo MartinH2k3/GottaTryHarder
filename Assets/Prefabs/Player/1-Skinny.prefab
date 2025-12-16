@@ -119,14 +119,15 @@ MonoBehaviour:
     dashCooldown: 1
   combatStats:
     maxHealthPoints: 100
+    invulnerabilityDuration: 1
     attackComboTime: 1
     jumpKickTime: 0.25
     jumpKickDamageMultiplier: 1.25
     attackDamage: 10
+    attackKnockback: 2
     attackRange: 1
     attackHeight: 0.2
     attackWidth: 0.5
-    attackKnockback: 2
     attackRate: 2
     attackDelay: 0.1
     lifeSteal: 0
@@ -145,6 +146,9 @@ MonoBehaviour:
     death: {fileID: 0}
   debugText: {fileID: 0}
   animator: {fileID: 4410518169685602363}
+  sprite: {fileID: 4431229473528033786}
+  invulnFlashHz: 12
+  invulnMinAlpha: 0.25
 --- !u!95 &4410518169685602363
 Animator:
   serializedVersion: 7
