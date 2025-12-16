@@ -316,6 +316,7 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     public void TakeDamage(int damage) {
         if (!IsVulnerable || IsDead) return;
         HealthPoints -= damage;
+        SetInvulnerable();
         if (HealthPoints <= 0) {
             Die();
         }
