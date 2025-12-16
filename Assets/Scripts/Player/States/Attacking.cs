@@ -74,6 +74,9 @@ public class Attacking: PlayerState
 
         for (int i = 0; i < count; i++) {
             var collider = _hits[i];
+            // If somehow hitting self, skip
+            if (collider.transform.root == P.transform.root)
+                continue;
 
             var attackable = collider.GetComponent<IDamageable>();
             if (attackable is null)
