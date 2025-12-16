@@ -37,6 +37,8 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 
     [Header("Movement")]
     public MovementStats movementStats;
+    [ContextMenu("Reset Movement Stats")]
+    public void ResetMovementStats() => movementStats = new MovementStats();
 
     [Header("Contact/Collision")]
     [SerializeField] private ContactStats contactStats;
@@ -70,6 +72,8 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 
     [Header("Jump")]
     public JumpStats jumpStats;
+    [ContextMenu("Reset Jump Stats")]
+    public void ResetJumpStats() => jumpStats = new JumpStats();
     private float _nextJumpTime;
     public bool JumpOffCooldown => Time.time >= _nextJumpTime;
     public float LastJumpTime { get; set; } = float.NegativeInfinity;
@@ -96,6 +100,8 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 
     [Header("Wall Slide")]
     public WallSlideStats wallSlideStats;
+    [ContextMenu("Reset Wall Slide Stats")]
+    public void ResetWallSlideStats() => wallSlideStats = new WallSlideStats();
     bool ShouldSlide => !IsGrounded && !WallRegrabLocked && TouchingWall && this.GetVelocity().y < wallSlideStats.upwardSpeedThreshold;
 
     // Wall Jump
@@ -107,6 +113,9 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 
     [Header("Dashing")]
     public DashStats dashStats;
+    [ContextMenu("Reset Dash Stats")]
+    public void ResetDashStats() => dashStats = new DashStats();
+
     private float _lastDashEndTime = float.NegativeInfinity;
     public void StartDashCooldown() => _lastDashEndTime = Time.time;
 
@@ -120,10 +129,13 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 
     [Header("Combat")]
     public CombatStats combatStats;
+    [ContextMenu("Reset Combat Stats")]
+    public void ResetCombatStats() => combatStats = new CombatStats();
     public bool IsDead { get; private set; }
     public event Action OnDeath;
     public bool IsVulnerable => _vulnerabilityState == VulnerabilityState.Vulnerable;
     public int HealthPoints { get; set; }
+    private float _invulnerabilityEndTime;
 
     private float _lastAttackTime = float.NegativeInfinity;
     public LayerMask attackableLayer;
