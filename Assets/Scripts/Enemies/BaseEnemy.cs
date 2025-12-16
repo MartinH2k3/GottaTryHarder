@@ -1,4 +1,5 @@
 ﻿using System;
+using Enemies.States;
 using Enemies.Stats;
 using Infrastructure.StateMachine;
 using Managers;
@@ -8,7 +9,7 @@ using UnityEngine;
 
 namespace Enemies
 {
-public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
+public class BaseEnemy: MonoBehaviour, IDamageable, IPhysicsMovable
 {
     // Stats. Would be too much effort with generic classes, so just put all stats here.
     [Header("Stats")]
@@ -16,7 +17,9 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
     public MovementStats movementStats;
     [Tooltip("Not all enemies will use all of the stats here.")]
     public CombatStats combatStats;
-    private int _currentHealth;
+    public int HealthPoints { get; set; }
+    public bool IsDead { get; private set; } = false;
+    public bool IsVulnerable => true; // All enemies are vulnerable by default
 
     /// <summary>To prevent lag, pathfinding happens in more scarce intervals, rather than every frame.</summary>
     [SerializeField] protected float detectionInterval = 0.2f;
@@ -55,7 +58,7 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
     public Animator animator;
 
     protected virtual void Awake() {
-        _currentHealth = combatStats.maxHealthPoints;
+        HealthPoints = combatStats.maxHealthPoints;
         Col = GetComponent<Collider2D>();
     }
 
@@ -77,8 +80,8 @@ public class BaseEnemy: MonoBehaviour, IAttackable, IPhysicsMovable
 
     public virtual void TakeDamage(int damageAmount) {
         AudioManager.Instance.PlaySFX(sounds.hurt);
-        _currentHealth -= damageAmount;
-        if (_currentHealth <= 0) {
+        HealthPoints -= damageAmount;
+        if (HealthPoints <= 0) {
             Die();
         }
     }
