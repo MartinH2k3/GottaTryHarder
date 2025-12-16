@@ -75,7 +75,7 @@ public class Attacking: PlayerState
         for (int i = 0; i < count; i++) {
             var collider = _hits[i];
 
-            var attackable = collider.GetComponent<IAttackable>();
+            var attackable = collider.GetComponent<IDamageable>();
             if (attackable is null)
                 continue;
             attackable.TakeDamage(_stats.attackDamage);
