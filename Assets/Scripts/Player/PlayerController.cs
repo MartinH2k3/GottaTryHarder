@@ -271,6 +271,11 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
         Intent.Move = _move.ReadValue<Vector2>();
         if (HorizontalControlLocked)
             Intent.Move = new Vector2(0f, Intent.Move.y);
+
+        if (_vulnerabilityState == VulnerabilityState.Invulnerable && Time.time >= _invulnerabilityEndTime)
+            _vulnerabilityState = VulnerabilityState.Vulnerable;
+
+
         Intent.SprintHeld = _sprint.IsPressed();
         _stateMachine.Tick();
     }
@@ -308,6 +313,14 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
         Intent.LastDashPressedTime = Time.time;
     }
 
+    public void TakeDamage(int damage) {
+        if (!IsVulnerable || IsDead) return;
+        HealthPoints -= damage;
+        if (HealthPoints <= 0) {
+            Die();
+        }
+    }
+
     public void Die() {
         if (IsDead) return;
         IsDead = true;
@@ -317,6 +330,11 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 
     public void LockMovement(float duration) {
         _horizontalControlUnlockTime = Time.time + duration;
+    }
+
+    public void SetInvulnerable() {
+        _invulnerabilityEndTime = Time.time + combatStats.invulnerabilityDuration;
+        _vulnerabilityState = VulnerabilityState.Invulnerable;
     }
 
 }

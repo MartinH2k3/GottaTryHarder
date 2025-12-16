@@ -19,13 +19,13 @@ public class BaseEnemy: MonoBehaviour, IDamageable, IPhysicsMovable
     public CombatStats combatStats;
     public int HealthPoints { get; set; }
     public bool IsDead { get; private set; } = false;
-    public bool IsVulnerable => true; // All enemies are vulnerable by default
 
     /// <summary>To prevent lag, pathfinding happens in more scarce intervals, rather than every frame.</summary>
     [SerializeField] protected float detectionInterval = 0.2f;
 
     // States
     protected StateMachine StateMachine;
+    protected Dying _deathState;
 
     // Targeting
     public PlayerController Target { get; set; }
@@ -64,6 +64,8 @@ public class BaseEnemy: MonoBehaviour, IDamageable, IPhysicsMovable
 
     protected virtual void Start() {
         StateMachine = new StateMachine();
+        _deathState = new Dying(this);
+        StateMachine.AddAnyTransition(_deathState, () => IsDead);
     }
 
     protected virtual void Update() {
@@ -87,11 +89,17 @@ public class BaseEnemy: MonoBehaviour, IDamageable, IPhysicsMovable
     }
 
     public virtual void Die() {
-        AudioManager.Instance.PlaySFX(sounds.death);
-        Destroy(gameObject);
+        IsDead = true;
     }
 
+    public void DisableObject() {
+        Col.enabled = false;
+        rb.simulated = false;
+    }
 
+    public void DestroyGameObject () {
+        Destroy(gameObject);
+    }
 
     /// <summary>
     /// Default enemy behaviour is to check if the target is within range and within line of sight.
