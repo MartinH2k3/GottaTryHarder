@@ -18,7 +18,10 @@ public class JumpStats
     public float airSpeed = 3.0f; // horizontal
     public float airAccel = 35f;
     public float airDecel = 25f;
-    public bool  allowSprintInAir = false;
+    [Tooltip("When rising below this speed, increase gravity (it's at the end of the jump when the jump feels floaty).")]
+    public float gravityCutoffSpeed = 1f;
+    public float downwardGravityMultiplier = 1.8f;
+    public bool allowSprintInAir = false;
 
     [Header("Combat")]
     [Tooltip("Damage dealt when jumping from knee pain")]

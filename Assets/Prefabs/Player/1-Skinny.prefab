@@ -101,6 +101,8 @@ MonoBehaviour:
     airSpeed: 4.5
     airAccel: 35
     airDecel: 25
+    gravityCutoffSpeed: 1
+    downwardGravityMultiplier: 1.8
     allowSprintInAir: 0
     damageTakenOnJump: 0
   wallSlideStats:

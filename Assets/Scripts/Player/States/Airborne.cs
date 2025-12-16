@@ -9,12 +9,16 @@ public class Airborne: PlayerState
 {
     private JumpStats _stats;
 
+    private bool _hasIncreasedGravity;
+    private float _ogGravityScale;
+
     public Airborne(PlayerController p) : base(p) {
         _stats = P.jumpStats;
     }
 
     public override void Enter() {
         base.Enter();
+        _hasIncreasedGravity = false;
         if (P.Intent.LastJumpPressedTime <= Time.time - 0.3f)
             P.animator.SetTrigger("Fall");
     }
@@ -22,6 +26,8 @@ public class Airborne: PlayerState
     public override void Exit() {
         base.Exit();
         AudioManager.Instance.PlaySFX(P.sounds.land);
+        if (_hasIncreasedGravity)
+            P.SetGravityScale(_ogGravityScale);
     }
 
     public override void FixedTick() {
@@ -38,6 +44,17 @@ public class Airborne: PlayerState
         var acceleration = Mathf.Abs(targetSpeed) > 0.01f ? _stats.airAccel : _stats.airDecel;
 
         P.AccelerateX(targetSpeed, acceleration);
+
+        if (_hasIncreasedGravity || P.GetVelocity().y >= _stats.gravityCutoffSpeed)
+            return;
+
+        if (P.GetVelocity().y > 0f) // To get rid of that floaty jump at the top
+            P.SetVelocityY(0f);
+
+        _hasIncreasedGravity = true;
+        _ogGravityScale = P.GetGravityScale();
+        P.SetGravityScale(_ogGravityScale * _stats.downwardGravityMultiplier);
+
     }
 
     private void Jump() {
