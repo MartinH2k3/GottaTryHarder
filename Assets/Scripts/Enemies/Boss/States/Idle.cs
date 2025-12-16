@@ -37,10 +37,10 @@ public class Idle: BossState
         var player = other.gameObject.GetComponent<Player.PlayerController>();
         int knockbackDir = player.transform.position.x - E.transform.position.x > 0 ? 1 : -1;
 
-        float stunDuration = Helpers.StunDurationEased(E.combatStats.knockbackStunDuration, E.combatStats.idleKnockbackStrength);
+        float stunDuration = Helpers.StunDurationEased(E.combatStats.knockbackStunDuration, E.combatStats.baseContactKnockbackStrength);
         player.LockMovement(stunDuration);
 
-        float idleKnockback = E.combatStats.idleKnockbackStrength * E.combatStats.attackKnockback;
+        float idleKnockback = E.combatStats.baseContactKnockbackStrength * E.combatStats.attackKnockback;
         player.AddForce(knockbackDir*idleKnockback, 3, ForceMode2D.Impulse);
     }
 }

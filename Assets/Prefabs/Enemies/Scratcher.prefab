@@ -190,19 +190,31 @@ MonoBehaviour:
   combatStats:
     maxHealthPoints: 30
     attackDamage: 10
-    attackSpeedMult: 1
     attackKnockback: 2
+    knockbackStunDuration: 0.5
+    baseContactKnockbackStrength: 1.3
+    damageApplyNormalizedTime: 0.8
     noticeTime: 0.5
     detectionRange: 2
-    attackRange: 0.6
     detectionPeriod: 0.2
     attackWidth: 0.5
     verticalKnockback: 1
-    chargeTime: 1
+    attackSpeedMult: 1
+    attackRange: 0.6
+    launchChargeTime: 1
     launchForce: 10
     bounceFactor: 0.8
-  animationStats:
-    damageApplyNormalizedTime: 0.8
+    bounceOffAngle: 70
+    launchDuration: 1.8
+    maxBubbleSize: 1.5
+    bubbleKnockbackStrength: 2.6
+    dashKnockbackStrength: 4.5
+    actionCooldown: 5
+    actionCooldownRandomness: 2
+    dashProbability: 0.6
+    dashToBubbleProbability: 0.3
+    dashDuration: 1
+    dashSpeed: 8
   detectionInterval: 0.2
   rb: {fileID: 7975483260362870508}
   playerLayer:

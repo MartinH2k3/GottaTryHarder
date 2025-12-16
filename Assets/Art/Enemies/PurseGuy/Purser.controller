@@ -73,6 +73,9 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: -6642718566549994819}
     m_Position: {x: -520, y: 60, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -2983637945293486493}
+    m_Position: {x: -178.25662, y: 289.73666, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: -3357687768617941060}
@@ -109,6 +112,32 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 0
+--- !u!1102 &-2983637945293486493
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Death
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: 4c68019fe4a21a64ab0c4251dd147d81, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
