@@ -103,7 +103,7 @@ public class Boss: BaseEnemy
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D other) {
+    protected override void OnCollisionEnter2D(Collision2D other) {
         if (StateMachine.Current == _dashing) {
             _dashing.HandleCollisionEnter(other);
         } else if (StateMachine.Current == _idle) {

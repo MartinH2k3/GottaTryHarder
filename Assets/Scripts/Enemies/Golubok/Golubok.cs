@@ -59,7 +59,7 @@ public class Golubok: BaseEnemy
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    protected override void OnCollisionEnter2D(Collision2D collision)
     {
         if (StateMachine.Current == _launching)
             _launching.HandleCollision(collision);

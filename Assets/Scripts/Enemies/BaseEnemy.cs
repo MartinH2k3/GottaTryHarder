@@ -6,6 +6,7 @@ using Managers;
 using Mechanics;
 using Player;
 using UnityEngine;
+using Utils;
 
 namespace Enemies
 {
@@ -78,6 +79,19 @@ public class BaseEnemy: MonoBehaviour, IDamageable, IPhysicsMovable
 
     protected void LateUpdate() {
         StateMachine.LateTick();
+    }
+
+
+    protected virtual void OnCollisionEnter2D(Collision2D collision) {
+        // Prevent enemy from pushing the player
+        if (Helpers.LayerInLayerMask(collision.gameObject.layer, playerLayer)) {
+            float stunDuration = Helpers.StunDurationEased(combatStats.knockbackStunDuration, combatStats.baseContactKnockbackStrength);
+            Target.LockMovement(stunDuration);
+
+            int knockbackDir = TargetPos.x - Pos.x > 0 ? 1 : -1;
+            float knockback = combatStats.baseContactKnockbackStrength * combatStats.attackKnockback;
+            Target.AddForce(knockbackDir*knockback, 3, ForceMode2D.Impulse);
+        }
     }
 
     public virtual void TakeDamage(int damageAmount) {

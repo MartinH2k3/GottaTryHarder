@@ -1,7 +1,9 @@
 ﻿using Enemies.States;
 using Managers;
 using Mechanics;
+using Unity.VisualScripting;
 using UnityEngine;
+using Utils;
 
 namespace Enemies.Melee.States
 {
@@ -63,9 +65,8 @@ public class Attacking: EnemyState<MeleeEnemy>
                 E.combatStats.attackKnockback * E.FacingDirection,
                 E.combatStats.verticalKnockback),
                 ForceMode2D.Impulse);
-            Debug.Log("Velocity after" + player.GetVelocity());
             // Need to stun for enough time so that he doesn't immediately cancel the stun with movement
-            float stunDuration = 0.1f * E.combatStats.attackKnockback;
+            float stunDuration = E.combatStats.knockbackStunDuration;
             player.LockMovement(stunDuration);
         }
 

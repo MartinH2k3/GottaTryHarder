@@ -9,6 +9,8 @@ public class CombatStats
     public int attackDamage = 10;
     public float attackKnockback = 2f;
     public float knockbackStunDuration = 0.5f;
+    [Tooltip("Knockback strength applied on contact (e.g. when the player touches the enemy).")]
+    public float baseContactKnockbackStrength = 1.5f;
     [Tooltip("Normalized time in the attack animation when the damage is applied.")]
     public float damageApplyNormalizedTime = 0.8f;
 
@@ -36,7 +38,6 @@ public class CombatStats
 
     [Header("Boss specific")]
     public float maxBubbleSize = 1.5f;
-    public float idleKnockbackStrength = 1.5f;
     public float bubbleKnockbackStrength = 2.6f;
     public float dashKnockbackStrength = 4.5f;
     [Tooltip("How many seconds between boss actions (dashes, bubbles, etc.)")]
