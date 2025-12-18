@@ -64,7 +64,9 @@ public class GameManager: MonoBehaviour
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
-        _pauseAction?.Disable();
+        if (_pauseAction == null)
+            return;
+        _pauseAction.Disable();
         _pauseAction.performed -= TogglePause;
     }
 
