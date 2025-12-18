@@ -58,9 +58,13 @@ public class GameManager: MonoBehaviour
         _currentLevelIndex = GetCurrentLevelIndex();
 
         // Skip Main Menu
-        if (_currentLevelIndex < 0) return;
+        if (_currentLevelIndex < 0) {
+            AudioManager.Instance.PlayMenuMusic();
+            return;
+        }
 
         LoadLevelData();
+        AudioManager.Instance.PlayLevelMusic(_currentLevelIndex);
 
         _spawnTimestamp = Time.time;
         _prevLevelsTime = GetSpentTime(_currentLevelIndex);
