@@ -18,6 +18,10 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     private InputSystemActions _inputActions;
     private InputAction _move, _sprint, _jump, _dash, _interact, _attack;
 
+    public void DisableInput() => _inputActions.Disable();
+    public void EnableInput() => _inputActions.Enable();
+
+
     // states
     private StateMachine _stateMachine;
     private ControlState _controlState = ControlState.Normal;

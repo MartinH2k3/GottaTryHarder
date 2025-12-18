@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance { get; private set; }
 
     [SerializeField] private Slider slider;
+    [SerializeField] private GameObject pauseMenu;
 
     private void Awake() {
         if (Instance != null && Instance != this) {
@@ -31,6 +32,13 @@ public class UIManager : MonoBehaviour
         slider.value = health;
     }
 
+    public void ShowPauseMenu() {
+        pauseMenu.SetActive(true);
+    }
+
+    public void HidePauseMenu() {
+        pauseMenu.SetActive(false);
+    }
 
 }
 

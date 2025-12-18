@@ -1,8 +1,8 @@
-﻿using System;
-using Player;
+﻿using Player;
 using UnityEngine;
 using SerializableData;
 using Unity.Cinemachine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Quaternion = UnityEngine.Quaternion; // added
 
@@ -26,6 +26,9 @@ public class GameManager: MonoBehaviour
     private LevelCompletionData _levelCompletionData;
     private string SaveFilePath => Application.persistentDataPath + "/levelData.json";
 
+    private InputSystemActions _inputActions;
+    private InputAction _pauseAction;
+
     private int _currentLevelIndex = 0;
     private Vector3 PlayerSpawnPoint => _currentLevelIndex >= 0 ? playerSpawnPoints[_currentLevelIndex] : Vector3.negativeInfinity; // If it's in the main menu, and anything fucks up so that it tries to spawn the player, it will spawn at negative infinity so nobody sees it
 
@@ -46,16 +49,23 @@ public class GameManager: MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         _playerInitialized = false;
+
+        _inputActions = new InputSystemActions();
+        _pauseAction = _inputActions.UI.Pause;
     }
 
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+        _pauseAction.Enable();
+        _pauseAction.performed += TogglePause;
     }
 
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        _pauseAction?.Disable();
+        _pauseAction.performed -= TogglePause;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
@@ -177,6 +187,11 @@ public class GameManager: MonoBehaviour
         return SceneManager.GetActiveScene().buildIndex - 1; // Scene 0 is the main menu
     }
 
+    public void LoadCurrentLevel() {
+        PauseGame(false);
+        SceneManager.LoadScene(_currentLevelIndex + 1);
+    }
+
     private PlayerController ChoosePlayerPrefab(int deathCount) {
         if (deathCount < 3) {
             return skinnyPlayerPrefab;
@@ -225,7 +240,7 @@ public class GameManager: MonoBehaviour
         }
 
         SaveLevelData();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        LoadCurrentLevel();
     }
 
     private void UpdateCameraTarget()
@@ -241,14 +256,20 @@ public class GameManager: MonoBehaviour
         _isPaused = pause;
 
         Time.timeScale = pause ? 0f : 1f;
-        if (pause)
+        if (pause) {
+            UIManager.Instance.ShowPauseMenu();
             AudioManager.Instance.ChangeMusicVolume(0.5f);
-        else
+            _player.DisableInput();
+        }
+        else {
             AudioManager.Instance.ChangeMusicVolume(1f);
+            UIManager.Instance.HidePauseMenu();
+            _player.EnableInput();
+        }
     }
 
     /// <summary> Helper for UI buttons, etc. </summary>
-    public void TogglePause()
+    private void TogglePause(InputAction.CallbackContext ctx = new())
     {
         PauseGame(!_isPaused);
     }
