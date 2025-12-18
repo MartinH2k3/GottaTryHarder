@@ -12,4 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80b6e5cc73d5400bbef4ec709b0a6c9f, type: 3}
   m_Name: PlayerLevelUpStats
   m_EditorClassIdentifier: Assembly-CSharp::ScriptableObjects.PlayerLevelUpStats
-  levelUpStats: []
+  levelUpStats:
+  - addsLifeSteal: 0
+    addsDamageTakenOnJump: 0
+    addsMultiJump: 2
+    damageAdded: 0
+    attackComboUnlocked: 0
+    jumpKickUnlocked: 0
+    jumpStrengthRateChange: 0
+    movementSpeedRateChange: 0
+    dashSpeedRateChange: 0

@@ -1,4 +1,5 @@
-﻿using Player;
+﻿using System;
+using Player;
 using UnityEngine;
 using SerializableData;
 using Unity.Cinemachine;
@@ -15,6 +16,10 @@ public class GameManager: MonoBehaviour
     [SerializeField] private PlayerController midPlayerPrefab;
     [SerializeField] private PlayerController buffPlayerPrefab;
     private PlayerController _player;
+    private bool _playerInitialized;
+    private int PlayerHealth => _player.HealthPoints;
+    private int _lastPlayerHealth = -1;
+    private int PlayerMaxHealth => _player.combatStats.maxHealthPoints;
 
     [Header("Level Data")]
     [SerializeField] private PlayerLevelUpStats levelUpStatsData;
@@ -28,6 +33,8 @@ public class GameManager: MonoBehaviour
     private float _prevLevelsTime;
     public int DeathCount { get; private set; }
 
+    private bool _isPaused;
+
     public static GameManager Instance { get; private set; }
 
     private void Awake() {
@@ -37,6 +44,8 @@ public class GameManager: MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        _playerInitialized = false;
     }
 
     private void OnEnable()
@@ -51,6 +60,23 @@ public class GameManager: MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         InitializeLevel();
+    }
+
+    private void Update() {
+        // Player related updates below
+        if (!_playerInitialized)
+            return;
+
+        UpdatePlayerHealthUI();
+    }
+
+    private void UpdatePlayerHealthUI() {
+        if (PlayerHealth == _lastPlayerHealth)
+            return;
+
+        UIManager.Instance?.DisplayHealth(PlayerHealth);
+        _lastPlayerHealth = PlayerHealth;
+
     }
 
     private void InitializeLevel() {
@@ -77,6 +103,10 @@ public class GameManager: MonoBehaviour
         _player.OnDeath += HandlePlayerDeath;
 
         UpdateCameraTarget();
+
+        _playerInitialized = true;
+
+        UIManager.Instance.InitiateHUD(PlayerMaxHealth);
     }
 
     /// <summary>
@@ -203,6 +233,46 @@ public class GameManager: MonoBehaviour
         var followCamera = FindFirstObjectByType<CinemachineCamera>();
 
         if (followCamera != null) followCamera.Follow = _player.transform;
+    }
+
+    /// <summary> Pauses or unpauses the game. </summary>
+    public void PauseGame(bool pause)
+    {
+        _isPaused = pause;
+
+        Time.timeScale = pause ? 0f : 1f;
+        if (pause)
+            AudioManager.Instance.ChangeMusicVolume(0.5f);
+        else
+            AudioManager.Instance.ChangeMusicVolume(1f);
+    }
+
+    /// <summary> Helper for UI buttons, etc. </summary>
+    public void TogglePause()
+    {
+        PauseGame(!_isPaused);
+    }
+
+    public void ExitToMenu()
+    {
+        Time.timeScale = 1f;
+        AudioListener.pause = false;
+        _playerInitialized = false;
+
+        SceneManager.LoadScene(0);
+    }
+
+    public void ExitGame()
+    {
+        Time.timeScale = 1f;
+        _playerInitialized = false;
+        AudioListener.pause = false;
+
+    #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+    #else
+        Application.Quit();
+    #endif
     }
 }
 
