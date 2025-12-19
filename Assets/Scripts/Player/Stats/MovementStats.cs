@@ -6,7 +6,7 @@ namespace Player.Stats
 public class MovementStats
 {
     public float moveEps = 0.1f; // deadzone for movement input
-    public float walkSpeed = 3f;
+    public float walkSpeed = 4.5f;
     public float sprintMultiplier = 1.3f; // holding sprint button
     public float WalkSpeedMultiplier { get; set; } = 1f; // outside factors && effects
     public float walkAccel = 50f; // rates at which you reach walkSpeed

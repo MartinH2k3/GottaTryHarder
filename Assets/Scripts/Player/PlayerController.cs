@@ -339,6 +339,7 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
         if (!IsVulnerable || IsDead) return;
         HealthPoints -= damage;
         SetInvulnerable();
+        AudioManager.Instance.PlaySFX(sounds.hurt);
         if (HealthPoints <= 0) {
             Die();
         }
@@ -403,7 +404,6 @@ public sealed class PlayerIntent
 public sealed class PlayerSounds
 {
     public AudioClip jump;
-    public AudioClip land;
     public AudioClip dash;
     public AudioClip attack;
     public AudioClip hurt;

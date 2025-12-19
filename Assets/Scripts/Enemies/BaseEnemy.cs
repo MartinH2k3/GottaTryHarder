@@ -19,6 +19,7 @@ public class BaseEnemy: MonoBehaviour, IDamageable, IPhysicsMovable
     [Tooltip("Not all enemies will use all of the stats here.")]
     public CombatStats combatStats;
     public int HealthPoints { get; set; }
+    public Action OnDeath;
     public bool IsDead { get; private set; } = false;
 
     /// <summary>To prevent lag, pathfinding happens in more scarce intervals, rather than every frame.</summary>
@@ -30,7 +31,8 @@ public class BaseEnemy: MonoBehaviour, IDamageable, IPhysicsMovable
 
     // Targeting
     public PlayerController Target { get; set; }
-    public Vector2 TargetPos => Target?.transform.position ?? Vector2.zero;
+    protected bool PlayerMet;
+    public Vector2 TargetPos => Target?.transform.position ?? Vector2.negativeInfinity;
     protected float LastTargetCheckTime;
     protected bool LastTargetCheck;
 
@@ -51,6 +53,10 @@ public class BaseEnemy: MonoBehaviour, IDamageable, IPhysicsMovable
     public Vector2 Pos => transform.position;
     public float EnemyHeight => Col.bounds.size.y;
     public float EnemyWidth => Col.bounds.size.x;
+    public bool IsGrounded => Physics2D.OverlapCircle(
+        new Vector2(transform.position.x, transform.position.y - EnemyHeight / 2),
+        0.1f, terrainLayer);
+    private bool _lastGrounded = true;
 
     [Header("Audio")]
     public EnemySounds sounds;
@@ -67,10 +73,21 @@ public class BaseEnemy: MonoBehaviour, IDamageable, IPhysicsMovable
         StateMachine = new StateMachine();
         _deathState = new Dying(this);
         StateMachine.AddAnyTransition(_deathState, () => IsDead);
+        PlayerMet = false;
     }
 
     protected virtual void Update() {
         StateMachine.Tick();
+
+        if (!PlayerMet && Target != null) {
+            PlayerMet = true;
+            AudioManager.Instance.PlaySFX(sounds.noticePlayer);
+        }
+
+        if (!_lastGrounded && IsGrounded) {
+            this.SetVelocityX(0);
+        }
+        _lastGrounded = IsGrounded;
     }
 
     protected virtual void FixedUpdate() {
@@ -103,6 +120,7 @@ public class BaseEnemy: MonoBehaviour, IDamageable, IPhysicsMovable
     }
 
     public virtual void Die() {
+        OnDeath.Invoke();
         IsDead = true;
     }
 
@@ -122,6 +140,9 @@ public class BaseEnemy: MonoBehaviour, IDamageable, IPhysicsMovable
     protected virtual bool TargetInRange() {
             if (Time.time - LastTargetCheckTime < detectionInterval)
                 return LastTargetCheck;
+
+            if (TargetPos == Vector2.negativeInfinity)
+                return false;
 
             // include player and terrain so obstacles will be detected before the player
             var mask = playerLayer | terrainLayer;

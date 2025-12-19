@@ -1,4 +1,5 @@
 ﻿using Enemies.Boss.States;
+using Mechanics;
 using UnityEngine;
 
 namespace Enemies.Boss
@@ -37,6 +38,13 @@ public class Boss: BaseEnemy
         StateMachine.AddExitTransition(_idle, ShouldExitState);
         StateMachine.AddExitTransition(_dashing, ShouldExitState);
         StateMachine.AddExitTransition(_bubbling, ShouldExitState);
+    }
+
+    protected override void Update() {
+        base.Update();
+        if (PlayerMet && FacingDirection != (TargetPos.x >= Pos.x ? 1 : -1)) {
+            this.TurnAround();
+        }
     }
 
     public void EnableBubbleCollider() {

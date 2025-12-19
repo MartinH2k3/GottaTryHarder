@@ -21,6 +21,7 @@ public class Idle: BossState
 
     public override void FixedTick() {
         base.FixedTick();
+        E.SetVelocityX(0);
         if (Time.time >= _endTime && !_exitEventInvoked) {
             _exitEventInvoked = true;
             ShouldExit?.Invoke();

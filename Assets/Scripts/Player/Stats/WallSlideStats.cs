@@ -11,7 +11,7 @@ public class WallSlideStats
     public float upwardSpeedThreshold = 0.1f;
     [Header("Wall Jump")]
     public float wallJumpXStrength = 5f;
-    public float wallJumpYStrength = 5f;
+    public float wallJumpYStrength = 6f;
     public float wallRegrabLock = 0.5f; // time after jumping off wall before being able to regrab
 }
 }

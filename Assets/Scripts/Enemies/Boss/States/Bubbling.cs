@@ -1,4 +1,5 @@
 ﻿using Enemies.States;
+using Managers;
 using Mechanics;
 using Player;
 using UnityEngine;
@@ -18,6 +19,7 @@ public class Bubbling: BossState
     public override void Enter() {
         base.Enter();
         E.animator.Play("RobbyBubble");
+        AudioManager.Instance.PlaySFX(E.sounds.attack);
         E.EnableBubbleCollider();
         _stopGrowing = false;
         _stopEventInvoked = false;
@@ -26,7 +28,7 @@ public class Bubbling: BossState
     public override void FixedTick() {
         base.FixedTick();
         if (!_stopGrowing) {
-            float maxScale = E.combatStats.maxBubbleSize;
+            float maxScale = E.combatStats.maxBubbleSize * E.transform.localScale.x; // scale according to facing direction
             E.transform.localScale = Vector3.Lerp(E.transform.localScale, new Vector3(maxScale, maxScale, 1), Time.fixedDeltaTime / AnimationDuration);
             if (E.transform.localScale.x >= maxScale * 0.95f) {
                 _stopGrowing = true;

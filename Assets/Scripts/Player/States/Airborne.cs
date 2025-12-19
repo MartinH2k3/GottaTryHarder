@@ -25,7 +25,6 @@ public class Airborne: PlayerState
 
     public override void Exit() {
         base.Exit();
-        AudioManager.Instance.PlaySFX(P.sounds.land);
         if (_hasIncreasedGravity)
             P.SetGravityScale(_ogGravityScale);
     }

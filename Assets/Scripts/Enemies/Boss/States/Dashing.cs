@@ -1,4 +1,5 @@
 ﻿using Enemies.States;
+using Managers;
 using Mechanics;
 using UnityEngine;
 using Utils;
@@ -18,6 +19,7 @@ public class Dashing: BossState
     public override void Enter() {
         base.Enter();
         E.animator.Play("Leap");
+        AudioManager.Instance.PlaySFX(E.sounds.attack);
 
         _dashDirection = E.Target.transform.position.x > E.Pos.x ? 1 : -1;
         if (_dashDirection != E.FacingDirection)

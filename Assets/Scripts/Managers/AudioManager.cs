@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Managers
@@ -7,7 +8,7 @@ public class AudioManager: MonoBehaviour
     public static AudioManager Instance { get; private set; }
 
     private AudioSource _musicSource;
-    private AudioSource[] _sfxSources; // Overlapping SFX
+    private List<AudioSource> _sfxSources = new(); // Overlapping SFX
     private int _nextSourceIndex;
 
     [SerializeField] private AudioClip[] levelSoundtracks;
@@ -59,13 +60,27 @@ public class AudioManager: MonoBehaviour
         _musicSource.volume = volume;
     }
 
-    public void PlaySFX(AudioClip clip, float volume = 1f) {
-        if (Instance == null || clip == null) return;
+    public void PlaySFX(AudioClip clip, float volume = 1f)
+    {
+        if (clip == null) return;
 
-        AudioSource src = Instance._sfxSources[Instance._nextSourceIndex];
-        Instance._nextSourceIndex = (Instance._nextSourceIndex + 1) % Instance._sfxSources.Length;
-
+        AudioSource src = GetAvailableSFXSource();
         src.PlayOneShot(clip, volume);
+    }
+
+    private AudioSource GetAvailableSFXSource()
+    {
+        // Try to reuse an idle source
+        foreach (var source in _sfxSources)
+        {
+            if (!source.isPlaying)
+                return source;
+        }
+
+        // None free -> create a new one
+        AudioSource newSource = gameObject.AddComponent<AudioSource>();
+        _sfxSources.Add(newSource);
+        return newSource;
     }
 }
 }

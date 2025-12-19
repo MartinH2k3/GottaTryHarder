@@ -61,7 +61,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!114 &4465722171525312743
 MonoBehaviour:
@@ -138,12 +138,11 @@ MonoBehaviour:
     m_Bits: 128
   wallJumpControlLockTime: 0.2
   sounds:
-    jump: {fileID: 0}
-    land: {fileID: 0}
-    dash: {fileID: 0}
-    attack: {fileID: 0}
-    hurt: {fileID: 0}
-    death: {fileID: 0}
+    jump: {fileID: 8300000, guid: 09cc27ab749a5814893d0fb6c2210acf, type: 3}
+    dash: {fileID: 8300000, guid: 5bd4f7384d8e28044a765f39411e946d, type: 3}
+    attack: {fileID: 8300000, guid: 83c7d44a77a838d45ace5e393dd61d09, type: 3}
+    hurt: {fileID: 8300000, guid: 03aabeb2cffd876449e541d9e3150ddb, type: 3}
+    death: {fileID: 8300000, guid: af2f8ce256bdc174c8aa10aca3e02e0a, type: 3}
   debugText: {fileID: 0}
   animator: {fileID: 4410518169685602363}
   sprite: {fileID: 4431229473528033786}
