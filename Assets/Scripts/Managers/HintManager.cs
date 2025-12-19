@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 namespace Managers
 {
 public class HintManager: MonoBehaviour {
-    private static HintManager Instance { get; set; }
+    public static HintManager Instance { get; private set; }
 
     [SerializeField] private string[] lockedHintIDs;
     private HashSet<string> _lockedHintsIDs = new();
@@ -90,6 +90,12 @@ public class HintManager: MonoBehaviour {
         if (string.IsNullOrWhiteSpace(hintId)) return;
 
         _lockedHintsIDs.Remove(hintId);
+    }
+
+    public void LockHint(string hintId) {
+        if (string.IsNullOrWhiteSpace(hintId)) return;
+
+        _lockedHintsIDs.Add(hintId);
     }
 }
 }
