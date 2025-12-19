@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace OtherObjects
+namespace Other
 {
 public class CarSpawner: MonoBehaviour
 {

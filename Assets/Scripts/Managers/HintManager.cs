@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using OtherObjects;
+using Other;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,6 +7,9 @@ namespace Managers
 {
 public class HintManager: MonoBehaviour {
     private static HintManager Instance { get; set; }
+
+    [SerializeField] private string[] lockedHintIDs;
+    private HashSet<string> _lockedHintsIDs = new();
 
     private readonly HashSet<string> _shown = new();
 
@@ -20,6 +23,7 @@ public class HintManager: MonoBehaviour {
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        _lockedHintsIDs = new HashSet<string>(lockedHintIDs);
     }
 
     private void OnEnable()
@@ -47,12 +51,19 @@ public class HintManager: MonoBehaviour {
                 continue;
             }
 
+            // If it's locked, deactivate it
+            if (_lockedHintsIDs.Contains(hint.HintID))
+            {
+                hint.RemoveHint();
+                continue;
+            }
+
             string key = MakeKey(scene.name, hint.HintID);
 
             // If it was shown before, remove it immediately
             if (_shown.Contains(key))
             {
-                hint.RemoveHint(); // or: hint.gameObject.SetActive(false);
+                hint.RemoveHint();
                 continue;
             }
 
@@ -74,5 +85,11 @@ public class HintManager: MonoBehaviour {
 
     private static string MakeKey(string sceneName, string hintId)
         => $"{sceneName}:{hintId}";
+
+    public void UnlockHint(string hintId) {
+        if (string.IsNullOrWhiteSpace(hintId)) return;
+
+        _lockedHintsIDs.Remove(hintId);
+    }
 }
 }

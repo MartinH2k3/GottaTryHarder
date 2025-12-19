@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace OtherObjects
+namespace Other
 {
 public class Hint: MonoBehaviour {
     [SerializeField] protected LayerMask playerLayer;

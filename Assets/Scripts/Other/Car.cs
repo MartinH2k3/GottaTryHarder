@@ -1,4 +1,4 @@
-﻿namespace OtherObjects
+﻿namespace Other
 {
 public class Car
 {

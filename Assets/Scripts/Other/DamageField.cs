@@ -3,7 +3,7 @@ using Mechanics;
 using UnityEngine;
 using Utils;
 
-namespace OtherObjects
+namespace Other
 {
 public class DamageField: MonoBehaviour
 {

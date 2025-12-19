@@ -2,7 +2,7 @@
 using Player;
 using UnityEngine;
 
-namespace OtherObjects
+namespace Other
 {
 public class BossSpawner: MonoBehaviour
 {

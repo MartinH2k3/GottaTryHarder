@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Utils;
 
-namespace OtherObjects
+namespace Other
 {
 public class TriggerText: Hint
 {
