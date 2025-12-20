@@ -110,7 +110,7 @@ public class GameManager: MonoBehaviour
             Debug.Log($"[GameManager] Menu init. isPaused={_isPaused}, timeScale={Time.timeScale}");
 
             AudioManager.Instance.PlayMenuMusic();
-            UIManager.Instance.HideHUD();
+            UIManager.Instance?.HideHUD();
             return;
         }
 
@@ -131,8 +131,8 @@ public class GameManager: MonoBehaviour
 
         _playerInitialized = true;
 
-        UIManager.Instance.HideLoadingScreen();
-        UIManager.Instance.InitiateHUD(PlayerMaxHealth, DeathCount, _prevLevelsTime);
+        UIManager.Instance?.HideLoadingScreen();
+        UIManager.Instance?.InitiateHUD(PlayerMaxHealth, DeathCount, _prevLevelsTime);
     }
 
     /// <summary>
@@ -261,7 +261,7 @@ public class GameManager: MonoBehaviour
         }
 
         SaveLevelData();
-        UIManager.Instance.ShowLoadingScreen();
+        UIManager.Instance?.ShowLoadingScreen();
         _isDying = true;
     }
 
@@ -279,13 +279,13 @@ public class GameManager: MonoBehaviour
 
         Time.timeScale = pause ? 0f : 1f;
         if (pause) {
-            UIManager.Instance.ShowPauseMenu();
+            UIManager.Instance?.ShowPauseMenu();
             AudioManager.Instance.ChangeMusicVolume(0.5f);
             _player.DisableInput();
         }
         else {
             AudioManager.Instance.ChangeMusicVolume(1f);
-            UIManager.Instance.HidePauseMenu();
+            UIManager.Instance?.HidePauseMenu();
             _player.EnableInput();
         }
     }
@@ -327,7 +327,7 @@ public class GameManager: MonoBehaviour
     public void End() {
         // Clean up just in case
         Destroy(_player.gameObject);
-        UIManager.Instance.ShowEndCutscene();
+        UIManager.Instance?.ShowEndCutscene();
     }
 }
 

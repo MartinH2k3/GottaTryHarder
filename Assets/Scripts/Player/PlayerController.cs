@@ -309,6 +309,9 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
         _stateMachine.Tick();
 
         animator.SetBool(_animatorAirborneHash, !IsGrounded);
+
+        if (IsGrounded)
+            ResetAirJumps();
     }
 
     private void FixedUpdate() {
