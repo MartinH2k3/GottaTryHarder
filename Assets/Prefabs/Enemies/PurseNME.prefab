@@ -93,10 +93,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   sounds:
-    noticePlayer: {fileID: 0}
-    attack: {fileID: 0}
-    hurt: {fileID: 0}
-    death: {fileID: 0}
+    noticePlayer: {fileID: 8300000, guid: ce4ea846f844c684cba6b1b90651cb78, type: 3}
+    attack: {fileID: 8300000, guid: abc41e49343071444968a7a9bd9f27e8, type: 3}
+    hurt: {fileID: 8300000, guid: abc41e49343071444968a7a9bd9f27e8, type: 3}
+    death: {fileID: 8300000, guid: d61c89d8a29c820449f352eef9054fa1, type: 3}
   animator: {fileID: 2806025258606863869}
 --- !u!50 &6933661127868106619
 Rigidbody2D:
@@ -170,7 +170,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1296574893
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: -4016808174941721221, guid: 99ac402d0eceb484db2d8ae9a3b83b41, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

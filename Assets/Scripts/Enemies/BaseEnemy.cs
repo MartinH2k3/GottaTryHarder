@@ -120,7 +120,7 @@ public class BaseEnemy: MonoBehaviour, IDamageable, IPhysicsMovable
     }
 
     public virtual void Die() {
-        OnDeath.Invoke();
+        OnDeath?.Invoke();
         IsDead = true;
     }
 

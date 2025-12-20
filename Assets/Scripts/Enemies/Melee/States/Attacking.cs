@@ -24,6 +24,7 @@ public class Attacking: EnemyState<MeleeEnemy>
 
         AudioManager.Instance.PlaySFX(E.sounds.attack);
         E.animator.SetBool("Attacking", true);
+        AudioManager.Instance.PlaySFX(E.sounds.attack);
         IsAttackFinished = false;
         _attackExecuted = false;
     }

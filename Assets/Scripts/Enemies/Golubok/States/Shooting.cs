@@ -1,4 +1,5 @@
 ﻿using Enemies.States;
+using Managers;
 using UnityEngine;
 
 namespace Enemies.Golubok.States
@@ -18,6 +19,7 @@ public class Shooting: EnemyState<Golubok>
 
     public void Shoot() {
         E.animator.Play("Shooting");
+        AudioManager.Instance.PlaySFX(E.sounds.attack);
         E.MissilePool.Spawn(E.Pos);
     }
 }

@@ -1,4 +1,5 @@
 using Enemies.States;
+using Managers;
 using Mechanics;
 using UnityEngine;
 
@@ -28,7 +29,6 @@ public class Launching: EnemyState<Golubok>
             E.TurnAround();
 
         E.animator.Play("Charge Dash");
-
     }
 
     public override void Exit() {
@@ -56,6 +56,8 @@ public class Launching: EnemyState<Golubok>
         var dir = E.TargetPos - E.Pos;
         Rotate(dir);
         E.AddForce(dir.normalized * E.combatStats.launchForce, ForceMode2D.Impulse);
+
+        AudioManager.Instance.PlaySFX(E.sounds.attack);
     }
 
     public void HandleCollision(Collision2D collision)

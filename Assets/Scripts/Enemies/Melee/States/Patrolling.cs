@@ -18,6 +18,11 @@ public class Patrolling: EnemyState<MeleeEnemy>
         E.animator.SetBool("Walking", true);
     }
 
+    public override void Exit() {
+        base.Exit();
+        E.SetVelocityX(0f);
+    }
+
     public override void FixedTick() {
         base.FixedTick();
         if (E.CanWalkForward())

@@ -195,12 +195,12 @@ MonoBehaviour:
     baseContactKnockbackStrength: 1.3
     damageApplyNormalizedTime: 0.8
     noticeTime: 0.5
-    detectionRange: 2
+    detectionRange: 10
     detectionPeriod: 0.2
     attackWidth: 0.5
     verticalKnockback: 1
     attackSpeedMult: 1
-    attackRange: 0.6
+    attackRange: 0.8
     launchChargeTime: 1
     launchForce: 10
     bounceFactor: 0.8
@@ -224,10 +224,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   sounds:
-    noticePlayer: {fileID: 0}
-    attack: {fileID: 0}
-    hurt: {fileID: 0}
-    death: {fileID: 0}
+    noticePlayer: {fileID: 8300000, guid: fafb9eee35d32bb408dbfd5ee4a2e361, type: 3}
+    attack: {fileID: 8300000, guid: d32e30eb710923f43a300c56bfe905b9, type: 3}
+    hurt: {fileID: 8300000, guid: 5273c6647eacc3c47a34327b0e429014, type: 3}
+    death: {fileID: 8300000, guid: 25db554e750c7764d957006422b873e5, type: 3}
   animator: {fileID: 1420626018966755554}
 --- !u!95 &1420626018966755554
 Animator:

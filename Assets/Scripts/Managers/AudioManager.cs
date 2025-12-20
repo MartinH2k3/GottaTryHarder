@@ -11,6 +11,8 @@ public class AudioManager: MonoBehaviour
     private List<AudioSource> _sfxSources = new(); // Overlapping SFX
     private int _nextSourceIndex;
 
+    private readonly HashSet<AudioClip> _playingClips = new();
+
     [SerializeField] private AudioClip[] levelSoundtracks;
     [SerializeField] private AudioClip menuSoundtrack;
     [SerializeField] private AudioClip bossSoundtrack;
@@ -64,8 +66,15 @@ public class AudioManager: MonoBehaviour
     {
         if (clip == null) return;
 
+        if (_playingClips.Contains(clip))
+            return;
+
+        _playingClips.Add(clip);
+
         AudioSource src = GetAvailableSFXSource();
         src.PlayOneShot(clip, volume);
+
+        StartCoroutine(RemoveClipWhenFinished(src, clip));
     }
 
     private AudioSource GetAvailableSFXSource()
@@ -81,6 +90,15 @@ public class AudioManager: MonoBehaviour
         AudioSource newSource = gameObject.AddComponent<AudioSource>();
         _sfxSources.Add(newSource);
         return newSource;
+    }
+
+    private System.Collections.IEnumerator RemoveClipWhenFinished(AudioSource source, AudioClip clip)
+    {
+        // Wait until this source finishes playing that clip
+        while (source.isPlaying)
+            yield return null;
+
+        _playingClips.Remove(clip);
     }
 }
 }
