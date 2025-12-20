@@ -68,11 +68,11 @@ public class Golubok: BaseEnemy
     private readonly Vector3 _labelOffset = new (0, 1, 0);
     private void OnDrawGizmos()
     {
-        var stateName = StateMachine?.Current?.GetType().Name ?? "None";
+        var hp = HealthPoints;
         var pos = transform.position + _labelOffset;
 
         UnityEditor.Handles.color = Color.black;
-        UnityEditor.Handles.Label(pos, stateName);
+        UnityEditor.Handles.Label(pos, hp.ToString());
     }
 }
 }

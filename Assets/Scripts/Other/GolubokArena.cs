@@ -1,5 +1,4 @@
-﻿using System;
-using Enemies.Golubok;
+﻿using Enemies.Golubok;
 using UnityEngine;
 
 namespace Other
@@ -8,12 +7,13 @@ public class GolubokArena: Arena
 {
     [SerializeField] private GameObject golubokPrefab;
     [SerializeField] private Transform[] spawnPoints;
-    [SerializeField] private DamageField damageField;
+    [SerializeField] private GameObject damageField;
 
     private int _remainingGoluboks;
 
     protected override void Awake() {
-        damageField.enabled = false;
+        base.Awake();
+        damageField.SetActive(false);
     }
 
     protected override void Start() {
@@ -39,12 +39,12 @@ public class GolubokArena: Arena
 
     protected override void LockArena() {
         base.LockArena();
-        damageField.enabled = true;
+        damageField.SetActive(true);
     }
 
     protected override void UnlockArena() {
         base.UnlockArena();
-        damageField.enabled = false;
+        damageField.SetActive(false);
     }
 }
 }

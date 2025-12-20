@@ -22587,6 +22587,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 797506013}
   m_CullTransparentMesh: 1
+--- !u!1 &891182982 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1546237274923988743, guid: 61d96a513d8e022469761e99f3e711d8, type: 3}
+  m_PrefabInstance: {fileID: 894937781287437382}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &906551443
 GameObject:
   m_ObjectHideFlags: 0
@@ -25813,14 +25818,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1839709974293188894, guid: 61d96a513d8e022469761e99f3e711d8, type: 3}
-      propertyPath: m_Size.y
-      value: 17
-      objectReference: {fileID: 0}
     - target: {fileID: 7049083641233741223, guid: 61d96a513d8e022469761e99f3e711d8, type: 3}
       propertyPath: arenaExit
       value: 
       objectReference: {fileID: 1741696749}
+    - target: {fileID: 7049083641233741223, guid: 61d96a513d8e022469761e99f3e711d8, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7049083641233741223, guid: 61d96a513d8e022469761e99f3e711d8, type: 3}
+      propertyPath: damageField
+      value: 
+      objectReference: {fileID: 891182982}
     - target: {fileID: 7049083641233741223, guid: 61d96a513d8e022469761e99f3e711d8, type: 3}
       propertyPath: arenaEntrance
       value: 
@@ -25841,6 +25850,18 @@ PrefabInstance:
       propertyPath: 'spawnPoints.Array.data[2]'
       value: 
       objectReference: {fileID: 56336639}
+    - target: {fileID: 9030584322590842829, guid: 61d96a513d8e022469761e99f3e711d8, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9030584322590842829, guid: 61d96a513d8e022469761e99f3e711d8, type: 3}
+      propertyPath: damageAmount
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 9030584322590842829, guid: 61d96a513d8e022469761e99f3e711d8, type: 3}
+      propertyPath: damageInterval
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

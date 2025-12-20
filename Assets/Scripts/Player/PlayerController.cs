@@ -340,6 +340,7 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
         HealthPoints -= damage;
         SetInvulnerable();
         AudioManager.Instance.PlaySFX(sounds.hurt);
+        Debug.Log($"TakeDamage({damage}) on {name}\nCaller:\n{Environment.StackTrace}", this);
         if (HealthPoints <= 0) {
             Die();
         }

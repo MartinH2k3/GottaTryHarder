@@ -1,31 +1,39 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Mechanics;
 using UnityEngine;
 using Utils;
 
 namespace Other
 {
-public class DamageField: MonoBehaviour
+public class DamageField : MonoBehaviour
 {
     [SerializeField] private LayerMask damageableLayers;
     [SerializeField] private bool instantKill;
     [SerializeField] private int damageAmount = 10;
     [SerializeField] private float damageInterval = 1f;
-    private float _lastDamageTime;
 
-    private void OnTriggerEnter2D(Collider2D other) {
-        HandleCollider(other);
+    // Per-target cooldown
+    private readonly Dictionary<Collider2D, float> _lastDamageTimeByTarget = new();
+
+    private void OnDisable()
+    {
+        _lastDamageTimeByTarget.Clear();
     }
 
-    private void OnTriggerStay2D(Collider2D other) {
-        HandleCollider(other);
+    private void OnTriggerEnter2D(Collider2D other) => HandleCollider(other);
+    private void OnTriggerStay2D(Collider2D other) => HandleCollider(other);
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        // Cleanup when target leaves
+        _lastDamageTimeByTarget.Remove(other);
     }
 
-    private void HandleCollider(Collider2D other) {
+    private void HandleCollider(Collider2D other)
+    {
         if (!Helpers.LayerInLayerMask(other.gameObject.layer, damageableLayers))
             return;
 
-        Debug.Log(other.gameObject.name);
         var damageable = other.GetComponent<IDamageable>();
         if (damageable == null)
             return;
@@ -35,10 +43,12 @@ public class DamageField: MonoBehaviour
             return;
         }
 
-        if (Time.time - _lastDamageTime <= damageInterval)
+        _lastDamageTimeByTarget.TryGetValue(other, out var lastTime);
+
+        if (Time.time - lastTime < damageInterval)
             return;
 
-        _lastDamageTime = Time.time;
+        _lastDamageTimeByTarget[other] = Time.time;
         damageable.TakeDamage(damageAmount);
     }
 }

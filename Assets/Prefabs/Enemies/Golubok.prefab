@@ -81,7 +81,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1296574893
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: -8946617151278073156, guid: 4df619d5feb12cf4ba56519d84459a8b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -151,10 +151,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   sounds:
-    noticePlayer: {fileID: 0}
-    attack: {fileID: 0}
-    hurt: {fileID: 0}
-    death: {fileID: 0}
+    noticePlayer: {fileID: 8300000, guid: 9896a4e8f8b00b84098247a8df2b75dc, type: 3}
+    attack: {fileID: 8300000, guid: 9896a4e8f8b00b84098247a8df2b75dc, type: 3}
+    hurt: {fileID: 8300000, guid: 028d096373272f643af97caa3a30c2eb, type: 3}
+    death: {fileID: 8300000, guid: ee33fa7e4debf27499e6b0a543361840, type: 3}
   animator: {fileID: 3873189119076095086}
   projectilePrefab: {fileID: 706963800531783190, guid: a90d01549332dbb4db643fb30fa27482, type: 3}
 --- !u!58 &6884834606298613160
