@@ -327,6 +327,9 @@ public class GameManager: MonoBehaviour
     public void End() {
         // Clean up just in case
         Destroy(_player.gameObject);
+        _levelCompletionData.levelStats[_currentLevelIndex].deathCount = 0;
+        _levelCompletionData.levelStats[_currentLevelIndex].timeSeconds = 0f;
+        SaveLevelData();
         UIManager.Instance?.ShowEndCutscene();
     }
 }
