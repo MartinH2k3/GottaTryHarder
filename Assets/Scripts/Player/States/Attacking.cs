@@ -8,7 +8,10 @@ namespace Player.States
 {
 public class Attacking: PlayerState
 {
-    public bool IsAttackFinished => P.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f && P.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack");
+    public bool IsAttackFinished => P.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f &&
+                                    (P.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") ||
+                                     P.animator.GetCurrentAnimatorStateInfo(0).IsName("Attack2") ||
+                                     P.animator.GetCurrentAnimatorStateInfo(0).IsName("Kick"));
     private CombatStats _stats;
     private float _attackStartTime;
     private bool _attackExecuted;
@@ -22,6 +25,10 @@ public class Attacking: PlayerState
     }
 
     public override void Enter() {
+        if (Time.time < P.LastAttackTime + P.combatStats.attackComboTime)
+            P.AdvanceCombo();
+
+        P.animator.SetInteger("ComboStep", P.ComboStep);
         P.animator.SetTrigger("Attack");
         AudioManager.Instance.PlaySFX(P.sounds.attack);
 
@@ -42,16 +49,13 @@ public class Attacking: PlayerState
             P.ResetCombo();
         }
         else {
-            var comboStep = P.ComboStep % 4;
+            var comboStep = P.ComboStep % 2;
             switch (comboStep) {
                 case 0:
                     Attack(AttackType.LeftJab);
                     break;
                 case 1:
                     Attack(AttackType.RightCross);
-                    break;
-                case 2:
-                    Attack(AttackType.Uppercut);
                     break;
             }
 
@@ -65,6 +69,8 @@ public class Attacking: PlayerState
         var bottomLeft = (Vector2)P.transform.position + new Vector2(0, -_stats.attackHeight);
         var topRight = (Vector2)P.transform.position + new Vector2(_stats.attackRange * P.FacingDirection, _stats.attackHeight);
 
+        DisplayAttackHitbox(bottomLeft, topRight);
+
         int count = Physics2D.OverlapArea(bottomLeft, topRight, _targetFilter, _hits);
 
         if (count > _hits.Length) {
@@ -72,6 +78,7 @@ public class Attacking: PlayerState
             count = Physics2D.OverlapArea(bottomLeft, topRight, _targetFilter, _hits);
         }
 
+        bool hitSomeone = false;
         for (int i = 0; i < count; i++) {
             var collider = _hits[i];
             // If somehow hitting self, skip
@@ -82,6 +89,7 @@ public class Attacking: PlayerState
             if (attackable is null)
                 continue;
             attackable.TakeDamage(_stats.attackDamage);
+            hitSomeone = true;
 
             // if physics object, apply force
             var physicsBody = collider.GetComponent<IPhysicsMovable>();
@@ -89,13 +97,29 @@ public class Attacking: PlayerState
                 physicsBody.AddForce(new Vector2(_stats.attackKnockback * P.FacingDirection, 2f), ForceMode2D.Impulse);
             }
         }
+        if (hitSomeone && _stats.lifeSteal > 0) {
+            P.Heal(_stats.lifeSteal);
+        }
+    }
+
+    private void DisplayAttackHitbox(Vector2 min, Vector2 max) {
+        Vector3 bl = new Vector3(min.x, min.y, 0f);
+        Vector3 tl = new Vector3(min.x, max.y, 0f);
+        Vector3 tr = new Vector3(max.x, max.y, 0f);
+        Vector3 br = new Vector3(max.x, min.y, 0f);
+
+        const float drawDuration = 1.15f; // seconds
+        var color = Color.red;
+        Debug.DrawLine(bl, tl, color, drawDuration);
+        Debug.DrawLine(tl, tr, color, drawDuration);
+        Debug.DrawLine(tr, br, color, drawDuration);
+        Debug.DrawLine(br, bl, color, drawDuration);
     }
 }
 
 public enum AttackType {
     LeftJab,
     RightCross,
-    Uppercut,
     JumpKick
 }
 }

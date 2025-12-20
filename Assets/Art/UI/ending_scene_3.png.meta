@@ -1,49 +1,10 @@
 fileFormatVersion: 2
-guid: 17e2f790b873b2f4f8da4ae3a4a215d2
+guid: 108f48ee7584de845bf2aac2a42fe406
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4161571781314418468
-    second: death_screen_0
-  - first:
-      213: -573521382918252493
-    second: death_screen_1
-  - first:
-      213: -1484477285110931497
-    second: death_screen_2
-  - first:
-      213: 8219507316330624743
-    second: death_screen_3
-  - first:
-      213: 1441433295890835293
-    second: death_screen_4
-  - first:
-      213: 7126298575967335803
-    second: death_screen_5
-  - first:
-      213: 5401787317976584996
-    second: death_screen_6
-  - first:
-      213: 4623686781333898326
-    second: death_screen_7
-  - first:
-      213: -3238489603565076680
-    second: death_screen_8
-  - first:
-      213: 7422540941659759498
-    second: death_screen_9
-  - first:
-      213: 3198421631120920964
-    second: death_screen_10
-  - first:
-      213: -8670066481604054966
-    second: death_screen_11
-  - first:
-      213: 3783262821615578587
-    second: death_screen_12
-  - first:
-      213: -8046812862753884902
-    second: death_screen_13
+      213: -4186826291700357341
+    second: ending_scene_3_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -76,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -139,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: death_screen_0
+      name: ending_scene_3_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 80
-        height: 64
+        width: 171
+        height: 96
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 42719847c7fd0c930800000000000000
-      internalID: 4161571781314418468
+      spriteID: 3272fe2aba765e5c0800000000000000
+      internalID: -4186826291700357341
       vertices: []
       indices: 
       edges: []
@@ -164,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 62de7ef22b3a96344999a1e65060ae6f
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -172,11 +133,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":80.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      death_screen_0: 4161571781314418468
+      ending_scene_3_0: -4186826291700357341
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

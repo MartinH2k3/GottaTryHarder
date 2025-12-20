@@ -38,6 +38,8 @@ public class GameManager: MonoBehaviour
 
     private bool _isPaused;
 
+    private bool _isDying;
+
     public static GameManager Instance { get; private set; }
 
     private void Awake() {
@@ -80,6 +82,11 @@ public class GameManager: MonoBehaviour
             return;
 
         UpdatePlayerHealthUI();
+
+        if ( _isDying && UIManager.Instance.LoadingScreenFinished ) {
+            _isDying = false;
+            LoadCurrentLevel();
+        }
     }
 
     private void UpdatePlayerHealthUI() {
@@ -118,6 +125,7 @@ public class GameManager: MonoBehaviour
 
         _playerInitialized = true;
 
+        UIManager.Instance.HideLoadingScreen();
         UIManager.Instance.InitiateHUD(PlayerMaxHealth);
     }
 
@@ -140,8 +148,12 @@ public class GameManager: MonoBehaviour
             if (stats.jumpKickUnlocked) {
                 _player.combatStats.jumpKickUnlocked = true;
             }
+            _player.combatStats.attackRange *= 1 + stats.attackRangeRateChange;
+            _player.combatStats.attackHeight *= 1 + stats.attackHeightRateChange;
             _player.combatStats.attackDamage += stats.damageAdded;
             _player.combatStats.lifeSteal += stats.addsLifeSteal;
+            _player.combatStats.maxHealthPoints += stats.addsMaxHealth;
+            _player.Heal(stats.addsMaxHealth); // Heal the added max health
         }
     }
 
@@ -195,10 +207,10 @@ public class GameManager: MonoBehaviour
     }
 
     private PlayerController ChoosePlayerPrefab(int deathCount) {
-        if (deathCount < 3) {
+        if (deathCount < 2) {
             return skinnyPlayerPrefab;
         }
-        if (deathCount < 6) {
+        if (deathCount < 4) {
             return midPlayerPrefab;
         }
         return buffPlayerPrefab;
@@ -231,6 +243,7 @@ public class GameManager: MonoBehaviour
     }
 
     private void HandlePlayerDeath() {
+        _player.DisableInput();
         _player.OnDeath -= HandlePlayerDeath;
 
         DeathCount++;
@@ -242,7 +255,8 @@ public class GameManager: MonoBehaviour
         }
 
         SaveLevelData();
-        LoadCurrentLevel();
+        UIManager.Instance.ShowLoadingScreen();
+        _isDying = true;
     }
 
     private void UpdateCameraTarget()

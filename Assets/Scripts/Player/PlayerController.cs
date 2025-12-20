@@ -141,13 +141,13 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     public int HealthPoints { get; set; }
     private float _invulnerabilityEndTime;
 
-    private float _lastAttackTime = float.NegativeInfinity;
+    public float LastAttackTime = float.NegativeInfinity;
     public LayerMask attackableLayer;
     private float _nextAttackTime = 0f;
 
     public int ComboStep { get; private set; } = 0;
     public void ResetCombo() => ComboStep = 0;
-    public void AdvanceCombo() => ComboStep = (ComboStep + 1) % 4;
+    public void AdvanceCombo() => ComboStep = (ComboStep + 1) % 2;
     public bool ShouldAttack => Intent.AttackPressed && Time.time >= _nextAttackTime;
 
 
@@ -166,6 +166,7 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 
     [Header("Misc")]
     public Animator animator;
+    private int _animatorAirborneHash = Animator.StringToHash("Airborne");
     [SerializeField] private SpriteRenderer sprite;
     [Tooltip("Flashing frequency when invulnerable.")]
     [SerializeField] private float invulnFlashHz = 12f;
@@ -286,6 +287,8 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 
         Intent.SprintHeld = _sprint.IsPressed();
         _stateMachine.Tick();
+
+        animator.SetBool(_animatorAirborneHash, !IsGrounded);
     }
 
     private void FixedUpdate() {
@@ -344,6 +347,11 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
         if (HealthPoints <= 0) {
             Die();
         }
+    }
+
+    public void Heal(int amount) {
+        if (IsDead) return;
+        HealthPoints = Mathf.Min(HealthPoints + amount, combatStats.maxHealthPoints);
     }
 
     public void Die() {

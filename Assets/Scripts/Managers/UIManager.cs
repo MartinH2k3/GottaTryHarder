@@ -1,5 +1,4 @@
 using System;
-using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +12,10 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private Slider slider;
     [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private GameObject loadingScreen;
+    [SerializeField] private float loadingScreenSeconds = 4f;
+    private float _loadingScreenEndTime;
+    public bool LoadingScreenFinished => _loadingScreenEndTime < Time.time;
 
     private void Awake() {
         if (Instance != null && Instance != this) {
@@ -22,6 +25,7 @@ public class UIManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
+
 
     public void InitiateHUD(int maxHealth, int deathCount = 0, float timeSpent = 0) {
         slider.maxValue = maxHealth;
@@ -38,6 +42,15 @@ public class UIManager : MonoBehaviour
 
     public void HidePauseMenu() {
         pauseMenu.SetActive(false);
+    }
+
+    public void ShowLoadingScreen() {
+        _loadingScreenEndTime = Time.time + loadingScreenSeconds;
+        loadingScreen.SetActive(true);
+    }
+
+    public void HideLoadingScreen() {
+        loadingScreen.SetActive(false);
     }
 
 }

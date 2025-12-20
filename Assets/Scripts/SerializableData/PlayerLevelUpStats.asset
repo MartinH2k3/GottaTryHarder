@@ -14,9 +14,48 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ScriptableObjects.PlayerLevelUpStats
   levelUpStats:
   - addsLifeSteal: 0
+    addsMaxHealth: 0
+    addsDamageTakenOnJump: 0
+    addsMultiJump: 0
+    damageAdded: 0
+    attackRangeRateChange: 0
+    attackHeightRateChange: 0
+    attackComboUnlocked: 0
+    jumpKickUnlocked: 0
+    jumpStrengthRateChange: 0
+    movementSpeedRateChange: 0
+    dashSpeedRateChange: 0
+  - addsLifeSteal: 0
+    addsMaxHealth: 0
+    addsDamageTakenOnJump: 0
+    addsMultiJump: 0
+    damageAdded: 0
+    attackRangeRateChange: 0
+    attackHeightRateChange: 0
+    attackComboUnlocked: 1
+    jumpKickUnlocked: 1
+    jumpStrengthRateChange: 0
+    movementSpeedRateChange: 0
+    dashSpeedRateChange: 0
+  - addsLifeSteal: 0
+    addsMaxHealth: 0
     addsDamageTakenOnJump: 0
     addsMultiJump: 2
     damageAdded: 0
+    attackRangeRateChange: 0
+    attackHeightRateChange: 0
+    attackComboUnlocked: 0
+    jumpKickUnlocked: 0
+    jumpStrengthRateChange: 0
+    movementSpeedRateChange: 0
+    dashSpeedRateChange: 0.2
+  - addsLifeSteal: 2
+    addsMaxHealth: 0
+    addsDamageTakenOnJump: 2
+    addsMultiJump: 2
+    damageAdded: 0
+    attackRangeRateChange: 0.6
+    attackHeightRateChange: 0.5
     attackComboUnlocked: 0
     jumpKickUnlocked: 0
     jumpStrengthRateChange: 0

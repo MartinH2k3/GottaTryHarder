@@ -30,7 +30,7 @@ public class CombatStats
     [Tooltip("Delay from animation trigger to actual attack.")]
     public float attackDelay = 0.1f;
 
-    [Tooltip("Health regained for killing an enemy.")]
+    [Tooltip("Health regained after hitting an enemy.")]
     public int lifeSteal = 0;
 
     public bool jumpKickUnlocked = false;
