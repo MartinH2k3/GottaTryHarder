@@ -73,6 +73,7 @@ public class GameManager: MonoBehaviour
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+        UIManager.Instance?.HideEndCutscene();
         InitializeLevel();
     }
 
@@ -82,6 +83,8 @@ public class GameManager: MonoBehaviour
             return;
 
         UpdatePlayerHealthUI();
+
+        UIManager.Instance.DisplayTimeSpent(GetTimeSoFar());
 
         if ( _isDying && UIManager.Instance.LoadingScreenFinished ) {
             _isDying = false;
@@ -104,12 +107,15 @@ public class GameManager: MonoBehaviour
 
         // Skip Main Menu
         if (_currentLevelIndex < 0) {
+            Debug.Log($"[GameManager] Menu init. isPaused={_isPaused}, timeScale={Time.timeScale}");
+
             AudioManager.Instance.PlayMenuMusic();
+            UIManager.Instance.HideHUD();
             return;
         }
 
-        LoadLevelData();
         AudioManager.Instance.PlayLevelMusic(_currentLevelIndex);
+        LoadLevelData();
 
         _spawnTimestamp = Time.time;
         _prevLevelsTime = GetSpentTime(_currentLevelIndex);
@@ -126,7 +132,7 @@ public class GameManager: MonoBehaviour
         _playerInitialized = true;
 
         UIManager.Instance.HideLoadingScreen();
-        UIManager.Instance.InitiateHUD(PlayerMaxHealth);
+        UIManager.Instance.InitiateHUD(PlayerMaxHealth, DeathCount, _prevLevelsTime);
     }
 
     /// <summary>
@@ -190,7 +196,7 @@ public class GameManager: MonoBehaviour
         if (levelIndex < 0)  levelIndex = statsArray.Length;
 
         float time = 0f;
-        for (var i = 0; i < levelIndex; i++) {
+        for (var i = 0; i < levelIndex+1; i++) {
             var stats = statsArray[i];
             time += stats.timeSeconds;
         }
@@ -293,7 +299,6 @@ public class GameManager: MonoBehaviour
     public void ExitToMenu()
     {
         Time.timeScale = 1f;
-        AudioListener.pause = false;
         _playerInitialized = false;
 
         SceneManager.LoadScene(0);
@@ -303,7 +308,6 @@ public class GameManager: MonoBehaviour
     {
         Time.timeScale = 1f;
         _playerInitialized = false;
-        AudioListener.pause = false;
 
     #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
@@ -318,6 +322,12 @@ public class GameManager: MonoBehaviour
         _levelCompletionData.levelStats[_currentLevelIndex].timeSeconds = 0f;
         SaveLevelData();
         LoadCurrentLevel();
+    }
+
+    public void End() {
+        // Clean up just in case
+        Destroy(_player.gameObject);
+        UIManager.Instance.ShowEndCutscene();
     }
 }
 

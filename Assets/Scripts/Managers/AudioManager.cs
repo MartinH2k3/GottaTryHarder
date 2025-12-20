@@ -28,8 +28,7 @@ public class AudioManager: MonoBehaviour
         _musicSource = gameObject.AddComponent<AudioSource>();
     }
 
-    public void PlayMusic(AudioClip clip, float volume = 1f)
-    {
+    public void PlayMusic(AudioClip clip, float volume = 1f) {
         _musicSource.clip = clip;
         _musicSource.volume = volume;
         _musicSource.loop = true;
@@ -38,32 +37,28 @@ public class AudioManager: MonoBehaviour
 
     public void PlayMenuMusic(float volume = 1f)
     {
+        Debug.Log("Playing menu music");
         PlayMusic(menuSoundtrack, volume);
     }
 
-    public void PlayLevelMusic(int trackIndex, float volume = 1f)
-    {
+    public void PlayLevelMusic(int trackIndex, float volume = 1f) {
         if (trackIndex < 0 || trackIndex >= levelSoundtracks.Length) return;
         PlayMusic(levelSoundtracks[trackIndex], volume);
     }
 
-    public void PlayBossMusic(float volume = 1f)
-    {
+    public void PlayBossMusic(float volume = 1f) {
         PlayMusic(bossSoundtrack, volume);
     }
 
-    public void StopMusic()
-    {
+    public void StopMusic() {
         _musicSource.Stop();
     }
 
-    public void ChangeMusicVolume(float volume)
-    {
+    public void ChangeMusicVolume(float volume) {
         _musicSource.volume = volume;
     }
 
-    public void PlaySFX(AudioClip clip, float volume = 1f)
-    {
+    public void PlaySFX(AudioClip clip, float volume = 1f) {
         if (clip == null) return;
 
         if (_playingClips.Contains(clip))
@@ -77,8 +72,7 @@ public class AudioManager: MonoBehaviour
         StartCoroutine(RemoveClipWhenFinished(src, clip));
     }
 
-    private AudioSource GetAvailableSFXSource()
-    {
+    private AudioSource GetAvailableSFXSource() {
         // Try to reuse an idle source
         foreach (var source in _sfxSources)
         {
@@ -92,8 +86,7 @@ public class AudioManager: MonoBehaviour
         return newSource;
     }
 
-    private System.Collections.IEnumerator RemoveClipWhenFinished(AudioSource source, AudioClip clip)
-    {
+    private System.Collections.IEnumerator RemoveClipWhenFinished(AudioSource source, AudioClip clip) {
         // Wait until this source finishes playing that clip
         while (source.isPlaying)
             yield return null;

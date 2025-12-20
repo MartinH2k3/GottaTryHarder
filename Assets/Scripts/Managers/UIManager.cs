@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,10 +11,15 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
-    [SerializeField] private Slider slider;
+    [SerializeField] private Slider healthBar;
+    [SerializeField] private TextMeshProUGUI deathCountText;
+    [SerializeField] private TextMeshProUGUI timeSpentText;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject loadingScreen;
+    [SerializeField] private GameObject endCutscene;
+    [SerializeField] private GameObject hud;
     [SerializeField] private float loadingScreenSeconds = 4f;
+
     private float _loadingScreenEndTime;
     public bool LoadingScreenFinished => _loadingScreenEndTime < Time.time;
 
@@ -28,12 +34,41 @@ public class UIManager : MonoBehaviour
 
 
     public void InitiateHUD(int maxHealth, int deathCount = 0, float timeSpent = 0) {
-        slider.maxValue = maxHealth;
-        slider.value = maxHealth;
+        hud.SetActive(true);
+        healthBar.maxValue = maxHealth;
+        healthBar.value = maxHealth;
+        deathCountText.text = deathCount.ToString();
+        timeSpentText.text = FormatTime(timeSpent);
+    }
+
+    public void HideHUD() {
+        hud.SetActive(false);
+    }
+
+    private string FormatTime(float seconds) {
+        string output = "";
+        int hours = Mathf.FloorToInt(seconds / 3600);
+        int minutes = Mathf.FloorToInt((seconds % 3600) / 60);
+        int secs = Mathf.FloorToInt(seconds % 60);
+        if (hours > 0)
+            output += hours.ToString() + "h";
+        if (minutes > 0)
+            output += minutes.ToString() + "m";
+        if (secs > 0)
+            output += secs.ToString() + "s";
+        return output == "" ? "0s" : output;
     }
 
     public void DisplayHealth(int health) {
-        slider.value = health;
+        healthBar.value = health;
+    }
+
+    public void DisplayDeathCount(int deathCount) {
+        deathCountText.text = deathCount.ToString();
+    }
+
+    public void DisplayTimeSpent(float timeSpent) {
+        timeSpentText.text = FormatTime(timeSpent);
     }
 
     public void ShowPauseMenu() {
@@ -51,6 +86,14 @@ public class UIManager : MonoBehaviour
 
     public void HideLoadingScreen() {
         loadingScreen.SetActive(false);
+    }
+
+    public void ShowEndCutscene() {
+        endCutscene.SetActive(true);
+    }
+
+    public void HideEndCutscene() {
+        endCutscene.SetActive(false);
     }
 
 }
