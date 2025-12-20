@@ -16,6 +16,13 @@ public static class PhysicsMovableExtensions
         t.localScale = new Vector3(-t.localScale.x, t.localScale.y, t.localScale.z);
     }
 
+    /// <summary> Flips the localScale.x of the Rigidbody2D's transform to turn the object around. </summary>
+    public static void TurnAround(this IPhysicsMovable movable, int direction) {
+        var t = movable.Rigidbody.transform;
+        t.localScale = new Vector3(Mathf.Sign(direction) * Mathf.Abs(t.localScale.x), t.localScale.y, t.localScale.z);
+    }
+
+
     /// <summary> Returns the size of the Rigidbody2D's collider bounds. </summary>
     public static Vector2 GetSize(this IPhysicsMovable movable) {
         var col = movable.Rigidbody.GetComponent<Collider2D>();
@@ -268,6 +275,20 @@ public static class PhysicsMovableExtensions
     public static void RemoveExcludedLayer(this IPhysicsMovable movable, LayerMask layer) {
         if (movable.Rigidbody is not null) {
             movable.Rigidbody.excludeLayers &= ~layer;
+        }
+    }
+
+    /// <summary> Enables or disables simulation of the Rigidbody2D. </summary>
+    public static void ToggleRigidbodySimulation(this IPhysicsMovable movable, bool enabled) {
+        if (movable.Rigidbody is not null) {
+            movable.Rigidbody.simulated = enabled;
+        }
+    }
+
+    /// <summary> Enables or disables simulation of the Rigidbody2D. </summary>
+    public static void ToggleRigidbodySimulation(this IPhysicsMovable movable) {
+        if (movable.Rigidbody is not null) {
+            movable.Rigidbody.simulated = !movable.Rigidbody.simulated;
         }
     }
 }

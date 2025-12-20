@@ -39,13 +39,14 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     public Rigidbody2D Rigidbody => rb;
     private Collider2D _col;
 
-    [Header("Movement")]
-    public MovementStats movementStats;
+    [Header("Movement")] public MovementStats movementStats;
+
     [ContextMenu("Reset Movement Stats")]
     public void ResetMovementStats() => movementStats = new MovementStats();
 
-    [Header("Contact/Collision")]
-    [SerializeField] private ContactStats contactStats;
+    [Header("Contact/Collision")] [SerializeField]
+    private ContactStats contactStats;
+
     public LayerMask terrainLayer;
 
     public bool IsGrounded => Physics2D.OverlapCircle(
@@ -66,6 +67,7 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
                 )
                ) touchingCount++;
         }
+
         return touchingCount >= contactStats.contactPoints * contactStats.contactRatio;
     }
 
@@ -74,10 +76,11 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     public bool TouchingWall => TouchingWallLeft || TouchingWallRight;
     public int WallDir => TouchingWallLeft ? -1 : (TouchingWallRight ? 1 : 0);
 
-    [Header("Jump")]
-    public JumpStats jumpStats;
+    [Header("Jump")] public JumpStats jumpStats;
+
     [ContextMenu("Reset Jump Stats")]
     public void ResetJumpStats() => jumpStats = new JumpStats();
+
     private float _nextJumpTime;
     public bool JumpOffCooldown => Time.time >= _nextJumpTime;
     public float LastJumpTime { get; set; } = float.NegativeInfinity;
@@ -96,27 +99,35 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     public bool CanSingleJump => IsGrounded || HasCoyote; // As in no need to spend double/triple/... jump
     public bool CanJump => JumpOffCooldown && (CanSingleJump || CanAirJump);
     public bool ShouldStartJump => HasBufferedJump && CanJump;
-    public bool ShouldStopJump => IsGrounded && Intent.LastJumpPressedTime < Time.time - 0.1f; // small delay to avoid cutting jump due to ground contact detection issues
+
+    public bool ShouldStopJump =>
+        IsGrounded &&
+        Intent.LastJumpPressedTime <
+        Time.time - 0.1f; // small delay to avoid cutting jump due to ground contact detection issues
+
     public void ResetJumpCooldown() => _nextJumpTime = Time.time + jumpStats.jumpTimeout;
     public void ConsumeBufferedJump() => _jumpBufferTimer = 0f;
     public void ResetCoyote() => _coyoteTimer = jumpStats.coyoteTimeWindow;
     public void ConsumeCoyote() => _coyoteTimer = 0f;
 
-    [Header("Wall Slide")]
-    public WallSlideStats wallSlideStats;
+    [Header("Wall Slide")] public WallSlideStats wallSlideStats;
+
     [ContextMenu("Reset Wall Slide Stats")]
     public void ResetWallSlideStats() => wallSlideStats = new WallSlideStats();
-    bool ShouldSlide => !IsGrounded && !WallRegrabLocked && TouchingWall && this.GetVelocity().y < wallSlideStats.upwardSpeedThreshold;
+
+    bool ShouldSlide => !IsGrounded && !WallRegrabLocked && TouchingWall &&
+                        this.GetVelocity().y < wallSlideStats.upwardSpeedThreshold;
 
     // Wall Jump
     private float _wallRegrabUnlockTime = 0f;
     public void StartWallRegrabLock() => _wallRegrabUnlockTime = Time.time + wallSlideStats.wallRegrabLock;
     public bool WallRegrabLocked => Time.time < _wallRegrabUnlockTime;
-    public void StartWallJumpControlLock(float duration = -1) => _horizontalControlUnlockTime = duration >= 0 ?
-        Time.time + duration: Time.time + wallJumpControlLockTime;
 
-    [Header("Dashing")]
-    public DashStats dashStats;
+    public void StartWallJumpControlLock(float duration = -1) => _horizontalControlUnlockTime =
+        duration >= 0 ? Time.time + duration : Time.time + wallJumpControlLockTime;
+
+    [Header("Dashing")] public DashStats dashStats;
+
     [ContextMenu("Reset Dash Stats")]
     public void ResetDashStats() => dashStats = new DashStats();
 
@@ -125,16 +136,18 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 
     private bool ShouldStartDash => Intent.DashPressed &&
                                     Time.time >= _lastDashEndTime + dashStats.dashCooldown;
+
     private bool ShouldStopDash => Intent.LastDashPressedTime <= Time.time - dashStats.dashDuration || // dash ran out;
                                    (FacingDirection > 0 ? TouchingWallRight : TouchingWallLeft);
 
 
 
 
-    [Header("Combat")]
-    public CombatStats combatStats;
+    [Header("Combat")] public CombatStats combatStats;
+
     [ContextMenu("Reset Combat Stats")]
     public void ResetCombatStats() => combatStats = new CombatStats();
+
     public bool IsDead { get; private set; }
     public event Action OnDeath;
     public bool IsVulnerable => _vulnerabilityState == VulnerabilityState.Vulnerable;
@@ -153,30 +166,32 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 
     [Header("Horizontal lock")]
     [Tooltip("Time after wall jump before being able to control horizontal movement.")]
-    [SerializeField] private float wallJumpControlLockTime = 0.05f;
+    [SerializeField]
+    private float wallJumpControlLockTime = 0.05f;
+
     [Tooltip("Time after landing where horizontal movement is locked so it's easier to land on tight spaces.")]
     private float _horizontalControlUnlockTime = 0f;
+
     public bool HorizontalControlLocked => Time.time <= _horizontalControlUnlockTime;
 
-    [Header("Audio")]
-    [SerializeField] public PlayerSounds sounds;
+    [Header("Audio")] [SerializeField] public PlayerSounds sounds;
 
-    [Header("Debug")]
-    [SerializeField] private TextMeshProUGUI debugText;
+    [Header("Debug")] [SerializeField] private TextMeshProUGUI debugText;
 
-    [Header("Misc")]
-    public Animator animator;
+    [Header("Misc")] public Animator animator;
     private int _animatorAirborneHash = Animator.StringToHash("Airborne");
     [SerializeField] private SpriteRenderer sprite;
-    [Tooltip("Flashing frequency when invulnerable.")]
-    [SerializeField] private float invulnFlashHz = 12f;
-    [Tooltip("Minimum opacity when invulnerable.")]
-    [SerializeField] private float invulnMinAlpha = 0.25f;
+
+    [Tooltip("Flashing frequency when invulnerable.")] [SerializeField]
+    private float invulnFlashHz = 12f;
+
+    [Tooltip("Minimum opacity when invulnerable.")] [SerializeField]
+    private float invulnMinAlpha = 0.25f;
 
     // Transform
     public int FacingDirection => transform.localScale.x >= 0 ? 1 : -1;
     public float PlayerHeight => _col.bounds.size.y;
-    public float PlayerWidth  => _col.bounds.size.x;
+    public float PlayerWidth => _col.bounds.size.x;
 
 
     private void Awake() {
@@ -188,12 +203,18 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 
     private void OnEnable() {
         var p = _inputActions.Player;
-        _move = p.Move; _move.Enable();
-        _sprint = p.Sprint; _sprint.Enable();
-        _jump = p.Jump; _jump.Enable();
-        _dash = p.Dash; _dash.Enable();
-        _interact = p.Interact; _interact.Enable();
-        _attack = p.Attack; _attack.Enable();
+        _move = p.Move;
+        _move.Enable();
+        _sprint = p.Sprint;
+        _sprint.Enable();
+        _jump = p.Jump;
+        _jump.Enable();
+        _dash = p.Dash;
+        _dash.Enable();
+        _interact = p.Interact;
+        _interact.Enable();
+        _attack = p.Attack;
+        _attack.Enable();
 
         _jump.performed += OnJumpPerformed;
         _dash.performed += OnDashPerformed;
@@ -216,8 +237,8 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
 
     private void Start() {
         _stateMachine = new StateMachine();
-        _idle     = new Idle(this);
-        _walking  = new Walking(this);
+        _idle = new Idle(this);
+        _walking = new Walking(this);
         _airborne = new Airborne(this);
         _wallSliding = new WallSliding(this);
         _dashing = new Dashing(this);
@@ -262,8 +283,7 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
         _stateMachine.AddExitTransition(_dashing, () => ShouldStopDash);
 
         // Stuff to do on state changes
-        _stateMachine.StateChanged += (prev, curr) =>
-        {
+        _stateMachine.StateChanged += (prev, curr) => {
             if (prev is Airborne && (curr == _idle || curr == _walking))
                 LockMovement(movementStats.onEdgeMovementLockTime);
 
@@ -297,7 +317,8 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
         // Ground check
         if (IsGrounded) {
             _coyoteTimer = jumpStats.coyoteTimeWindow;
-        } else {
+        }
+        else {
             _coyoteTimer -= Time.fixedDeltaTime;
         }
 
@@ -339,9 +360,13 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
     }
 
     public void TakeDamage(int damage) {
+        TakeDamage(damage, -1f);
+    }
+
+    public void TakeDamage(int damage, float invulnerabilityDurationOverride) {
         if (!IsVulnerable || IsDead) return;
         HealthPoints -= damage;
-        SetInvulnerable();
+        SetInvulnerable(invulnerabilityDurationOverride);
         AudioManager.Instance.PlaySFX(sounds.hurt);
         Debug.Log($"TakeDamage({damage}) on {name}\nCaller:\n{Environment.StackTrace}", this);
         if (HealthPoints <= 0) {
@@ -365,8 +390,11 @@ public class PlayerController : MonoBehaviour, IPhysicsMovable, IDamageable
         _horizontalControlUnlockTime = Time.time + duration;
     }
 
-    private void SetInvulnerable() {
-        _invulnerabilityEndTime = Time.time + combatStats.invulnerabilityDuration;
+    private void SetInvulnerable(float invulnerabilityDurationOverride = -1f) {
+        float duration = invulnerabilityDurationOverride >= 0f ?
+            invulnerabilityDurationOverride : combatStats.invulnerabilityDuration;
+
+        _invulnerabilityEndTime = Time.time + duration;
         _vulnerabilityState = VulnerabilityState.Invulnerable;
     }
 

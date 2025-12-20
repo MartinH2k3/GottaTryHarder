@@ -311,6 +311,14 @@ public class GameManager: MonoBehaviour
         Application.Quit();
     #endif
     }
+
+    /// <summary> Resets stats to base and reloads the scene.</summary>
+    public void Restart() {
+        _levelCompletionData.levelStats[_currentLevelIndex].deathCount = 0;
+        _levelCompletionData.levelStats[_currentLevelIndex].timeSeconds = 0f;
+        SaveLevelData();
+        LoadCurrentLevel();
+    }
 }
 
 }
