@@ -1,7 +1,5 @@
-﻿using Enemies.States;
-using Managers;
+﻿using Managers;
 using Mechanics;
-using Player;
 using UnityEngine;
 using Utils;
 
@@ -49,16 +47,14 @@ public class Bubbling: BossState
     public void HandleTriggerEnter(Collider2D other) {
         bool hitPlayer = Helpers.LayerInLayerMask(other.gameObject.layer, E.playerLayer);
         if (hitPlayer) {
-            var player = other.gameObject.GetComponent<Player.PlayerController>();
-            HitPlayer(player);
+            HitPlayer();
         }
     }
 
     public void HandleCollisionEnter(Collision2D other) {
         bool hitPlayer = Helpers.LayerInLayerMask(other.gameObject.layer, E.playerLayer);
         if (hitPlayer) {
-            var player = other.gameObject.GetComponent<Player.PlayerController>();
-            HitPlayer(player);
+            HitPlayer();
         }
 
         // if collision is not from the bottom, stop growing to avoid clipping through walls
@@ -68,14 +64,16 @@ public class Bubbling: BossState
         }
     }
 
-    private void HitPlayer(PlayerController player) {
-        int knockbackDir = player.transform.position.x - E.transform.position.x > 0 ? 1 : -1;
+    private void HitPlayer() {
+        int knockbackDir = E.TargetPos.x - E.Pos.x > 0 ? 1 : -1;
+
+        E.Target.TakeDamage(E.combatStats.attackDamage);
 
         float stunDuration = Helpers.StunDurationEased(E.combatStats.knockbackStunDuration, E.combatStats.dashKnockbackStrength);
-        player.LockMovement(stunDuration);
+        E.Target.LockMovement(stunDuration);
 
         float dashKnockback = E.combatStats.dashKnockbackStrength * E.combatStats.attackKnockback;
-        player.AddForce(knockbackDir*dashKnockback, 3, ForceMode2D.Impulse);
+        E.Target.AddForce(knockbackDir*dashKnockback, 3, ForceMode2D.Impulse);
     }
 }
 }

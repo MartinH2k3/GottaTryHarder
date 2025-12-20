@@ -80,8 +80,11 @@ public class Launching: EnemyState<Golubok>
 
             Vector2 bounceDirection = Vector2.Reflect(impactVelocity.normalized, normal);
 
-            if (hitPlayer) // Always bounce upwards when hitting the player. Bouncing downwards makes poop attack useless
+            if (hitPlayer) {
+                // Always bounce upwards when hitting the player. Bouncing downwards makes poop attack useless
+                E.Target.TakeDamage(E.combatStats.attackDamage);
                 bounceDirection = PullTowardAngleEased(bounceDirection, E.combatStats.bounceOffAngle);
+            }
 
 
             Vector2 bounceForce = bounceDirection * speed * E.combatStats.bounceFactor;
