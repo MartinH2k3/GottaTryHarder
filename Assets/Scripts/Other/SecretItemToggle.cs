@@ -30,7 +30,7 @@ public class SecretItemToggle: MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other) {
+    private void OnTriggerEnter2D(Collider2D other) {
         if (!Helpers.LayerInLayerMask(other.gameObject.layer, playerLayer))
             return;
 
