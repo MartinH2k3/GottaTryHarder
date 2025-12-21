@@ -300,7 +300,7 @@ public class GameManager: MonoBehaviour
     {
         Time.timeScale = 1f;
         _playerInitialized = false;
-
+        UIManager.Instance?.HidePauseMenu();
         SceneManager.LoadScene(0);
     }
 
