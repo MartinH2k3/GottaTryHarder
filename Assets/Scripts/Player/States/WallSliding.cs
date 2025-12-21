@@ -1,4 +1,5 @@
-﻿using Mechanics;
+﻿using Managers;
+using Mechanics;
 using Player.Stats;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ public class WallSliding: PlayerState
     public override void Enter()
     {
         P.animator.SetBool("WallSliding", true);
+        P.ResetAirJumps();
     }
 
     public override void Exit() {
@@ -64,6 +66,7 @@ public class WallSliding: PlayerState
 
         if (P.FacingDirection == P.WallDir) P.TurnAround();
 
+        AudioManager.Instance.PlaySFX(P.sounds.jump);
         P.ConsumeBufferedJump();
         P.ResetJumpCooldown();
         P.ConsumeCoyote();

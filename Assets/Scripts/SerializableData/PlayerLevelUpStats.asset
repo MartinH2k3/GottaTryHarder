@@ -40,19 +40,19 @@ MonoBehaviour:
   - addsLifeSteal: 0
     addsMaxHealth: 0
     addsDamageTakenOnJump: 0
-    addsMultiJump: 2
+    addsMultiJump: 0
     damageAdded: 0
     attackRangeRateChange: 0
     attackHeightRateChange: 0
     attackComboUnlocked: 0
     jumpKickUnlocked: 0
-    jumpStrengthRateChange: 0
-    movementSpeedRateChange: 0
+    jumpStrengthRateChange: 0.3
+    movementSpeedRateChange: -0.05
     dashSpeedRateChange: 0.2
   - addsLifeSteal: 2
     addsMaxHealth: 0
     addsDamageTakenOnJump: 2
-    addsMultiJump: 0
+    addsMultiJump: 1
     damageAdded: 0
     attackRangeRateChange: 0.6
     attackHeightRateChange: 0.5
@@ -61,9 +61,9 @@ MonoBehaviour:
     jumpStrengthRateChange: 0
     movementSpeedRateChange: 0
     dashSpeedRateChange: 0
-  - addsLifeSteal: 2
-    addsMaxHealth: 0
-    addsDamageTakenOnJump: 2
+  - addsLifeSteal: 10
+    addsMaxHealth: 150
+    addsDamageTakenOnJump: 10
     addsMultiJump: 2
     damageAdded: 0
     attackRangeRateChange: 0.6
@@ -71,5 +71,5 @@ MonoBehaviour:
     attackComboUnlocked: 0
     jumpKickUnlocked: 0
     jumpStrengthRateChange: 0
-    movementSpeedRateChange: 0
-    dashSpeedRateChange: 0
+    movementSpeedRateChange: -0.3
+    dashSpeedRateChange: 0.5
