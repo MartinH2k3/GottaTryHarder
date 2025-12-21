@@ -82,7 +82,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1296574893
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 6940023722644540795, guid: 96bd3ce1d3f010d49b37ae866410a32e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -163,7 +163,7 @@ MonoBehaviour:
     oscillationAmplitude: 1
   combatStats:
     maxHealthPoints: 120
-    attackDamage: 10
+    attackDamage: 25
     attackKnockback: 10
     knockbackStunDuration: 0.5
     baseContactKnockbackStrength: 1.5

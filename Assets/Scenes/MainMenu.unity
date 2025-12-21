@@ -801,6 +801,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Managers.GameManager
   playerSpawnPoints:
   - {x: -4, y: -4, z: 0}
+  - {x: 237, y: -30, z: 0}
   skinnyPlayerPrefab: {fileID: 4465722171525312743, guid: 02443eabf1553b44cb7d51286b472b24, type: 3}
   midPlayerPrefab: {fileID: 4465722171525312743, guid: 30a566af90778c446b108cee39f08fa9, type: 3}
   buffPlayerPrefab: {fileID: 4465722171525312743, guid: f73addf9d63eb954a95b710462666228, type: 3}

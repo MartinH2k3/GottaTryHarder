@@ -10,5 +10,7 @@ public class UnityEventHelpers: MonoBehaviour
 
     public void QuitToMainMenu() => Managers.GameManager.Instance.ExitToMenu();
 
+    public void FinishGame() => Managers.GameManager.Instance.End();
+
 }
 }

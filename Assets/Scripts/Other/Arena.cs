@@ -1,5 +1,5 @@
-﻿using System;
-using Player;
+﻿using Player;
+using Unity.Cinemachine;
 using UnityEngine;
 
 namespace Other
@@ -11,6 +11,14 @@ public abstract class Arena: MonoBehaviour
     [SerializeField] protected float timeBeforeSpawn = 2f;
     [SerializeField] private LayerMask playerLayer;
 
+    [SerializeField] private CinemachineCamera playerCam;
+    [SerializeField] private float vcamZoomOutRate = 1.5f;
+    [SerializeField] private float zoomLerpSpeed = 6f;
+
+    private float _baseOrthoSize;
+    private float _targetOrthoSize;
+    private bool _hasBaseZoom;
+
     protected PlayerController Player;
     protected bool IsLocked;
     private bool _playerInArena;
@@ -19,6 +27,13 @@ public abstract class Arena: MonoBehaviour
 
     protected virtual void Awake() {
         UnlockArena();
+
+        if (playerCam != null)
+        {
+            _baseOrthoSize = playerCam.Lens.OrthographicSize;
+            _targetOrthoSize = _baseOrthoSize;
+            _hasBaseZoom = true;
+        }
     }
 
     protected virtual void Start() {
@@ -33,6 +48,15 @@ public abstract class Arena: MonoBehaviour
         if (Time.time >= _spawnTime) {
             Spawn();
         }
+    }
+
+    protected virtual void Update()
+    {
+        if (playerCam == null || !_hasBaseZoom) return;
+
+        float current = playerCam.Lens.OrthographicSize;
+        float next = Mathf.Lerp(current, _targetOrthoSize, Time.deltaTime * zoomLerpSpeed);
+        playerCam.Lens.OrthographicSize = next;
     }
 
     protected virtual void OnTriggerEnter2D(Collider2D other) {
@@ -65,12 +89,18 @@ public abstract class Arena: MonoBehaviour
         arenaEntrance.SetActive(true);
         arenaExit.SetActive(true);
         IsLocked = true;
+
+        if (playerCam != null && _hasBaseZoom)
+            _targetOrthoSize = _baseOrthoSize * vcamZoomOutRate; // zoom out
     }
 
     protected virtual void UnlockArena() {
         arenaEntrance.SetActive(false);
         arenaExit.SetActive(false);
         IsLocked = false;
+
+        if (playerCam != null && _hasBaseZoom)
+            _targetOrthoSize = _baseOrthoSize; // zoom in
     }
 }
 }
